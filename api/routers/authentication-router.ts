@@ -27,7 +27,9 @@ export default ((token_service: TokenService, mail_service: MailService,
                     <a href="${login_url}" alt="login url">click here to log in to ${WEBSITE_NAME}.</a><br>
                     <br>
                     Alternatively, you can paste the token<br>
+                    <br>
                     ${token}<br>
+                    <br>
                     manually here:<br>
                     <a href="${paste_url}" alt="paste token url">${paste_url}</a><br>
                     <br>
