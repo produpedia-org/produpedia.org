@@ -1,8 +1,9 @@
 <template lang="slm">
 div.column
-	input#quicksearch type=search model=filter placeholder="Quick search..."
-	select :name=name :required=required # todo use datalist some day when its supported widely enough
-		option each=filtered_attribute :value=filtered_attribute._id
+	input#quicksearch type=search v-model=filter placeholder="Quick search..."
+	/ todo use datalist some day when its supported widely enough
+	select :name=name :required=required
+		option v-for="filtered_attribute in filtered_attributes" :value=filtered_attribute._id
 			| $filtered_attribute.name
 </template>
 
@@ -25,9 +26,9 @@ export default
 		...mapGetters 'search',
 			-	'attributes_by_id'
 		attributes: ->
-			@attribute_ids.map id => @attributes_by_id[id]
+			@attribute_ids.map (id) => @attributes_by_id[id]
 		filtered_attributes: ->
-			@attributes.filter a => a.name.includes(@filter)
+			@attributes.filter (a) => a.name.includes(@filter)
 	}
 </script>
 

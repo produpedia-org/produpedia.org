@@ -68,16 +68,16 @@ export default
 		attributes: []
 		products: []
 	getters:
-		attribute_ids: state ->
-			state.attributes.map a => a._id # todo add map('str') prototype
-		attributes_by_id: state ->
+		attribute_ids: (state) ->
+			state.attributes.map (a) => a._id # todo add map('str') prototype
+		attributes_by_id: (state) ->
 			state.attributes.reduce((all, attribute) =>
 				all[attribute._id] = attribute
 				all
 			, {})
 		sorters_by_attribute_id: (state, getters) ->
 			getters.attribute_ids.reduce((all, attribute_id) =>
-				sorter_index = state.sorters.findIndex(sorter => sorter.attribute_id == attribute_id)
+				sorter_index = state.sorters.findIndex((sorter) => sorter.attribute_id == attribute_id)
 				if sorter_index > -1
 					all[attribute_id] =
 						index: sorter_index
@@ -88,14 +88,14 @@ export default
 			, {})
 		filters_by_attribute_id: (state, getters) ->
 			getters.attribute_ids.reduce((all, attribute_id) =>
-				all[attribute_id] = state.filters.filter filter => filter.attribute_id == attribute_id
+				all[attribute_id] = state.filters.filter (filter) => filter.attribute_id == attribute_id
 				all
 			, {})
-		sorters_amount: state -> state.sorters.length
+		sorters_amount: (state) -> state.sorters.length
 		# todo docs belong here not top
 		hidden_attribute_ids: (state, getters) ->
 			getters.attribute_ids
-				.filter attribute_id =>
+				.filter (attribute_id) =>
 					!state.showers.includes attribute_id
 	mutations:
 		remove_sorter_at: (state, index) -> Vue.delete state.sorters, index
@@ -129,10 +129,10 @@ export default
 			shower_ids_param = state.shower_ids
 				.join ','
 			sorters_param = state.sorters
-				.map sorter => "#{sorter.attribute_id}:#{sorter.direction}"
+				.map (sorter) => "#{sorter.attribute_id}:#{sorter.direction}"
 				.join ','
 			filters_param = state.filters
-				.map filter => "#{filter.attribute_id}:#{filter.condition}:#{filter.condition_value}"
+				.map (filter) => "#{filter.attribute_id}:#{filter.condition}:#{filter.condition_value}"
 				.join ','
 			response = await axios.get 'p',
 				params:
@@ -144,7 +144,7 @@ export default
 			commit 'set_shower_ids', response.data.shower_ids
 			commit 'set_products', response.data.products
 		move_shower_to: ({ dispatch, commit, state }, { index, shower_id }) ->
-			current_pos = state.shower_ids.findIndex e => e == shower_id
+			current_pos = state.shower_ids.findIndex (e) => e == shower_id
 			new_pos = index
 			if current_pos > -1
 				commit 'remove_shower_id_at', current_pos # user moved shower from pos A to B

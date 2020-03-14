@@ -3,57 +3,61 @@ table
 	thead
 		tr
 			td
-			td.filters each=shower_id
-				result-view/result-table/filters :filters=filters_by_attribute_id[shower_id] :attribute_id=shower_id :readonly=readonly
+			td.filters v-for="shower_id in shower_ids"
+				filters :filters=filters_by_attribute_id[shower_id] :attribute_id=shower_id :readonly=readonly
 		tr.attributes :class.drop-target=dragging_column
-			th.dropzone.remove.column if=dragging_column drop=remove_shower
+			th.dropzone.remove.column v-if=dragging_column v-drop=remove_shower
 				div 🗙
 				div.description.danger Hide column
-			th else Name
-			th.dropzone.move v-for="shower_id, index in shower_ids" :key="shower_id+'_'+index" drop=move_shower_to(index)
+			th v-else="" Name
+			th.dropzone.move v-for="shower_id, index in shower_ids" :key="shower_id+'_'+index" v-drop=move_shower_to(index)
 				.attribute.column
-					div.actions.center if="!readonly && !can_drag"
+					div.actions.center v-if="!readonly && !can_drag"
 						button.moveto @click=move_shower_to(index-1)(shower_id) ←
 						button.remove @click=remove_shower(shower_id) 🗙
 						button.moveto @click=move_shower_to(index+2)(shower_id) →
 					div.name.center
-						div drag="!readonly && can_drag && shower_id" @dragstart=dragging_column=true @dragend=dragging_column=false
-							span.grip if="!readonly && can_drag" ⠿
+						div v-drag="!readonly && can_drag && shower_id" @dragstart=dragging_column=true @dragend=dragging_column=false
+							span.grip v-if="!readonly && can_drag" ⠿
 							| $attributes_by_id[shower_id].name
 							# FIXME UNIT if number
 						div.sort.column
 							button.sort-up.disabled :disabled=readonly @click="toggle_sort_direction(shower_id, 1)" :class.highlighted=sorters_by_attribute_id[shower_id].direction===1
-								| ▲ # ˄ todo svg
+								/ ˄ todo svg
+								| ▲
 							button.sort-down.disabled :disabled=readonly @click="toggle_sort_direction(shower_id, -1)" :class.highlighted=sorters_by_attribute_id[shower_id].direction===-1
 								| ▼ # ˅
-						div.small.highlighted if="sorters_amount > 1 && sorters_by_attribute_id[shower_id].index >= 0"
+						div.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_id[shower_id].index >= 0"
 							| $sorters_by_attribute_id[shower_id].index+1
 
 	tbody
-		tr.product each=product
+		tr.product v-for="product in products"
 			td.name
 				| $product.name
-			td.datum each=shower_id @click=datum_clicked(product,shower_id)
-				div if=product.data[shower_id]
-					div if=product.data[shower_id].verified
+			td.datum v-for="shower_id in shower_ids" @click=datum_clicked(product,shower_id)
+				div v-if=product.data[shower_id]
+					div v-if=product.data[shower_id].verified
 						span.verified
 							| $product.data[shower_id].value
-						button.edit.disabled if=!readonly
+						button.edit.disabled v-if=!readonly
 							| ✎ # ✓ # ✔
-					div else
+					div v-else=""
 						span.disabled
 							| $product.data[shower_id].value
-						button.edit if=!readonly
+						button.edit v-if=!readonly
 							| ✎
-				div else
+				div v-else=""
 					span.small
 						| # &#63; # ?
-					button.edit.create if=!readonly
+					button.edit.create v-if=!readonly
 						| + # 🖉
 </template>
 
 <script lang="coffee">
+import Filters from '@/components/result-view/result-table/Filters'
+
 export default Vue.extend
+	components: { Filters }
 	# name: 'ResultTable' todo?
 	props:
 		readonly:
@@ -67,9 +71,9 @@ export default Vue.extend
 		datum_clicked: (product, attribute_id) ->
 			if @readonly then return
 			@$emit 'datum_clicked', { product, attribute_id }
-		move_shower_to: index -> shower_id =>
+		move_shower_to: (index) -> (shower_id) =>
 			@$store.dispatch 'search/move_shower_to', { shower_id, index }
-		remove_shower: shower_id ->
+		remove_shower: (shower_id) ->
 			@$store.dispatch 'search/remove_shower', shower_id
 	computed: {
 		...mapState 'search',

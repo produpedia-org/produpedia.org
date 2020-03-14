@@ -37,6 +37,8 @@ module.exports = (doc) ->
 	used_components = [...new Set(used_component_names)]
 		.map((name) =>
 			match = /^(.+\/)?([^\/]+)$/.exec(name)
+			if not match
+				throw "match is unset"
 			path = match[1] || ''
 			name = match[2]
 			camel_case = name

@@ -1,39 +1,43 @@
 <template lang="slm">
 div
 	div.filters.justify-center
-		div.filter.box each=filter
+		div.filter.box v-for="filter in filters"
 			span $condition_by_id[filter.condition].long&nbsp;
-			strong if=filter.condition_value
+			strong v-if=filter.condition_value
 				| $filter.condition_value&nbsp;
-			button @click=remove_filter(filter) if=!readonly × # 🗙
-		label.justify-center if="!show_form && !readonly"
-			span.disabled if=!filters.length Add filter&nbsp;
+			/ 🗙
+			button @click=remove_filter(filter) v-if=!readonly ×
+		label.justify-center v-if="!show_form && !readonly"
+			span.disabled v-if=!filters.length Add filter&nbsp;
 			button.disabled.fade-in @click=show_form=true
 				| +
 	div.center.column
-		popup if=show_form @close=show_form=false
-			promise-form#form :action=add_filter button_float_right
+		popup v-if=show_form @close=show_form=false
+			promise-form#form :action=add_filter button_float_right=""
 				div.flex
-					div.attribute-select.padding if=!attribute_id # todo currently unused
+					div.attribute-select.padding v-if=!attribute_id # todo currently unused
 						label.column
 							| Attribute
-							attribute-select name=attribute_id required :attribute_ids=attribute_ids
-					input else type=hidden name=attribute_id :value=attribute_id
+							attribute-select name=attribute_id required="" :attribute_ids=attribute_ids
+					input v-else="" type=hidden name=attribute_id :value=attribute_id
 					div.condition.padding
 						label.column
 							| Condition
-							select name=condition required model=condition_id
-								option each=condition :value=condition.id html=condition_to_option(condition) # todo why html not | ?
+							select name=condition required="" v-model=condition_id
+								option v-for="condition in conditions" :value=condition.id  v-html=condition_to_option(condition) # todo why html not | ?
 					div.condition-value.padding
-						label.column if=condition_needs_value
+						label.column v-if=condition_needs_value
 							| Value
-							input name=condition_value required
-				template #button_label Add
+							input name=condition_value required=""
+				template #button_label="" Add
 				
 </template>
 
 <script lang="coffee">
+import AttributeSelect from '@/components/AttributeSelect'
+
 export default Vue.extend
+	components: { AttributeSelect }
 	name: 'ResultTableFilters'
 	props:
 		filters:
@@ -74,7 +78,7 @@ export default Vue.extend
 		...mapActions 'search',
 			-	'remove_filter'
 			-	'add_filter'
-		condition_to_option: condition ->
+		condition_to_option: (condition) ->
 			option = "#{condition.abbr} (is"
 			if condition.long
 				option += " #{condition.long}"

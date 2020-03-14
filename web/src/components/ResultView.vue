@@ -4,25 +4,31 @@
 		div#readonly-mode
 			label
 				| Readonly mode
-				input type=checkbox model=readonly
+				input type=checkbox v-model=readonly
 
 		div#result-table-container.flex-fill
-			result-view/result-table#result-table if=table_data_fetched @datum_clicked=datum_clicked($event) :readonly=readonly
-			p.disabled.center else Loading...
+			result-table#result-table v-if=table_data_fetched @datum_clicked=datum_clicked($event) :readonly=readonly
+			p.disabled.center v-else="" Loading...
 
-		popup if=editing @close=editing=null # maybe use linus borgs portal instead?
-			result-view/edit-datum-dialog :product=editing.product :attribute_id=editing.attribute_id
+		/ maybe use linus borgs portal instead?
+		popup v-if=editing @close=editing=null
+			edit-datum-dialog :product=editing.product :attribute_id=editing.attribute_id
 
-		div.center.margin-l if=!readonly
+		div.center.margin-l v-if=!readonly
 			button.btn @click=show_add_product_dialog=true # todo add toggle component
 				| + Add
-			result-view/add-product-dialog if=show_add_product_dialog
+			add-product-dialog v-if=show_add_product_dialog
 </template>
 
 <script lang="coffee">
 ######import search_store_module from '@/store/search-store'
 
+import ResultTable from '@/components/result-view/ResultTable'
+import EditDatumDialog from '@/components/result-view/EditDatumDialog'
+import AddProductDialog from '@/components/result-view/AddProductDialog'
+
 export default Vue.extend(
+	components: { ResultTable, EditDatumDialog, AddProductDialog }
 	name: 'ResultView'
 	serverPrefetch: -> # note: docs say: You may find the same fetchItem() logic repeated multiple times (in serverPrefetch, mounted and watch callbacks) in each component - it is recommended to create your own abstraction (e.g. a mixin or a plugin) to simplify such code.
 		######@register_search_store()
@@ -41,7 +47,7 @@ export default Vue.extend(
 			Promise.all([ # todo yarn array syntax?
 				@$store.dispatch('search/search'),
 				@$store.dispatch('search/get_attributes')])
-		datum_clicked: editing ->
+		datum_clicked: (editing) ->
 			@editing = editing
 	computed: {
 		...mapState 'search',

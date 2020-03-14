@@ -1,5 +1,5 @@
 <template lang="slm">
-textarea :name=name rows=1 :maxlength=maxlength :required=required :placeholder=placeholder model=model @focus=on_focus @blur=on_blur ref=ref :style=style
+textarea :name=name rows=1 :maxlength=maxlength :required=required :placeholder=placeholder v-model=model @focus=on_focus @blur=on_blur ref=ref :style=style
 </template>
 
 <script lang="coffee">
