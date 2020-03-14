@@ -15,7 +15,8 @@
 			edit-datum-dialog :product=editing.product :attribute_id=editing.attribute_id
 
 		div.center.margin-l v-if=!readonly
-			button.btn @click=show_add_product_dialog=true # todo add toggle component
+			/ todo add toggle component
+			button.btn @click=show_add_product_dialog=true
 				| + Add
 			add-product-dialog v-if=show_add_product_dialog
 </template>

@@ -26,7 +26,8 @@ table
 								/ ˄ todo svg
 								| ▲
 							button.sort-down.disabled :disabled=readonly @click="toggle_sort_direction(shower_id, -1)" :class.highlighted=sorters_by_attribute_id[shower_id].direction===-1
-								| ▼ # ˅
+								/ ˅
+								| ▼
 						div.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_id[shower_id].index >= 0"
 							| $sorters_by_attribute_id[shower_id].index+1
 
@@ -40,7 +41,8 @@ table
 						span.verified
 							| $product.data[shower_id].value
 						button.edit.disabled v-if=!readonly
-							| ✎ # ✓ # ✔
+							/ ✔ ✓
+							| ✎
 					div v-else=""
 						span.disabled
 							| $product.data[shower_id].value
@@ -48,7 +50,8 @@ table
 							| ✎
 				div v-else=""
 					span.small
-						| # &#63; # ?
+						/ ? &#63;
+						|
 					button.edit.create v-if=!readonly
 						| + # 🖉
 </template>

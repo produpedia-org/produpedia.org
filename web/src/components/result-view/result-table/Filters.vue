@@ -15,7 +15,8 @@ div
 		popup v-if=show_form @close=show_form=false
 			promise-form#form :action=add_filter button_float_right=""
 				div.flex
-					div.attribute-select.padding v-if=!attribute_id # todo currently unused
+					/ todo currently unused
+					div.attribute-select.padding v-if=!attribute_id
 						label.column
 							| Attribute
 							attribute-select name=attribute_id required="" :attribute_ids=attribute_ids
@@ -24,7 +25,8 @@ div
 						label.column
 							| Condition
 							select name=condition required="" v-model=condition_id
-								option v-for="condition in conditions" :value=condition.id  v-html=condition_to_option(condition) # todo why html not | ?
+								/ todo why html not | ?
+								option v-for="condition in conditions" :value=condition.id  v-html=condition_to_option(condition)
 					div.condition-value.padding
 						label.column v-if=condition_needs_value
 							| Value
