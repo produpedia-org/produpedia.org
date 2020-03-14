@@ -7,6 +7,7 @@ import { ExternalType } from '../models/User';
 import MailService from '../services/MailService';
 import TokenService from '../services/TokenService';
 import user_secured from '../user-secured';
+import { error } from '../utils';
 
 export default ((token_service: TokenService, mail_service: MailService,
                  WEB_ROOT: string, GOOGLE_CLIENT_ID: string, FACEBOOK_APP_ID: string, FACEBOOK_APP_SECRET: string, WEBSITE_NAME: string) => {
@@ -34,7 +35,8 @@ export default ((token_service: TokenService, mail_service: MailService,
                     <br>
                     Bye`)
             .then(() => res.end())
-            .catch((error: any) => {
+            .catch((e: any) => {
+                error(e);
                 res.status(INTERNAL_SERVER_ERROR).send('Internal mail sending error');
             });
     });
