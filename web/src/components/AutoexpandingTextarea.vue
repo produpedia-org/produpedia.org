@@ -1,33 +1,52 @@
 <template lang="slm">
-textarea rows=1 :maxlength=maxlength :required=required :value=value @input=on_input ref=ref :style.height=height
+textarea :name=name rows=1 :maxlength=maxlength :required=required :placeholder=placeholder model=model @focus=on_focus @blur=on_blur ref=ref :style=style
 </template>
 
 <script lang="coffee">
+import emitting_model from '@/mixins/EmittingModel'
 export default
 	name: 'AutoexpandingTextarea'
+	mixins: [ emitting_model ]
 	props:
-		### enable v-model ###
-		value:
-			type: String
-			default: ''
 		maxlength:
 			default: null
-		required:
-			type: Boolean
-			default: false
-	data: ->
-		height: 0
+		placeholder:
+			type: String
+			default: ''
 	mounted: ->
-		@autoadjust_height()
+		await @update_content_height()
+		await @on_blur()
+	data: ->
+		height: '100%'
+		content_height: 0
+		focussed: false
 	methods:
-		on_input: event ->
-			@$emit 'input', event.target.value
-			@autoadjust_height()
-		autoadjust_height: ->
+		on_focus: ->
+			@height = @content_height
+			@focussed = true
+		on_blur: ->
+			@content_height = @height
+			await @$nextTick()
+			@height = '100%'
+			@focussed = false
+		update_content_height: ->
 			@height = ''
 			await @$nextTick()
-			@height = @$refs.ref.scrollHeight + 'px'
+			if @$refs.ref # idk, was buggy
+				@height = @$refs.ref.scrollHeight + 'px'
+	computed:
+		style: ->
+			height: @height
+			zIndex: if @focussed then 10 else 1
+	watch:
+		model: ->
+			@update_content_height()
 </script>
 
 <style lang="stylus" scoped>
+textarea
+	resize none
+	overflow hidden
+	font-family unset
+	font-size unset
 </style>

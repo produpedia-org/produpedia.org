@@ -1,16 +1,19 @@
 <template lang="slm">
-div#container
-	loading-button :loading=button_loading||disabled @click=clicked if=show_button
-		slot
-		template #used_prompt
-			slot name=success_prompt # todo pass loading as slotscope (as in promiseform)
-				span if=loading
-					slot name=loading_prompt
-						| Loading...
-				span else
-					slot name=done_prompt
-						| Done!
-	div.error.fade-in if=error $error
+loading-button :loading=button_loading||disabled @click=clicked
+	slot
+	template #used_prompt=""
+		/ todo pass loading as slotscope (as in promiseform)
+		slot name=success_prompt v-if=!error
+			.column v-if=loading
+				slot name=loading_prompt
+					| Loading...
+				progress :value=progress
+			span v-else=""
+				slot name=done_prompt
+					| Done!
+		slot name=error_prompt v-else="" :error=error
+			| UNEXPECTED ERROR: 
+			span.warn $error
 </template>
 
 <script lang="coffee">
@@ -18,6 +21,8 @@ div#container
 ###
  * Pass an `action` to this component that will resolve to a promise. The button will wait for this promise before it resets its loading state.
  * If there is at least one input associated to the button, use PromiseForm instead.
+ * Shows error if anything fails, but is *not* supposed to be an error handling
+ * component. If desired, PromiseForm instead.
 ###
 export default Vue.extend
 	name: 'PromiseButton'
@@ -33,10 +38,14 @@ export default Vue.extend
 		disabled:
 			type: Boolean
 			default: false
+		stepcount:
+			type: [ Number, String ]
+			default: null
 	data: =>
 		error: ''
 		loading: false
 		button_loading: false
+		progress: 1
 	methods:
 		clicked: ->
 			@error = ''
@@ -46,25 +55,33 @@ export default Vue.extend
 				if @$props.action instanceof Promise
 					await @$props.action
 				else
-					action_response = @$props.action()
+					progress_callback = (progress) =>
+						if progress != undefined
+							@progress = progress
+						else if @$props.stepcount
+							@progress += 1/@$props.stepcount
+						else
+							throw new Error "Unexpected progress #{progress}"
+					action_response = @$props.action progress_callback
 					# if not action_response typeof Promise
 					# 	throw 'PromiseForm action response is not typeof Promise!'
-					# ^ there is no reason to accept non-promises here
+					# ^ there is no reason not to accept non-promises here
 					# as promise-button also serves the purpose of displaying
 					# errors
 					await action_response
+				if not @$props.onetime
+					@button_loading = false
+				# if the action fails, do not reenable the button. show error and become stale.
 			catch e
 				@error = e
 				throw e
 			finally
 				@loading = false
-				if ! @$props.onetime
-					@button_loading = false
-	computed:
-		show_button: -> ! @onetime or ! @error
 </script>
 
 <style lang="stylus" scoped>
-div#container
-	display inline-block
+button
+	progress
+		width 100%
+		height 2px
 </style>

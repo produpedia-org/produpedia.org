@@ -3,22 +3,26 @@ form.column :class.no-click=loading @submit.prevent=submit
 	legend
 		slot name=legend
 	slot
-	div#actions
-		slot name=button # todo pass loading as slotscope prop to parent
-			loading-button :class.right=button_float_right :loading=button_loading :disabled=nosubmit
+	#actions.row.align-center
+		/ todo pass loading as slotscope prop to parent
+		slot name=button
+			loading-button.btn :class.right=button_float_right :loading=button_loading :disabled=nosubmit
 				slot name=button_label
 					| Submit
-				template #used_prompt
+				template #used_prompt=""
 					slot name=button_label_loading
-						span if=loading Loading...
-						span else Done!
-		button.btn if=cancelable :class.right=button_float_right :disabled=loading type=button @click=$emit('cancel')
+						.column v-if=loading
+							span Loading...
+							progress :value=progress
+						span v-else="" Done!
+		button.btn.btn-2.cancel v-if=cancelable :class.right=button_float_right :disabled=loading type=button @click=$emit('cancel')
 			slot name=cancel_button_label
 				| Cancel
-		button.btn if=resetable :class.right=button_float_right :disabled=loading type=reset # TODO: disabled when form is unchanged
+		/ TODO: disabled="" when form is unchanged
+		button.btn v-if=resetable :class.right=button_float_right :disabled=loading type=reset
 			slot name=reset_button_label
 				| Reset
-	div.error.fade-in if=error_response
+	div.error.fade-in v-if=error_response
 		span
 			slot name=error_caption
 				| Submit failed: 
@@ -54,12 +58,16 @@ export default Vue.extend
 		nosubmit:
 			type: Boolean
 			default: false
+		stepcount:
+			type: [ Number, String ]
+			default: null
 	data: =>
 		error_response: ''
 		loading: false
 		button_loading: false
+		progress: 1
 	methods:
-		submit: event ->
+		submit: (event) ->
 			@error_response = ''
 			@loading = true
 			@button_loading = true
@@ -71,15 +79,20 @@ export default Vue.extend
 					all
 				, {})
 			try
-				await @$props.action { form_data, values, event }
+				progress_callback = (progress) =>
+					if progress != undefined
+						@progress = progress
+					else if @$props.stepcount
+						@progress += 1/@$props.stepcount
+					else
+						throw new Error "Unexpected  progress #{progress}"
+				await @$props.action { form_data, values, event, progress: progress_callback }
 				if not @onetime
 					@button_loading = false
 			catch e
 				await @$nextTick() # enforce transition effect even if follow-up error+
-				error = e.data || e
-				if error.length
-					error = error[0]
-				@error_response = error
+				@error_response = e.data || e
+				@button_loading = false
 				throw e
 			finally
 				@loading = false
@@ -90,7 +103,10 @@ export default Vue.extend
 	float right
 button
 	margin-right 5px
-form
-	> *:not(:last-child)
+	progress
+		width 100%
+		height 2px
+form:not(.row)
+	> *:not(:last-child):not(:first-child)
 		margin-bottom 1.2vh
 </style>

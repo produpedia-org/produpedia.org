@@ -1,11 +1,11 @@
 <template lang="slm">
 div
-	h1 Settings
-	promise-button :action=invalidate_all_tokens :reset_after_success=false
+	h2 Settings
+	promise-button.btn onetime="" :action=invalidate_all_tokens
 		| Log out everywhere
 	small
 		read-more
-			template #summary How does this work?
+			template #summary="" How does this work?
 			| All existing sessions (tokens) will be invalidated, effectively logging you out everywhere. Yet you will stay logged in in this browser until you log out explicitly.
 </template>
 
