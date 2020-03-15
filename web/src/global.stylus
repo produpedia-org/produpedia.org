@@ -343,14 +343,13 @@ progress
 
 *:focus
 	// Overwrite the styling for focussed elements
-	// This can be removed once focus-visible works
-	// outline 1px solid grey
+	// This can be removed once focus-visible works........
 	outline none
-	// box-shadow 0 0 2px 4px #E7E7E7
 	background-color rgba(255,254,221,1)
+	// ........... .
 	&::-moz-focus-inner
 		border initial
 	// support for this is very patchy, chrome only with flag and firefox not at all
 	// there is a polyfill, but it's 4 KB, zipped 1 KB :-(
 	&:not(:focus-visible)
-		outline none
+		background-color unset
