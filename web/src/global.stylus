@@ -244,13 +244,12 @@ button, input[type="submit"], input[type="reset"], input[type="button"], label
 	background-color: #f4f4f4
 	color: var(--color-foreground)
 	background-image: linear-gradient(rgba(255, 255, 255, 0.25) 50%, transparent 52%);
-	outline: 1px solid #f3f3f3;
 	box-sizing: border-box
 	font-weight bolder
 	transition all .1s linear
 	position: relative
 	border-radius 0
-	box-shadow 1px 2px 5px -3px grey
+	box-shadow 1px 2px 5px -3px grey, -1px -1px 0px 0px #f3f3f3
 
 	/** 3D effect via borders ********/
 	$right_border_width = 3px
