@@ -19,7 +19,6 @@ main
 	min-height 50px
 	overflow auto
 	box-sizing border-box
-	position relative
 #close
 	position absolute
 	top 0
