@@ -9,6 +9,7 @@ export create_store = =>
 		# strict: process.env.NODE_ENV != 'production' # TODO: https://github.com/Akryum/vue-cli-plugin-ssr/issues/184
 		state: ->
 			app_name: 'Produpedia.org'
+			app_version: process.env.VUE_APP_APP_VERSION
 			loading_counter: 0
 			authenticate_popup: false
 			global_error_message: ''
