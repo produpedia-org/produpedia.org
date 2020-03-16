@@ -1,7 +1,9 @@
 // GLOBAL ///////////////////////// 
 
 :root {
-	--color-main: #d8d8d8;
+	--color-background: #fff;
+	--color-secondary-background: #f8f8f8;
+	--color-clickable: #133d83;
 	--color-foreground: #444;
 	--color-hover: #c4c4c4;
 	--color-disabled: #a6a6a6;
@@ -14,6 +16,7 @@ body, html {
 	margin: 0;
 	width: 100%;
 	height: 100%;
+	font-family Arial
 }
 form
 	input:not([type=checkbox]), label, select {
@@ -22,9 +25,16 @@ form
 input[type=checkbox] + label {
 	display: inline;
 }
-a {
-	cursor: pointer;
-}
+a
+	cursor: pointer
+	&, &:visited
+		color var(--color-clickable)
+	&:hover
+		color var(--color-hover)
+	text-decoration none
+
+a, button
+	font-size 13px
 fieldset {
 	border: 2px solid #eeeeee; // TODO: breaks .box in login, also has border or shadow or both
 }
@@ -156,10 +166,11 @@ html {
 
 body {
 	color: var(--color-foreground);
-	background-color: #fff;
+	background-color: var(--color-background);
 }
 
 h1, h2, h3, h4, h5, h6 {
+	color var(--color-foreground)
 	line-height: 1.1;
 //	font-family: Verdana, Geneva, sans-serif;
 	font-weight: bold;
@@ -182,18 +193,12 @@ h3 {
 	font-size: 20px;
 }
 
-a {
-	// text-decoration: none;
-	color: var(--color-foreground); }
-	a:hover {
-		color: var(--color-hover);
-		border-bottom: 2px solid var(--color-border); }
-
 blockquote {
 	font-style: italic;
 	margin-left: 1.5em;
 	padding-left: 1em;
-	border-left: 3px solid var(--color-main); }
+	// border-left: 3px solid var(--color-secondary-background); todo
+}
 
 img {
 	max-width: 100%; }
@@ -241,24 +246,25 @@ button, input[type="submit"], input[type="reset"], input[type="button"], label
 	text-align: center
 	text-decoration: none
 	// white-space: nowrap
-	background-color: #f1f1f1
-	color: var(--color-foreground)
+	background-color #f0f0f0
 	background-image: linear-gradient(rgba(255, 255, 255, 0.45) 50%, transparent 52%);
 	box-sizing: border-box
 	font-weight bolder
-	transition all .1s linear
+	transition all 0.2s linear
 	position: relative
 	border-radius 0
 
 	/** 3D effect via borders ********/
-	$right_border_width = 3px
-	$bottom_border_width = 2px
+	$right_border_width = 4px
+	$bottom_border_width = 3px
 	$push_in_width = 2px
 	border-style solid
 	// bottom + right border, 3d-y
 	border-width 0 $right_border_width $bottom_border_width 0
-	border-color transparent #ccc #bbb transparent
+	border-color transparent #dadde2 #bbbfc5 transparent
 	background-clip padding-box
+	&:hover
+		color var(--color-clickable)
 	// some 0815 bottom/right shadow
 	$basic_shadow = 1px 2px 5px -3px grey
 	box-shadow \
@@ -335,9 +341,9 @@ progress
 	-webkit-appearance none /* chrome */
 	appearance none // idk
 	&::-webkit-progress-value /* chrome */
-		background var(--color-main)
+		background var(--color-secondary-background)
 	&::-moz-progress-bar /* FF */ // for some reason, this cant be on the same line as above. no idea why, might be a bug.
-		background var(--color-main)
+		background var(--color-secondary-background)
 	&::-webkit-progress-bar /* chrome */, & /* FF */
 		background var(--color-disabled)
 
@@ -345,7 +351,7 @@ progress
 	// Overwrite the styling for focussed elements
 	// This can be removed once focus-visible works........
 	outline none
-	background-color rgba(255,254,221,1)
+	background-color #fffdb5
 	// ........... .
 	&::-moz-focus-inner
 		border initial

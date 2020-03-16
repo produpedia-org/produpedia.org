@@ -131,7 +131,7 @@ tr
 	background #fff
 tbody
 	tr:nth-child(odd)
-		background #f8f8f8
+		background var(--color-secondary-background)
 td, th
 	max-width 150px
 td, th, .attribute
@@ -182,7 +182,7 @@ tbody td:not(:first-child):not(:last-child)
 			padding 0
 			font-size 70%
 			&:hover
-				color var(--color-main)
+				color var(--color-secondary-background)
 		.sort-up
 			position relative
 			top -5px
