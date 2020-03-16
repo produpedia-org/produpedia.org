@@ -250,7 +250,7 @@ button, input[type="submit"], input[type="reset"], input[type="button"], label
 	background-image: linear-gradient(rgba(255, 255, 255, 0.45) 50%, transparent 52%);
 	box-sizing: border-box
 	font-weight bolder
-	transition all 0.2s linear
+	transition all 0.15s linear
 	position: relative
 	border-radius 0
 
@@ -261,7 +261,7 @@ button, input[type="submit"], input[type="reset"], input[type="button"], label
 	border-style solid
 	// bottom + right border, 3d-y
 	border-width 0 $right_border_width $bottom_border_width 0
-	border-color transparent #dadde2 #bbbfc5 transparent
+	border-color transparent #e0e0e0 #d1d1d1 transparent
 	background-clip padding-box
 	&:hover
 		color var(--color-clickable)
