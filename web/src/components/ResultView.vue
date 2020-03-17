@@ -42,9 +42,9 @@ export default Vue.extend(
 		register_search_store: ->
 			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
 		fetch_table_data: ->
-			Promise.all([ # todo yarn array syntax?
-				@$store.dispatch('search/search'),
-				@$store.dispatch('search/get_attributes')])
+			Promise.all
+				-	@$store.dispatch('search/search')
+				-	@$store.dispatch('search/get_attributes')
 		focus_table: ->
 			@$refs.result_table_container.focus()
 		datum_clicked: (editing) ->
