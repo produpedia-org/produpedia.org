@@ -53,7 +53,7 @@ export default Vue.extend(
 			@editing = null
 			@focus_table()
 	computed: {
-		has_data: -> @$store.state.search?.attributes?.length
+		has_data: -> !!@$store.state.search?.attributes
 	}
 	created: ->
 		@register_search_store()

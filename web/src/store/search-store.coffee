@@ -65,8 +65,8 @@ export default
 		]
 		columns: 5
 		### server response; readonly ###
-		attributes: []
-		products: []
+		attributes: null
+		products: null
 	getters:
 		attribute_ids: (state) ->
 			state.attributes.map (a) => a._id # todo add map('str') prototype
