@@ -1,6 +1,6 @@
 import Vuex from 'vuex'
 import session_module from './session-store'
-import search_module from './search-store'
+# import search_module from './search-store'
 
 Vue.use Vuex
 
@@ -36,5 +36,4 @@ export create_store = =>
 		modules:
 			session: session_module
 			# When adding here, see ssr docs. Global submodules *seem* to need a factory wrapper too
-			# todo not sure, adding plain:
-			search: search_module
+			# Better still, load submodules dynamically like in ResultView

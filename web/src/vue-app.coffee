@@ -79,6 +79,6 @@ export create_app = ({ before_app = =>, after_app = => } = {}) ->
 
 	result = { app, router, store }
 
-	await after_app result
+	await after_app result # todo no await necessar is there
 
 	result

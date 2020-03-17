@@ -7,7 +7,7 @@
 				input type=checkbox v-model=readonly
 
 		div#result-table-container.flex-fill
-			result-table#result-table v-if=table_data_fetched @datum_clicked=datum_clicked($event) :readonly=readonly
+			result-table#result-table v-if=has_data @datum_clicked=datum_clicked($event) :readonly=readonly
 			p.disabled.center v-else="" Loading...
 
 		/ maybe use linus borgs portal instead?
@@ -22,7 +22,7 @@
 </template>
 
 <script lang="coffee">
-######import search_store_module from '@/store/search-store'
+import search_store_module from '@/store/search-store'
 
 import ResultTable from '@/components/result-view/ResultTable'
 import EditDatumDialog from '@/components/result-view/EditDatumDialog'
@@ -31,19 +31,16 @@ import AddProductDialog from '@/components/result-view/AddProductDialog'
 export default Vue.extend(
 	components: { ResultTable, EditDatumDialog, AddProductDialog }
 	name: 'ResultView'
-	serverPrefetch: -> # note: docs say: You may find the same fetchItem() logic repeated multiple times (in serverPrefetch, mounted and watch callbacks) in each component - it is recommended to create your own abstraction (e.g. a mixin or a plugin) to simplify such code.
-		######@register_search_store()
-		######console.log(@$store.state.search.subject)
-		@fetch_table_data() # axios networking error handler doesnt display ssr: it modifies another component; this serverPrefetch only cares for ResultView. thus, serverPrefetch errors must (and semantically also should) be handled individually
+	serverPrefetch: -> # note: docs say: You may find the same fetchItem() logic repeated multiple times (in serverPrefetch, mounted and watch callbacks) in each component - it is recommended to create your own abstraction (e.g. a mixin or a plugin) to simplify such code. (todo)
+		await @fetch_table_data() # axios networking error handler doesnt display ssr: it modifies another component; this serverPrefetch only cares for ResultView. thus, serverPrefetch errors must (and semantically also should) be handled individually
 		# if error, bubble throw: Then dont allow the rendering process to continue. Better to see a page with no data than not seeing any page at all for the user, but status code should really be 500, especially for bots
-
 	data: ->
 		show_add_product_dialog: false
 		editing: null
 		readonly: false
 	methods:
-		######register_search_store: ->
-		######	@$store.registerModule 'search', search_store_module, { preserveState: true } # this doesnt work; state is missing inside search mutation afterwards. with preserveState:false, ssr data gets overridden. declaring module globally now, not sure whose fault this is
+		register_search_store: ->
+			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
 		fetch_table_data: ->
 			Promise.all([ # todo yarn array syntax?
 				@$store.dispatch('search/search'),
@@ -51,17 +48,15 @@ export default Vue.extend(
 		datum_clicked: (editing) ->
 			@editing = editing
 	computed: {
-		...mapState 'search',
-			-	'attributes'
-		######table_data_fetched: -> @$store.state.search && @$store.state.search.attributes
-		table_data_fetched: -> !!@attributes.length # todo chage to accept  no attributes (e.g. when new subject)
+		has_data: -> @$store.state.search?.attributes?.length
 	}
+	created: ->
+		@register_search_store()
 	mounted: ->
-		######@register_search_store()
-		if !@table_data_fetched
-			@fetch_table_data()
+		if !@has_data
+			await @fetch_table_data()
 	destroyed: ->
-		######@$store.unregisterModule('search')
+		@$store.unregisterModule 'search'
 )
 </script>
 
