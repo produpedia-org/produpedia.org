@@ -6,12 +6,12 @@
 				| Readonly mode
 				input type=checkbox v-model=readonly
 
-		div#result-table-container.flex-fill
+		div#result-table-container.flex-fill ref=result_table_container :tabindex=-1
 			result-table#result-table v-if=has_data @datum_clicked=datum_clicked($event) :readonly=readonly
 			p.disabled.center v-else="" Loading...
 
 		/ maybe use linus borgs portal instead?
-		popup v-if=editing @close=editing=null
+		popup v-if=editing @close=finish_editing
 			edit-datum-dialog :product=editing.product :attribute_id=editing.attribute_id
 
 		div.center.margin-l v-if=!readonly
@@ -45,14 +45,20 @@ export default Vue.extend(
 			Promise.all([ # todo yarn array syntax?
 				@$store.dispatch('search/search'),
 				@$store.dispatch('search/get_attributes')])
+		focus_table: ->
+			@$refs.result_table_container.focus()
 		datum_clicked: (editing) ->
 			@editing = editing
+		finish_editing: ->
+			@editing = null
+			@focus_table()
 	computed: {
 		has_data: -> @$store.state.search?.attributes?.length
 	}
 	created: ->
 		@register_search_store()
 	mounted: ->
+		@focus_table()
 		if !@has_data
 			await @fetch_table_data()
 	destroyed: ->
@@ -62,9 +68,9 @@ export default Vue.extend(
 
 <style lang="stylus" scoped>
 #result-table-container
-	overflow: auto
+	overflow auto
 #result-table
-	margin: 0 auto
-	min-height: 50%
-	max-width: 100%
+	margin 0 auto
+	min-height 50%
+	max-width 100%
 </style>
