@@ -19,8 +19,8 @@ table
 					div.name.center
 						div v-drag="!readonly && can_drag && shower_id" @dragstart=dragging_column=true @dragend=dragging_column=false
 							span.grip v-if="!readonly && can_drag" ⠿
+							/ FIXME UNIT if number
 							| $attributes_by_id[shower_id].name
-							# FIXME UNIT if number
 						div.sort.column
 							button.sort-up.disabled :disabled=readonly @click="toggle_sort_direction(shower_id, 1)" :class.highlighted=sorters_by_attribute_id[shower_id].direction===1
 								/ ˄ todo svg
@@ -28,7 +28,7 @@ table
 							button.sort-down.disabled :disabled=readonly @click="toggle_sort_direction(shower_id, -1)" :class.highlighted=sorters_by_attribute_id[shower_id].direction===-1
 								/ ˅
 								| ▼
-						div.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_id[shower_id].index >= 0"
+						div.sort.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_id[shower_id].index >= 0"
 							| $sorters_by_attribute_id[shower_id].index+1
 
 	tbody
@@ -53,7 +53,8 @@ table
 						/ ? &#63;
 						|
 					button.edit.create v-if=!readonly
-						| + # 🖉
+						/ 🖉
+						| +
 </template>
 
 <script lang="coffee">
@@ -182,7 +183,8 @@ tbody td:not(:first-child):not(:last-child)
 			padding 0
 			font-size 70%
 			&:hover
-				color var(--color-secondary-background)
+				&, &.highlighted
+					color var(--color-hover)
 		.sort-up
 			position relative
 			top -5px
