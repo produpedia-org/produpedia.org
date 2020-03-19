@@ -25,7 +25,7 @@ div
 							| Condition
 							select name=condition required="" v-model=condition_id
 								/ todo why html not | ?
-								option v-for="condition in conditions" :value=condition.id  v-html=condition_to_option(condition)
+								option v-for="condition in conditions" :value=condition.id v-html=condition.option_html
 					div.condition-value.padding
 						label.column v-if=condition_needs_value
 							| Value
@@ -52,41 +52,43 @@ export default Vue.extend
 	data: ->
 		show_form: false
 		condition_id: 'eq'
+		# todo: contains, regex
 		conditions:
 			-	id: 'eq'
-				abbr: '&nbsp;&equals;'
+				abbr: ' ='
 				needs_value: true
 			-	id: 'ne'
-				abbr: '&excl;&equals;'
+				abbr: '!='
 				long: 'not'
 				needs_value: true
 			-	id: 'lt'
-				abbr: '&nbsp;&lt'
+				abbr: ' &lt;'
 				long: 'less than'
 				needs_value: true
 			-	id: 'gt'
-				abbr: '&nbsp;&gt'
+				abbr: ' &gt;'
 				long: 'more than'
 				needs_value: true
 			-	id: 'nu'
-				abbr: '&nbsp;&#8709;' # todo symbol
+				abbr: ' ∅'
 				long: 'empty'
 			-	id: 'nn'
-				abbr: '&excl;&#8709;' # .
+				abbr: '!∅'
 				long: 'not empty'
-				# todo: contains, regex
+			.map (condition) =>
+				option_html = """
+					#{condition.abbr.replace(/ /g, '&nbsp;')}
+					&nbsp;&nbsp;&nbsp;(is"""
+				if condition.long
+					option_html += " #{condition.long}"
+				if condition.needs_value
+					option_html += '...'
+				option_html += ')'
+				{ ...condition, option_html }
 	methods: {
 		...mapActions 'search',
 			-	'remove_filter'
 			-	'add_filter'
-		condition_to_option: (condition) ->
-			option = "#{condition.abbr} (is"
-			if condition.long
-				option += " #{condition.long}"
-			if condition.needs_value
-				option += '...'
-			option += ')'
-			option
 	}
 	computed: {
 		...mapGetters 'search',
