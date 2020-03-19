@@ -6,7 +6,7 @@
 				| Readonly mode
 				input type=checkbox v-model=readonly
 
-		div#result-table-container.flex-fill ref=result_table_container :tabindex=-1
+		div#result-table-container.flex-fill ref=result_table_container tabindex=-1
 			result-table#result-table v-if=has_data @datum_clicked=datum_clicked($event) :readonly=readonly
 			p.disabled.center v-else="" Loading...
 
@@ -45,24 +45,23 @@ export default Vue.extend(
 			Promise.all
 				-	@$store.dispatch('search/search')
 				-	@$store.dispatch('search/get_attributes')
-		focus_table: ->
-			@$refs.result_table_container.focus()
 		datum_clicked: (editing) ->
 			@editing = editing
 		finish_editing: ->
 			@editing = null
-			@focus_table()
 	computed: {
 		has_data: -> !!@$store.state.search?.attributes
 	}
 	created: ->
 		@register_search_store()
 	mounted: ->
-		@focus_table()
+		@$refs.result_table_container.focus()
+		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
 		if !@has_data
 			await @fetch_table_data()
 	destroyed: ->
 		@$store.unregisterModule 'search'
+		@$store.dispatch 'set_default_focus_target', null
 )
 </script>
 

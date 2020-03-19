@@ -62,7 +62,6 @@ import Filters from '@/components/result-view/result-table/Filters'
 
 export default Vue.extend
 	components: { Filters }
-	# name: 'ResultTable' todo?
 	props:
 		readonly:
 			default: false
