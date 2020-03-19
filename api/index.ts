@@ -66,8 +66,9 @@ app.use((err, req, res, next) => {
 
 (async () => {
     await connection;
-    const PORT = env('PORT');
-    app.listen(PORT, () => log(`running on ${PORT}`));
+    const PORT = Number(env('PORT'));
+    const HOST = env('HOST');
+    app.listen(PORT, HOST, () => log(`running on ${PORT}`));
 })().catch((e) => {
     error(e);
     process.exit(1);

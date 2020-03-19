@@ -56,6 +56,7 @@ module.exports = {
   pluginOptions: {
     ssr: {
       port: 8080,
+      host: '0.0.0.0',
       defaultTitle: 'Produpedia.org',
       criticalCSS: false,
       clustered: true, // untested todo
