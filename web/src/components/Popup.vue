@@ -9,7 +9,9 @@ modal @close=close
 export default Vue.extend
 	name: 'Popup'
 	methods:
-		close: -> @$emit 'close'
+		close: ->
+			@$store.dispatch 'offer_focus'
+			@$emit 'close'
 </script>
 
 <style lang="stylus" scoped>
