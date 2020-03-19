@@ -5,8 +5,7 @@ div
 			span $condition_by_id[filter.condition].long&nbsp;
 			strong v-if=filter.condition_value
 				| $filter.condition_value&nbsp;
-			/ 🗙
-			button @click=remove_filter(filter) v-if=!readonly ×
+			button @click=remove_filter(filter) v-if=!readonly ╳
 		label.justify-center v-if="!show_form && !readonly"
 			span.disabled v-if=!filters.length Add filter&nbsp;
 			button.disabled.fade-in @click=show_form=true

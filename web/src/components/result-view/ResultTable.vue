@@ -7,20 +7,21 @@ table
 				filters :filters=filters_by_attribute_id[shower_id] :attribute_id=shower_id :readonly=readonly
 		tr.attributes :class.drop-target=dragging_column
 			th.dropzone.remove.column v-if=dragging_column v-drop=remove_shower
-				div 🗙
+				div ╳
 				div.description.danger Hide column
 			th v-else="" Name
 			th.dropzone.move v-for="shower_id, index in shower_ids" :key="shower_id+'_'+index" v-drop=move_shower_to(index)
 				.attribute.column
 					div.actions.center v-if="!readonly && !can_drag"
 						button.moveto @click=move_shower_to(index-1)(shower_id) ←
-						button.remove @click=remove_shower(shower_id) 🗙
+						button.remove @click=remove_shower(shower_id) ╳
 						button.moveto @click=move_shower_to(index+2)(shower_id) →
-					div.name.center
-						div v-drag="!readonly && can_drag && shower_id" @dragstart=dragging_column=true @dragend=dragging_column=false
-							span.grip v-if="!readonly && can_drag" ⠿
+					div.center
+						div.row.center v-drag="!readonly && can_drag && shower_id" @dragstart=dragging_column=true @dragend=dragging_column=false
+							div
+								span.grip v-if="!readonly && can_drag" ⠿
 							/ FIXME UNIT if number
-							| $attributes_by_id[shower_id].name
+							div.name $attributes_by_id[shower_id].name
 						div.sort.column
 							button.sort-up.disabled :disabled=readonly @click="toggle_sort_direction(shower_id, 1)" :class.highlighted=sorters_by_attribute_id[shower_id].direction===1
 								/ ˄ todo svg
@@ -169,21 +170,16 @@ tbody td:not(:first-child):not(:last-child)
 		font-size 80%
 .attribute
 	padding 1px 6px
-	.name
-		.grip
-			font-weight normal
-			color #bbb
-			font-size 70%
-			margin-right 4px
+	.grip
+		font-weight normal
+		color #bbb
+		font-size 70%
+		margin-right 4px
 	.sort
 		padding-left 3px
-		position relative
 		.sort-up, .sort-down
-			padding 0
-			font-size 70%
 			&:hover
-				&, &.highlighted
-					color var(--color-hover)
+				background var(--color-hover)
 		.sort-up
 			position relative
 			top -5px
