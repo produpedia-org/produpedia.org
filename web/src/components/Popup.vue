@@ -1,7 +1,7 @@
 <template lang="slm">
 modal @close=close
 	main.box.padding-xl
-		button#close @click=close 🗙
+		button#close @click=close ╳
 		slot
 </template>
 
