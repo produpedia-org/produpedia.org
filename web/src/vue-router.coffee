@@ -5,7 +5,7 @@ Vue.use VueRouter
 export create_router = (store) ->
 	router = new VueRouter
 		mode: 'history'
-		base: process.env.BASE_URL # maybe maybe
+		base: process.env.BASE_URL # maybe maybe fixme
 		routes:
 			-	path: '/'
 				name: 'Index'
