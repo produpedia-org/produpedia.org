@@ -6,7 +6,7 @@
 				| Readonly mode
 				input type=checkbox v-model=readonly
 
-		div#result-table-container ref=result_table_container tabindex=-1
+		div#result-table-container.flex-fill ref=result_table_container tabindex=-1
 			result-table#result-table v-if=has_data @datum_clicked=datum_clicked($event) :readonly=readonly
 			p.disabled.center v-else="" Loading...
 
@@ -67,7 +67,10 @@ export default Vue.extend(
 
 <style lang="stylus" scoped>
 #result-table-container
-	overflow auto
+	@media (min-height 690px)
+		// on small devices, dont scroll here, but scroll the entire #app
+		// so the space is bigger
+		overflow auto
 #result-table
 	margin 0 auto
 	max-width 100%

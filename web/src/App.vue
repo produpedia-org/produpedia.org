@@ -5,11 +5,11 @@ section#app.column.fill-h
 	modal v-if=loading_counter
 		.box.padding-l
 			| Loading... ($loading_counter)
-	header.center.padding
+	header.center
 		nav
 			router-link exact="" to=/ [LOGO]
 			router-link exact="" to=/p search result
-		nav
+		nav.column
 			/ todo
 			div v-if=is_logged_in
 				| Logged in as 
@@ -66,16 +66,33 @@ export default
 </script>
 
 <style lang="stylus" scoped>
-#app > header
-	border-bottom 1px solid lightgrey
-	justify-content space-between
-	nav > *:not(:last-child)
-		margin-right 1.5em
-		display inline
+#app
+	// necessary because https://stackoverflow.com/a/60794348/3779853
+	// (for when #result-table-container overflow is unset)
+	overflow auto
+	$header-width = 20px
+	> header
+		z-index 1
+		position absolute // only really necessary because horizontal scrolling for when #result-table-container does not scroll
+		left 0
+		right 0
+		height $header-width
+		padding 5px 15px
+		// border-bottom 1px solid var(--color-secondary-background)
+		justify-content space-between
+		nav > *:not(:last-child)
+			margin-right 1.5em
+			display inline
+		button
+			padding 1px 4px
+	> main
+		z-index 2
+		background var(--color-background)
+		margin-top $header-width + 10px
+		width 100%
+		min-width fit-content
 a.router-link-active
 	font-weight bold
-main
-	overflow: auto // FF
 </style>
 
 <style lang="stylus" src="./global.stylus"></style>

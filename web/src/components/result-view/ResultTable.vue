@@ -9,7 +9,7 @@ table
 			th.dropzone.remove.column v-if=dragging_column v-drop=remove_shower
 				div ╳
 				div.description.danger Hide column
-			th v-else="" Name
+			th v-else=""
 			th.dropzone.move v-for="shower_id, index in shower_ids" :key="shower_id+'_'+index" v-drop=move_shower_to(index)
 				.attribute.column
 					div.actions.center v-if="!readonly && !can_drag"
@@ -18,7 +18,7 @@ table
 						button.moveto @click=move_shower_to(index+2)(shower_id) →
 					div.center
 						div.row.center v-drag="!readonly && can_drag && shower_id" @dragstart=dragging_column=true @dragend=dragging_column=false
-							div
+							div.center
 								span.grip v-if="!readonly && can_drag" ⠿
 							/ FIXME UNIT if number
 							div.name $attributes_by_id[shower_id].name
@@ -34,7 +34,7 @@ table
 
 	tbody
 		tr.product v-for="product in products"
-			td.name
+			th.name
 				| $product.name
 			td.datum v-for="shower_id in shower_ids" @click=datum_clicked(product,shower_id)
 				div v-if=product.data[shower_id]
@@ -94,7 +94,10 @@ export default Vue.extend
 </script>
 
 <style lang="stylus" scoped>
-// Bug: sticky + border-collapse + border: border not shown. SO#41882616. todo: remove once fixed everywhere (lol).
+
+//////// 1. Borders
+
+// Bug: sticky + border-collapse + border: border not shown. SO#41882616. todo: remove and change to plain border once fixed everywhere (lol).
 border-base-fix()
 	&::after
 		content ''
@@ -103,7 +106,6 @@ border-base-fix()
 		z-index -1
 border-right-fix()
 	border-base-fix()
-	// border-right arguments todo ?
 	&::after
 		border-right arguments
 		height 100%
@@ -127,37 +129,54 @@ border-fix()
 table
 	--separator 1px solid #e3e3e3
 	border-collapse collapse
-tr
-	height 1em
-	background #fff
-tbody
-	tr:nth-child(odd)
-		background var(--color-secondary-background)
-td, th
+tbody td, th
+	border-bottom-fix var(--separator)
+	&:not(:last-child)
+		border-right-fix var(--separator)
+
+// 2. General table styling
+
+th, td
+	z-index 1
+	min-width 3vw
 	max-width 150px
-td, th, .attribute
+td, th, .attribute // < ? todo
 	position relative
-tbody td
-	padding 8px 6px
-	min-width 100px
-	word-wrap break-word
-td:first-child, th
+th
 	position sticky
 	background inherit
-th
-	z-index 2
+thead th
+	z-index 3
 	top 0
 	padding 6px
-	border-bottom-fix var(--separator)
-tbody td:first-child
-	z-index 1
-	left 0
-tbody td
-	border-bottom var(--separator)
-tbody td:first-child, th:not(:last-child)
-	border-right-fix var(--separator)
-tbody td:not(:first-child):not(:last-child)
-	border-right var(--separator)
+	height 2em
+	// background linear-gradient(#fff, 93%, transparent) // weird grey color on firefox, so using this:
+	background linear-gradient(#fff, 93%, rgba(255,255,255,0.5))
+tbody
+	td, th
+		padding 1vmin
+		word-wrap break-word
+	th
+		z-index 2
+		left 0
+	tr
+		td
+			background #fff
+		th
+			// same workaround as above, and now horizontally
+			background linear-gradient(to right, #fff, 93%, rgba(255,255,255,0.5))
+		&:nth-child(odd)
+			td
+				background var(--color-secondary-background)
+				&:last-child
+					background linear-gradient(to right, var(--color-secondary-background), 90%, #fff)
+			th
+				background linear-gradient(to right, #fff, 10%, var(--color-secondary-background), 93%, rgba(255,255,255,0.5))
+
+// 3. Semantic styling
+
+.filters
+	z-index 9 // so filter modal shows above other tds/ths with z-index above
 .attributes.drop-target > th.dropzone
 	color #246
 	&.drop
@@ -172,9 +191,10 @@ tbody td:not(:first-child):not(:last-child)
 	padding 1px 6px
 	.grip
 		font-weight normal
-		color #bbb
-		font-size 70%
+		color var(--color-disabled)
 		margin-right 4px
+		position relative
+		top 1px
 	.sort
 		padding-left 3px
 		.sort-up, .sort-down
