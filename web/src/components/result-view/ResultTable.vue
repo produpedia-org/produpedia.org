@@ -1,5 +1,6 @@
 <template lang="slm">
-table
+/ Setting border in case the user disabled CSS
+table border=1
 	thead
 		tr
 			td
@@ -133,6 +134,9 @@ tbody td, th
 	border-bottom-fix var(--separator)
 	&:not(:last-child)
 		border-right-fix var(--separator)
+table, td, th
+	// table html attribute border=1 needs to be reverted again
+	border none
 
 // 2. General table styling
 
