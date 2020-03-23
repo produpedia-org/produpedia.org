@@ -6,10 +6,10 @@ section#app.column.fill-h
 		.box.padding-l
 			| Loading... ($loading_counter)
 	header.center
-		nav
+		nav.center
 			router-link exact="" to=/ [LOGO]
 			router-link exact="" to=/p search result
-		nav.column
+		nav.center
 			/ todo
 			div v-if=is_logged_in
 				| Logged in as 
