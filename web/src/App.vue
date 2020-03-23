@@ -21,10 +21,11 @@ section#app.column.fill-h
 			button.btn v-if=!is_logged_in @click=show_authenticate_popup
 				| Sign in
 	main.flex-fill.column
-		p.center.error.fade-in v-if=global_error_message $global_error_message
-		noscript
-      		strong.highlighted This page doesn't work properly without JavaScript enabled. Please enable it to continue.
-		strong.highlighted.force-hidden Your browser is not working properly (CSS disabled)
+		div.error.fade-in.column v-if=global_error_message
+			pre $global_error_message
+			div.center
+				promise-button.btn :action=reset_global_error_message
+					| Hide
 		router-view
 </template>
 
@@ -62,6 +63,7 @@ export default
 		...mapActions
 			-	'hide_authenticate_popup'
 			-	'show_authenticate_popup'
+			-	'reset_global_error_message'
 		...mapActions 'session',
 			-	'logout'
 	}
@@ -93,6 +95,9 @@ export default
 		margin-top $header-width + 10px
 		width 100%
 		min-width fit-content
+		.error
+			max-width 100vw
+			overflow auto
 a.router-link-active
 	font-weight bold
 </style>
