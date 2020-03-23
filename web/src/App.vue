@@ -22,8 +22,10 @@ section#app.column.fill-h
 				| Sign in
 	main.flex-fill.column
 		p.center.error.fade-in v-if=global_error_message $global_error_message
+		noscript
+      		strong.highlighted This page doesn't work properly without JavaScript enabled. Please enable it to continue.
+		strong.highlighted.force-hidden Your browser is not working properly (CSS disabled)
 		router-view
-		strong.warn.force-hidden Your browser is not working properly (CSS disabled)
 </template>
 
 <script lang="coffee">
