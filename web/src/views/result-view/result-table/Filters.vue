@@ -35,7 +35,7 @@ div
 </template>
 
 <script lang="coffee">
-import AttributeSelect from '@/components/AttributeSelect'
+import AttributeSelect from '@/views/AttributeSelect'
 
 export default Vue.extend
 	components: { AttributeSelect }

@@ -60,7 +60,7 @@ table border=1
 </template>
 
 <script lang="coffee">
-import Filters from '@/components/result-view/result-table/Filters'
+import Filters from '@/views/result-view/result-table/Filters'
 
 export default Vue.extend
 	components: { Filters }

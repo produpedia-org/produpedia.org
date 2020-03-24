@@ -20,7 +20,7 @@ export create_router = (store) ->
 					requires_auth: true
 			-	path: '/p'
 				name: 'ResultView'
-				component: => `import('@/components/ResultView')`
+				component: => `import('@/views/ResultView')`
 			-	path: '*'
 				redirect: '/'
 			# corresponding store modules can also be lazyloaded. see ssr vuejs docs

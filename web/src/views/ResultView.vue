@@ -24,9 +24,9 @@
 <script lang="coffee">
 import search_store_module from '@/store/search-store'
 
-import ResultTable from '@/components/result-view/ResultTable'
-import EditDatumDialog from '@/components/result-view/EditDatumDialog'
-import AddProductDialog from '@/components/result-view/AddProductDialog'
+import ResultTable from '@/views/result-view/ResultTable'
+import EditDatumDialog from '@/views/result-view/EditDatumDialog'
+import AddProductDialog from '@/views/result-view/AddProductDialog'
 
 export default Vue.extend(
 	components: { ResultTable, EditDatumDialog, AddProductDialog }
