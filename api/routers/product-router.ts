@@ -119,7 +119,7 @@ interface IFilter {
     condition: string;
     condition_value: string;
 }
-type IMongoFilterArray = Array<{[key: string]: any}>;
+type IMongoFilterArray = {[key: string]: any}[];
 
 // todo types missing everywhere
 // todo probably should be using graphql
@@ -146,7 +146,7 @@ product_router.get('/', async (req, res) => {
         .reduce((all: object, sorter) => ({
             ...all,
             [sorter.attribute_id]: sorter.direction,
-        }), {});
+        }),     {});
     const filter_param: string = req.query.f;
     const filters_formatted: IMongoFilterArray = filter_param
         .split(',').filter(Boolean)
@@ -193,7 +193,7 @@ product_router.get('/', async (req, res) => {
     }
 
     /************ compute *************/
-    const shower_ids_formatted = shower_ids.map(id => `data.${id}`) as Array<(keyof Product)>;
+    const shower_ids_formatted = shower_ids.map(id => `data.${id}`) as (keyof Product)[];
 
     /********** Search ***********/
     /* this is only a temporary solution because too slow for very big data.
@@ -235,7 +235,7 @@ product_router.get('/', async (req, res) => {
     });
 
     /********** return **********/
-    res.send({
+    return res.send({
         products,
         shower_ids, // maybe as seperate request?
     });
