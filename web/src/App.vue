@@ -11,8 +11,8 @@ section#app.column.fill-h
 			router-link exact="" to=/p search result
 		nav.center
 			/ todo
-			div v-if=is_logged_in
-				| Logged in as 
+			div.session-info v-if=is_logged_in
+				span.logged-in-prompt Logged in as 
 				span v-if=session.name $session.name
 				span v-else-if=session.email $session.email
 				span v-else-if=session.external_type $session.external_identifier [$session.external_type]
@@ -84,11 +84,18 @@ export default
 		padding 5px 15px
 		// border-bottom 1px solid var(--color-secondary-background)
 		justify-content space-between
-		nav > *:not(:last-child)
+		nav:not(:last-child), nav > *:not(:last-child) // TODO
 			margin-right 1.5em
-			display inline
+		nav > *
+			white-space nowrap
+			overflow hidden
+			// text-overflow ellipsis
 		button
 			padding 1px 4px
+		.session-info
+			.logged-in-prompt
+				@media (max-width: 600px)
+					display none
 	> main
 		z-index 2
 		background var(--color-background)
