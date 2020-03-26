@@ -23,6 +23,7 @@ class Product extends BaseEntity {
     /** {attribute_id: datum} */
     @Column()
     public data!: IPrimaryProductData; // todo nested validation?
+    // FIXME user and source and maybe put these two (three? plus verified) into some interface
 
     public constructor(init: Partial<Product>) {
         super();

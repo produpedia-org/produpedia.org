@@ -225,6 +225,7 @@ product_router.get('/', async (req, res) => {
         order: {
             ...sorters_formatted,
         },
+        take: 30, // FIXME
     });
 
     // todo fix this with typeorm (idk)

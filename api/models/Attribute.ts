@@ -1,10 +1,11 @@
-import { IsBoolean, IsDefined, IsIn, IsInt, IsMongoId, IsNumber, IsString, Length, Max, Min, validateOrReject } from 'class-validator';
+import { IsBoolean, IsDefined, IsIn, IsInt, IsMongoId, IsNumber, IsString, Length, Max, Min, validateOrReject, IsOptional } from 'class-validator';
 import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
 
 // todo ... ways to prevent the duplicate declarations here?
-export type AttributeType = string | number | boolean;
-export type AttributeTypeType = 'string' | 'number' | 'boolean';
-export const attributeTypeTypes: AttributeTypeType[] = ['string', 'number', 'boolean'];
+// TODO: fifth type? "resource". currently, resources are simply dbr: strings
+export type AttributeType = string | number | boolean | Date;
+export type AttributeTypeType = 'string' | 'number' | 'boolean' | 'date';
+export const attributeTypeTypes: AttributeTypeType[] = ['string', 'number', 'boolean', 'date'];
 
 @Entity()
 class Attribute extends BaseEntity {
@@ -25,24 +26,30 @@ class Attribute extends BaseEntity {
     @Length(1, 20)
     public name!: string;
     @Column()
+    @IsOptional()
     @Length(0, 255)
     public description!: string;
     @Column()
+    @IsOptional()
     @Length(1, 20)
     public unit!: string;
     @Column()
     @IsIn(attributeTypeTypes)
     public type!: AttributeTypeType;
     @Column()
+    @IsOptional()
     @IsNumber()
     // fixme: validation: int if not this.float
     public min!: number;
     @Column()
+    @IsOptional()
     @IsNumber()
     // fixme: validation: int if not this.float
     public max!: number;
     @Column()
+    @IsOptional()
     @IsBoolean()
+    // fixme only allow if type == number
     public float!: boolean;
 
     public constructor(init: Partial<Attribute>) {
@@ -53,6 +60,7 @@ class Attribute extends BaseEntity {
     @BeforeInsert()
     @BeforeUpdate()
     public async validate() {
+        // FIXME: whitelist, and fix global validation subscriber
         await validateOrReject(this, { validationError: { target: false } });
     }
 }

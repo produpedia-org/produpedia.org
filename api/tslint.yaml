@@ -15,5 +15,6 @@ rules: {
     import-name: false,
     object-shorthand-properties-first: false,
     prefer-template: false,
-    no-increment-decrement: false
+    no-increment-decrement: false,
+    align: false
 }

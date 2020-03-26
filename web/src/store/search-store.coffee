@@ -57,13 +57,13 @@ export default
 		### static ###
 		#
 		### (optionally) user-defined ###
-		subject: 'test'
+		subject: 'Smartphone'
 		filters: [
 		]
 		shower_ids: []
 		sorters: [
 		]
-		columns: 5
+		columns: 15
 		### server response; readonly ###
 		attributes: null
 		products: null

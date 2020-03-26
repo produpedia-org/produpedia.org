@@ -7,7 +7,7 @@
 				input type=checkbox v-model=readonly
 
 		div#result-table-container.flex-fill ref=result_table_container tabindex=-1
-			result-table#result-table v-if=has_data @datum_clicked=datum_clicked($event) :readonly=readonly
+			result-table#result-table v-if=data_fetched @datum_clicked=datum_clicked($event) :readonly=readonly
 			p.disabled.center v-else="" Loading...
 
 		/ maybe use linus borgs portal instead?
@@ -50,14 +50,14 @@ export default Vue.extend(
 		finish_editing: ->
 			@editing = null
 	computed: {
-		has_data: -> !!@$store.state.search?.attributes
+		data_fetched: -> !!@$store.state.search?.attributes
 	}
 	created: ->
 		@register_search_store()
 	mounted: ->
 		@$refs.result_table_container.focus()
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
-		if !@has_data
+		if !@data_fetched
 			await @fetch_table_data()
 	destroyed: ->
 		@$store.unregisterModule 'search'
