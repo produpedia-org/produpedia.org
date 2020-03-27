@@ -37,17 +37,24 @@ table border=1
 		tr.product v-for="product in products"
 			th.name
 				| $product.name
-			td.datum v-for="shower_id in shower_ids" @click=datum_clicked(product,shower_id)
-				div v-if=product.data[shower_id]
-					div v-if=product.data[shower_id].verified
-						span.verified
-							| $product.data[shower_id].value
-						button.edit.disabled v-if=!readonly
-							/ ✔ ✓
-							| ✎
-					div v-else=""
-						span.disabled
-							| $product.data[shower_id].value
+			td.datum v-for="shower_id in shower_ids" @click=datum_clicked(product,shower_id) :set="datum=product.data[shower_id]"
+				div v-if=datum
+					/
+						TODO
+						div v-if=datum.verified
+							span.verified
+								| $datum.value
+							button.edit.disabled v-if=!readonly
+								/ ✔ ✓
+								| ✎
+						div v-else=""
+					div
+						/ .disabled TODO
+						ul v-if=Array.isArray(datum.value)
+							li v-for="value of datum.value"
+								| $value
+						span v-else=""
+							| $datum.value
 						button.edit v-if=!readonly
 							| ✎
 				div v-else=""
@@ -237,5 +244,9 @@ td.datum
 			color #A0AB82
 	.verified
 		color #0B6721
-
+	ul
+		text-align left
+		padding-left 1em
+		display inline-block
+		margin 0
 </style>

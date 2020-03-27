@@ -224,6 +224,9 @@ pre > code {
 textarea {
 	width: 100%; }
 
+ul
+	list-style-type circle
+
 button // buttons, by default, should not have any specific styling so they can be used better semantically. for typical button-buttons, use .btn
 	// also see index ssr html
 	-webkit-appearance: none

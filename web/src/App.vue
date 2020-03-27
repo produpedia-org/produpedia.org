@@ -77,7 +77,6 @@ export default
 		nav > *
 			white-space nowrap
 			overflow hidden
-			// text-overflow ellipsis
 		button
 			padding 1px 4px
 		.session-info
