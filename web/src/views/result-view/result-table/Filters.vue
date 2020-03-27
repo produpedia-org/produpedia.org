@@ -3,7 +3,7 @@ div
 	div.filters.justify-center
 		div.filter.box v-for="filter in filters"
 			span $condition_by_id[filter.condition].long&nbsp;
-			strong v-if=filter.condition_value
+			strong.value v-if=filter.condition_value
 				| $filter.condition_value&nbsp;
 			button @click=remove_filter(filter) v-if=!readonly ╳
 		label.justify-center v-if="!show_form && !readonly"
@@ -122,6 +122,9 @@ export default
 		padding 2px 4px
 		// background: lightgrey
 		white-space pre
+		border 1px solid var(--color-highlighted)
+		.value
+			color var(--color-highlighted)
 #form
 	max-width 750px
 	.attribute-select, .condition-value
