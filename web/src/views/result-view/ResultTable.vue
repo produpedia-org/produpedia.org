@@ -7,17 +7,17 @@ table border=1
 			td.filters v-for="shower_id in shower_ids"
 				filters :filters=filters_by_attribute_id[shower_id] :attribute_id=shower_id :readonly=readonly
 		tr.attributes :class.drop-target=dragging_column
-			th.dropzone.remove.column v-if=dragging_column v-drop=remove_shower
-				div ╳
-				div.description.danger Hide column
-			th v-else=""
+			th
+				.dropzone.remove v-if=dragging_column v-drop=remove_shower
+					| ╳ Hide column
+				div v-else=""
 			th.dropzone.move v-for="shower_id, index in shower_ids" :key="shower_id+'_'+index" v-drop=move_shower_to(index)
 				.attribute.column
 					div.actions.center v-if="!readonly && !can_drag"
 						button.moveto @click=move_shower_to(index-1)(shower_id) ←
 						button.remove @click=remove_shower(shower_id) ╳
 						button.moveto @click=move_shower_to(index+2)(shower_id) →
-					div.center
+					div.row.center
 						div.row.center v-drag="!readonly && can_drag && shower_id" @dragstart=dragging_column=true @dragend=dragging_column=false
 							div.center
 								span.grip v-if="!readonly && can_drag" ⠿
@@ -141,11 +141,10 @@ table, td, th
 
 // 2. General table styling
 
-th, td
+th, td, th > *
 	z-index 1
 	min-width 3vw
-	max-width 150px
-td, th, .attribute // < ? todo
+td, th
 	position relative
 th
 	position sticky
@@ -153,12 +152,19 @@ th
 thead th
 	z-index 3
 	top 0
-	padding 6px
 	height 2em
+	padding 0
 	// background linear-gradient(#fff, 93%, transparent) // weird grey color on firefox, so using this:
 	background linear-gradient(#fff, 93%, rgba(255,255,255,0.5))
+	> *
+		padding 6px 15px
+		// Very basic column resizing
+		resize horizontal
+		overflow hidden
+		height 100%
 tbody
 	td, th
+		max-width 150px
 		padding 1vmin
 		word-wrap break-word
 	th
@@ -182,18 +188,23 @@ tbody
 
 .filters
 	z-index 9 // so filter modal shows above other tds/ths with z-index above
-.attributes.drop-target > th.dropzone
+.attributes.drop-target .dropzone
 	color #246
 	&.drop
 		&.move
 			border-left-fix 2px solid var(--color-highlighted)
 		&.remove
 			color var(--color-highlighted)
-	&.remove .description
+	&.remove
 		text-transform uppercase
-		font-size 80%
+		color var(--color-highlighted)
+		&.drop
+			background var(--color-hover)
 .attribute
-	padding 1px 6px
+	.row
+		position relative
+	.name
+		white-space nowrap
 	.grip
 		font-weight normal
 		color var(--color-disabled)
