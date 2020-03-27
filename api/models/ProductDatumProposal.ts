@@ -1,6 +1,5 @@
-import { validateOrReject } from 'class-validator';
-import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
-import { AttributeType } from './Attribute';
+import { IsString } from 'class-validator';
+import { Column, Entity } from 'typeorm';
 import ProductDatum from './ProductDatum';
 
 /**
@@ -11,8 +10,12 @@ import ProductDatum from './ProductDatum';
 @Entity()
 class ProductDatumProposal extends ProductDatum {
     @Column()
-    public attribute!: string; // objid? todo: call attribute_id? / joins? / valid
-    public product!: string; // todo ^
+    @IsString()
+    public attribute!: string;
+    @Column()
+    @IsString()
+    public product!: string;
+
     // votes
     // comments
 

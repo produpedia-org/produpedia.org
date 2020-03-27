@@ -120,14 +120,12 @@ product_router.post('/:product_id/data/:attribute_id', async (req, res) => {
     const datum = {
         value,
         source,
-        user: res.locals.user_id,
+        user: res.locals.user && res.locals.user._id.toHexString() || undefined,
     };
-    const datum_proposal = new ProductDatumProposal({ // todo shouldnt these be asking for T aka the attribute type?
+    const datum_proposal = new ProductDatumProposal({
         ...datum,
-        // @ts-ignore fixme adjust to objectid
-        attribute: attribute._id,
-        // @ts-ignore fixme adjust to objectid
-        product: product._id,
+        attribute: attribute._id.toHexString(),
+        product: product._id.toHexString(),
     });
     const primary_datum = new PrimaryProductDatum({
         ...datum,
@@ -160,6 +158,7 @@ interface Filter {
     attribute: Attribute;
     condition: string;
     condition_value: string;
+    case_sensitive: boolean;
 }
 type MongoFilter = {[key: string]: any};
 
@@ -191,7 +190,8 @@ product_router.get('/', async (req, res) => {
         filter_param
             .split(',').filter(Boolean)
             .map(async (s: string): Promise<Filter | null> => {
-                const [attribute_id, condition, condition_value] = s.split(':');
+                const [attribute_id, condition, condition_value, case_str] = s.split(':');
+                const case_sensitive = !case_str || case_str !== 'i';
                 // TODO: is this cached or same request for same attribute multiple times?
                 const attribute = await Attribute.findOne({
                     _id: new ObjectID(attribute_id),
@@ -199,7 +199,7 @@ product_router.get('/', async (req, res) => {
                 if (!attribute)
                     return null;
                 return {
-                    attribute, condition, condition_value,
+                    attribute, condition, condition_value, case_sensitive,
                 };
             })))
         .filter(Boolean) as Filter[];
@@ -227,7 +227,7 @@ product_router.get('/', async (req, res) => {
                     }; break;
                 case 'con':
                     filter_condition_formatted =
-                        new RegExp(regexp_escape(String(filter.condition_value)));
+                        new RegExp(regexp_escape(String(filter.condition_value)), filter.case_sensitive ? undefined : 'i');
                     break;
                 case 'ne':
                     filter_condition_formatted = {
@@ -235,8 +235,13 @@ product_router.get('/', async (req, res) => {
                     }; break;
                 case 'eq':
                 default:
-                    filter_condition_formatted =
-                        parse_single_value_or_throw(filter.condition_value, filter.attribute);
+                    if (filter.attribute.type !== 'string' || filter.case_sensitive) {
+                        filter_condition_formatted =
+                            parse_single_value_or_throw(filter.condition_value, filter.attribute);
+                    } else {
+                        filter_condition_formatted =
+                            new RegExp(`^${regexp_escape(String(filter.condition_value))}$`, 'i');
+                    }
                     break;
                 }
                 return { [`data.${filter.attribute._id.toHexString()}.value`]: filter_condition_formatted };

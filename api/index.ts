@@ -60,8 +60,9 @@ app.use(async (err, req, res, next) => {
     await mail_service.send_mail(
         'error@produpedia.org',
         'API 500 / 422',
-        html_escape(info));
+        html_escape(JSON.stringify(info)));
     if (err.length && (err[0] instanceof ValidationError || err[0].constraints)) { // TODO: class-validator whitelisting errors arent instanceof ValidationError. Probably a bug?
+        // TODO: err doesnt include the stack trace
         return res.status(UNPROCESSABLE_ENTITY).send(err);
     }
     const user_message = 'Internal Server Error';

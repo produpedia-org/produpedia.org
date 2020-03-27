@@ -1,4 +1,4 @@
-import { IsBoolean, Length } from 'class-validator';
+import { IsBoolean, Length, IsOptional, IsObject } from 'class-validator';
 import { BaseEntity, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
 import PrimaryProductDatum from './PrimaryProductDatum';
 
@@ -9,6 +9,7 @@ interface PrimaryProductData {
 @Entity()
 class Product extends BaseEntity {
     @ObjectIdColumn()
+    @IsOptional()
     public _id!: ObjectID;
     @Column()
     @Length(3, 20)
@@ -21,7 +22,9 @@ class Product extends BaseEntity {
     public verified: boolean = false;
     /** {attribute_id: datum} */
     @Column()
-    public data!: PrimaryProductData; // todo nested validation?
+    @IsOptional()
+    @IsObject()
+    public data!: PrimaryProductData; // todo nested validation
     // FIXME user and source and maybe put these two (three? plus verified) into some interface
 
     public constructor(init: Partial<Product>) {

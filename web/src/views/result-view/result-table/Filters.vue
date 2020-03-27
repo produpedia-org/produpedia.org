@@ -3,7 +3,7 @@ div
 	div.filters.justify-center
 		div.filter.box v-for="filter in filters"
 			span $condition_by_id[filter.condition].long&nbsp;
-			strong.value v-if=filter.condition_value
+			strong.value v-if=filter.condition_value :class.case_sensitive=filter.case_sensitive
 				| $filter.condition_value&nbsp;
 			button @click=remove_filter(filter) v-if=!readonly ╳
 		label.justify-center v-if="!show_form && !readonly"
@@ -13,7 +13,7 @@ div
 	div.center.column
 		popup v-if=show_form @close=show_form=false
 			promise-form#form :action=add_filter button_float_right=""
-				div.flex
+				div.column
 					/ todo currently unused
 					div.attribute-select.padding v-if=!attribute_id
 						label.column
@@ -30,6 +30,10 @@ div
 						label.column v-if=condition_needs_value
 							| Value
 							input name=condition_value required=""
+					div.condition-value-case-sensitive.padding.row
+						label.center v-if=condition_can_be_case_sensitive
+							input type=checkbox name=case_sensitive
+							| Case sensitive
 				template #button_label="" Add
 				
 </template>
@@ -53,7 +57,7 @@ export default
 	data: ->
 		show_form: false
 		condition_id: 'eq'
-		# todo: contains, regex
+		# todo: regex
 		conditions:
 			-	id: 'eq'
 				abbr: ' ='
@@ -109,6 +113,9 @@ export default
 		, {})
 		condition_needs_value: ->
 			@condition_by_id[@condition_id].needs_value
+		condition_can_be_case_sensitive: ->
+			@condition_needs_value and
+				@$store.getters['search/attributes_by_id'][@$props.attribute_id].type == 'string'
 	}
 </script>
 
@@ -125,6 +132,9 @@ export default
 		border 1px solid var(--color-highlighted)
 		.value
 			color var(--color-highlighted)
+			display inline-block
+			&.case_sensitive:first-letter
+				text-decoration underline var(--color-foreground)
 #form
 	max-width 750px
 	.attribute-select, .condition-value
@@ -134,7 +144,4 @@ export default
 			width 62px
 			font-family monospace
 			margin 0 auto
-	.condition-value
-		input
-			width 130px
 </style>

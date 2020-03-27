@@ -132,7 +132,7 @@ export default
 				.map (sorter) => "#{sorter.attribute_id}:#{sorter.direction}"
 				.join ','
 			filters_param = state.filters
-				.map (filter) => "#{filter.attribute_id}:#{filter.condition}:#{filter.condition_value}"
+				.map (filter) => "#{filter.attribute_id}:#{filter.condition}:#{filter.condition_value}:#{if not filter.case_sensitive then 'i' else ''}"
 				.join ','
 			response = await axios.get 'p',
 				params:
@@ -180,7 +180,6 @@ export default
 			response = await axios.get 'a', { params: { t: state.subject } }
 			commit 'set_attributes', response.data
 		add_filter: ({ commit, dispatch, getters }, { values }) -> # todo formdata?
-			# attribute_type = getters.attributes_by_id[values.attribute_id].type
 			commit 'add_filter', values
 			dispatch 'search'
 		remove_filter: ({ commit, dispatch }, filter) ->
