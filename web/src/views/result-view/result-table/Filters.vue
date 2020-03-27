@@ -69,6 +69,11 @@ export default Vue.extend
 				abbr: ' &gt;'
 				long: 'more than'
 				needs_value: true
+			-	id: 'con'
+				abbr: ' ∋'
+				needs_value: true
+				long: 'contains'
+				description: 'contains'
 			-	id: 'nu'
 				abbr: ' ∅'
 				long: 'empty'
@@ -76,11 +81,14 @@ export default Vue.extend
 				abbr: '!∅'
 				long: 'not empty'
 			.map (condition) =>
-				option_html = """
-					#{condition.abbr.replace(/ /g, '&nbsp;')}
-					&nbsp;&nbsp;&nbsp;(is"""
-				if condition.long
-					option_html += " #{condition.long}"
+				option_html = condition.abbr.replace(/ /g, '&nbsp;')
+				option_html += "&nbsp;&nbsp;&nbsp;("
+				if condition.description
+					option_html += condition.description
+				else
+					option_html += 'is'
+					if condition.long
+						option_html += " #{condition.long}"
 				if condition.needs_value
 					option_html += '...'
 				option_html += ')'
@@ -112,6 +120,7 @@ export default Vue.extend
 	.filter
 		padding 2px 4px
 		// background: lightgrey
+		white-space pre
 #form
 	max-width 750px
 	.attribute-select, .condition-value

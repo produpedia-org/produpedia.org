@@ -12,3 +12,6 @@ export const html_escape = (s: string) =>
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
+
+export const regexp_escape = (s: string) =>
+    s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');

@@ -9,6 +9,7 @@ import PrimaryProductDatum from '../models/PrimaryProductDatum';
 import Product from '../models/Product';
 import { ProductDatumValue } from '../models/ProductDatum';
 import ProductDatumProposal from '../models/ProductDatumProposal';
+import { regexp_escape } from '../utils';
 
 // tslint:disable no-string-throw
 /**
@@ -230,6 +231,12 @@ product_router.get('/', async (req, res) => {
                     filter_condition_formatted = {
                         $exists: true,
                     }; break;
+                case 'con':
+                    filter_condition_formatted =
+                        new RegExp(
+                            regexp_escape(
+                                parse_single_value_or_throw(filter.condition_value, filter.attribute) as string));
+                    break;
                 case 'ne':
                     filter_condition_formatted = {
                         $ne: parse_single_value_or_throw(filter.condition_value, filter.attribute),
