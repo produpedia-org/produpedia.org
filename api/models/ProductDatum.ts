@@ -2,16 +2,18 @@ import { IsIn, IsNotEmpty, IsNotIn, IsUrl, Length, validateOrReject } from 'clas
 import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
 import { AttributeType } from './Attribute';
 
+export type ProductDatumValue = AttributeType | AttributeType[] | null;
+
 // todo prevent instantiation AND saving, only derived allowed
 @Entity()
-class ProductDatum<T extends AttributeType> extends BaseEntity {
+class ProductDatum extends BaseEntity {
     @ObjectIdColumn()
     public _id!: ObjectID;
     @Column()
     public user!: string; // objid or username? todo. + -> valid constraint
     @Column()
     @IsNotIn([undefined])
-    public value!: T | null;
+    public value!: ProductDatumValue;
     @Column()
     @IsUrl()
     public source!: string; // todo: collaborative array (maybe)

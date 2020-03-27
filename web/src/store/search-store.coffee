@@ -179,7 +179,8 @@ export default
 		get_attributes: ({ commit, state }) ->
 			response = await axios.get 'a', { params: { t: state.subject } }
 			commit 'set_attributes', response.data
-		add_filter: ({ commit, dispatch }, { values }) -> # todo formdata?
+		add_filter: ({ commit, dispatch, getters }, { values }) -> # todo formdata?
+			# attribute_type = getters.attributes_by_id[values.attribute_id].type
 			commit 'add_filter', values
 			dispatch 'search'
 		remove_filter: ({ commit, dispatch }, filter) ->
