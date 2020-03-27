@@ -6,7 +6,6 @@ import expressFormData from 'express-form-data';
 import { NO_CONTENT, UNPROCESSABLE_ENTITY } from 'http-status-codes';
 import 'reflect-metadata';
 import authentication_middleware from './authentication-middleware';
-import connection from './connection';
 import attribute_router from './routers/attribute-router';
 import error_router from './routers/error-router';
 import authentication_router from './routers/authentication-router';
@@ -15,6 +14,7 @@ import user_router from './routers/user-router';
 import MailService from './services/MailService';
 import TokenService from './services/TokenService';
 import { env, error, log, html_escape } from './utils';
+import { createConnection } from 'typeorm';
 
 // ///////////////// CONFIG
 
@@ -71,7 +71,7 @@ app.use(async (err, req, res, next) => {
 });
 
 (async () => {
-    await connection;
+    await createConnection();
     const PORT = Number(env('PORT'));
     const HOST = env('HOST');
     app.listen(PORT, HOST, () => log(`running on ${PORT}`));

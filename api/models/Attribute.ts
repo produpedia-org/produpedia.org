@@ -1,5 +1,5 @@
-import { IsBoolean, IsDefined, IsIn, IsInt, IsMongoId, IsNumber, IsString, Length, Max, Min, validateOrReject, IsOptional } from 'class-validator';
-import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { IsBoolean, IsIn, IsInt, IsNumber, IsOptional, Length, Max, Min } from 'class-validator';
+import { BaseEntity, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
 
 // todo ... ways to prevent the duplicate declarations here?
 // TODO: fifth type? "resource". currently, resources are simply dbr: strings
@@ -55,13 +55,6 @@ class Attribute extends BaseEntity {
     public constructor(init: Partial<Attribute>) {
         super();
         Object.assign(this, init);
-    }
-
-    @BeforeInsert()
-    @BeforeUpdate()
-    public async validate() {
-        // FIXME: whitelist, and fix global validation subscriber
-        await validateOrReject(this, { validationError: { target: false } });
     }
 }
 

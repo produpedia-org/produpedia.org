@@ -16,11 +16,6 @@ class ProductDatum<T extends AttributeType> extends BaseEntity {
     @IsUrl()
     public source!: string; // todo: collaborative array (maybe)
 
-    @BeforeInsert()
-    @BeforeUpdate()
-    public async validate() {
-        await validateOrReject(this, { validationError: { target: false } });
-    }
 }
 
 export default ProductDatum;

@@ -30,11 +30,6 @@ class Product extends BaseEntity {
         Object.assign(this, init);
     }
 
-    @BeforeInsert()
-    @BeforeUpdate()
-    public async validate() {
-        await validateOrReject(this, { validationError: { target: false } });
-    }
 }
 
 export default Product;

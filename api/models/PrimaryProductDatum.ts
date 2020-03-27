@@ -14,11 +14,6 @@ class PrimaryProductDatum<T extends AttributeType> extends ProductDatum<T> {
         Object.assign(this, init);
     }
 
-    @BeforeInsert()
-    @BeforeUpdate()
-    public async validate() {
-        await validateOrReject(this, { validationError: { target: false } });
-    }
 }
 
 export default PrimaryProductDatum;
