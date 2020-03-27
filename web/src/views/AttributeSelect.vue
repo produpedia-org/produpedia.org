@@ -8,6 +8,8 @@ div.column
 </template>
 
 <script lang="coffee">
+import { mapActions, mapState, mapGetters } from 'vuex'
+
 export default
 	name: 'AttributeSelect'
 	props:

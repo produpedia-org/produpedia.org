@@ -35,9 +35,10 @@ div
 </template>
 
 <script lang="coffee">
+import { mapActions, mapState, mapGetters } from 'vuex'
 import AttributeSelect from '@/views/AttributeSelect'
 
-export default Vue.extend
+export default
 	components: { AttributeSelect }
 	name: 'ResultTableFilters'
 	props:

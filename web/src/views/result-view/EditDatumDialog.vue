@@ -20,7 +20,9 @@ div
 </template>
 
 <script lang="coffee">
-export default Vue.extend
+import { mapActions, mapState, mapGetters } from 'vuex'
+
+export default
 	name: 'EditDatumDialog'
 	props:
 		product:

@@ -61,8 +61,9 @@ table border=1
 
 <script lang="coffee">
 import Filters from '@/views/result-view/result-table/Filters'
+import { mapActions, mapState, mapGetters } from 'vuex'
 
-export default Vue.extend
+export default
 	components: { Filters }
 	props:
 		readonly:

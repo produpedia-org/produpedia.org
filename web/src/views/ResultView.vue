@@ -28,7 +28,7 @@ import ResultTable from '@/views/result-view/ResultTable'
 import EditDatumDialog from '@/views/result-view/EditDatumDialog'
 import AddProductDialog from '@/views/result-view/AddProductDialog'
 
-export default Vue.extend(
+export default(
 	components: { ResultTable, EditDatumDialog, AddProductDialog }
 	name: 'ResultView'
 	serverPrefetch: -> # note: docs say: You may find the same fetchItem() logic repeated multiple times (in serverPrefetch, mounted and watch callbacks) in each component - it is recommended to create your own abstraction (e.g. a mixin or a plugin) to simplify such code. (todo)

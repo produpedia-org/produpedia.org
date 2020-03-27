@@ -51,7 +51,7 @@ import TokenInput from '@/views/TokenInput'
 
 loaded_external_login_providers = {}
 
-export default Vue.extend
+export default
 	components: { TokenInput }
 	name: 'Authenticate'
 	data: =>
