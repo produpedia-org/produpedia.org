@@ -89,7 +89,11 @@ export default
 		background var(--color-background)
 		margin-top $header-width + 10px
 		width 100%
-		min-width fit-content
+		@media (max-height 690px)
+			// So the header is properly overlayed by the sticky table headers
+			// on the right when scrolling down when body==scrollcontainer
+			// (also see result-view)
+			min-width fit-content
 		.error
 			max-width 100vw
 			overflow auto
