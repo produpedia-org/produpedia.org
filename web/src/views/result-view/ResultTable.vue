@@ -12,7 +12,7 @@ table border=1
 					| ╳ Hide column
 				div v-else=""
 			th.dropzone.move v-for="shower_id, index in shower_ids" :key="shower_id+'_'+index" v-drop=move_shower_to(index)
-				.attribute.column
+				.attribute.column.center
 					div.actions.center v-if="!readonly && !can_drag"
 						button.moveto @click=move_shower_to(index-1)(shower_id) ←
 						button.remove @click=remove_shower(shower_id) ╳
