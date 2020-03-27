@@ -21,10 +21,8 @@ import { regexp_escape } from '../utils';
 function parse_single_value_or_throw(raw_single: string, attribute: Attribute): AttributeType {
     let value: AttributeType;
     if (attribute.type === 'string') {
-    // TODO nullable? what about the .length check below?
-    // this isnt critical but will fail somewhere with 500 when it should be 422
-        if (typeof raw_single !== 'string' && raw_single !== null) {
-            throw `Wrong type: Expected 'string' or 'null', got '${typeof raw_single}'!`;
+        if (typeof raw_single !== 'string') { // && raw_single !== null) {
+            throw `Wrong type: Expected 'string', got '${typeof raw_single}'!`; //  or 'null'
         }
         if (!raw_single.length) {
             throw 'Missing value!';
@@ -233,9 +231,7 @@ product_router.get('/', async (req, res) => {
                     }; break;
                 case 'con':
                     filter_condition_formatted =
-                        new RegExp(
-                            regexp_escape(
-                                parse_single_value_or_throw(filter.condition_value, filter.attribute) as string));
+                        new RegExp(regexp_escape(String(filter.condition_value)));
                     break;
                 case 'ne':
                     filter_condition_formatted = {
