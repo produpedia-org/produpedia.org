@@ -60,6 +60,7 @@ table border=1
 				div v-else=""
 					span.small
 						/ ? &#63;
+						/ | &nbsp; <- doesnt work?
 						|
 					button.edit.create v-if=!readonly
 						/ 🖉
@@ -195,6 +196,7 @@ tbody
 
 .filters
 	z-index 9 // so filter modal shows above other tds/ths with z-index above
+	user-select none
 .attributes.drop-target .dropzone
 	color #246
 	&.drop
@@ -212,6 +214,7 @@ tbody
 		position relative
 	.name
 		white-space nowrap
+		user-select text
 	.grip
 		font-weight normal
 		color var(--color-disabled)
@@ -220,6 +223,7 @@ tbody
 		top 1px
 	.sort
 		padding-left 3px
+		user-select none
 		.sort-up, .sort-down
 			&:hover
 				background var(--color-hover)
@@ -237,6 +241,7 @@ tbody
 td.datum
 	text-align center
 	button.edit
+		user-select none
 		position absolute
 		right 0
 		bottom 0
