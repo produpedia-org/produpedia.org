@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import axios from 'axios'
 import App from './App'
 import { create_router } from './vue-router'

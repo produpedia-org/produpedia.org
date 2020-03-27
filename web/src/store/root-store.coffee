@@ -1,3 +1,4 @@
+import Vue from 'vue'
 import Vuex from 'vuex'
 import session_module from './session-store'
 # import search_module from './search-store'

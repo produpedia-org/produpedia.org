@@ -6,7 +6,7 @@ div#modal.center.fade-in :class.contained=contained @keyup.esc=close :tabindex="
 </template>
 
 <script lang="coffee">
-export default Vue.extend
+export default
 	name: 'Modal'
 	props:
 		contained:
