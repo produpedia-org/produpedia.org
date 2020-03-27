@@ -1,5 +1,5 @@
-import { IsIn, IsNotEmpty, IsNotIn, IsUrl, Length, validateOrReject } from 'class-validator';
-import { BaseEntity, BeforeInsert, BeforeUpdate, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { IsNotIn, IsUrl } from 'class-validator';
+import { BaseEntity, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
 import { AttributeType } from './Attribute';
 
 export type ProductDatumValue = AttributeType | AttributeType[] | null;

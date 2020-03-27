@@ -182,13 +182,9 @@ product_router.get('/', async (req, res) => {
             };
         });
     const sorters_formatted: FindOptionsOrder<Product> = sorters
-        .map((sorter): Sorter => ({
-            attribute_id: `data.${sorter.attribute_id}.value`,
-            direction: Number(sorter.direction), // todo#a1: mongo treats empty as the smallest value. NULLS LAST does not exist
-        }))
         .reduce((all: object, sorter) => ({
             ...all,
-            [sorter.attribute_id]: sorter.direction,
+            [`data.${sorter.attribute_id}.value`]: sorter.direction,
         }),     {});
     const filter_param: string = req.query.f;
     const filters: Filter[] = (await Promise.all(
@@ -248,6 +244,12 @@ product_router.get('/', async (req, res) => {
     } catch (error_msg) {
         return res.status(UNPROCESSABLE_ENTITY).send(error_msg);
     }
+    // Add NOT NULL filter for all those attributes that are being sorted by
+    // ASC order. This is necessary because MongoDB does not have any such feature
+    // as "NULLS LAST".
+    filters_formatted.push(...sorters
+        .filter(sorter => sorter.direction === 1)
+        .map(sorter => ({ [`data.${sorter.attribute_id}.value`]: { $exists: true } })));
 
     /*********** determine showers if not given **********/
     if (!shower_ids.length) {
@@ -269,21 +271,8 @@ product_router.get('/', async (req, res) => {
     const shower_ids_formatted = shower_ids.map(id => `data.${id}`) as (keyof Product)[];
 
     /********** Search ***********/
-    /* this is only a temporary solution because too slow for very big data.
-    indices make no sense either because attributes are dynamic.
-    -> todo: implement "cache" quickselect sql tables for find() that contains
-    only verified values (maybe change verified to stage: integer or maaaaybe
-    add _verified value columns also, or boi im lost). each product
-    gets its own table. this allows for beautiful clustering. will also allow
-    for #a1 to be fixed. to see findoptions way of doing it, see commit before
-    17th dec 18.
-    and update it accordingly. mongodb structure stays to look up product data
-    like user, time, interest. also used for product data proposal managment.
-    nosql feels right here because dynamic amount of attributes and values
-    are of dynamic type (however same at same attribute (?))
-    but keeping this without quickselect-cache for the moment until website
-    explodes in popularity (which it of course will. goes without saying. :p)
-    */
+    // TODO: Maybe add a cache table (SQL) that is faster than querying the
+    // nested structure
     const products = await Product.find({
         where: {
             $and: [
