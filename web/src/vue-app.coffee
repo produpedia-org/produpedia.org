@@ -16,6 +16,7 @@ import MultiSelect from '@/components/MultiSelect'
 import Popup from '@/components/Popup'
 import PromiseButton from '@/components/PromiseButton'
 import PromiseForm from '@/components/PromiseForm'
+import ProductValueForm from '@/components/ProductValueForm'
 import ReadMore from '@/components/ReadMore'
 
 Vue.config.productionTip = false
@@ -30,6 +31,7 @@ Vue.component 'multi-select', MultiSelect
 Vue.component 'popup', Popup
 Vue.component 'promise-button', PromiseButton
 Vue.component 'promise-form', PromiseForm
+Vue.component 'product-value-form', ProductValueForm
 Vue.component 'read-more', ReadMore
 
 export create_app = ({ before_app = =>, after_app = => } = {}) ->

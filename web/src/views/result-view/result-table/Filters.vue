@@ -12,8 +12,9 @@ div
 				| +
 	div.center.column
 		popup v-if=show_form @close=show_form=false
-			promise-form#form :action=add_filter button_float_right=""
-				div.column
+			/ TODO btn float right not working? even if this is prmose form directly	
+			product-value-form#form :action=add_filter button_float_right="" :attribute=attribute :class.novalue=!condition_needs_value
+				template #before=""
 					/ todo currently unused
 					div.attribute-select.padding v-if=!attribute_id
 						label.column
@@ -26,16 +27,11 @@ div
 							select name=condition required="" v-model=condition_id
 								/ todo why html not | ?
 								option v-for="condition in conditions" :value=condition.id v-html=condition.option_html
-					div.condition-value.padding
-						label.column v-if=condition_needs_value
-							| Value
-							input name=condition_value required=""
-					div.condition-value-case-sensitive.padding.row
-						label.center v-if=condition_can_be_case_sensitive
-							input type=checkbox name=case_sensitive
-							| Case sensitive
+				div.condition-value-case-sensitive.padding.row
+					label.center v-if=condition_can_be_case_sensitive
+						input type=checkbox name=case_sensitive
+						| Case sensitive
 				template #button_label="" Add
-				
 </template>
 
 <script lang="coffee">
@@ -111,11 +107,13 @@ export default
 			all[condition.id] = condition
 			all
 		, {})
+		attribute: ->
+			@$store.getters['search/attributes_by_id'][@$props.attribute_id]
 		condition_needs_value: ->
 			@condition_by_id[@condition_id].needs_value
 		condition_can_be_case_sensitive: ->
 			@condition_needs_value and
-				@$store.getters['search/attributes_by_id'][@$props.attribute_id].type == 'string'
+				@attribute.type == 'string'
 	}
 </script>
 
@@ -144,4 +142,7 @@ export default
 			width 62px
 			font-family monospace
 			margin 0 auto
+	&.novalue
+		>>> .value
+			display none
 </style>

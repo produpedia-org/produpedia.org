@@ -1,20 +1,11 @@
 <template lang="slm">
-div
-	h5
-		| $product.name: $attribute.name ( $attribute.type ) $attribute.float
-	promise-form :action=save_datum
-		label v-if="attribute.type==='string'"
-			| Value
-			input name=value placeholder=Value required=""
-		label v-else-if="attribute.type==='number'"
-			| Amount 
-			/ fixme syntax
-			small \[in {{attribute.unit}}]
-			input type=number name=value :placeholder="'Amount [in '+attribute.unit+']'" :step="attribute.float? 'any' : 1" :min="attribute.min" :max="attribute.max" required=""
-		label v-else-if="attribute.type==='boolean'"
-			input type=checkbox name=value
-			| Active
-		label
+div.edit-datum
+	product-value-form :action=save_datum :attribute=attribute
+		template #before=""
+			legend
+				em $attribute.name 
+				| of $product.name
+		label.column
 			| Source
 			input type=url name=source placeholder=Source required=""
 </template>
@@ -45,11 +36,8 @@ export default
 			-	'attributes_by_id'
 		attribute: ->
 			@attributes_by_id[@attribute_id]
-		datum: ->
-			@product.data[@attribute_id] || {}
 	}
 </script>
 
 <style lang="stylus" scoped>
-
 </style>

@@ -29,10 +29,12 @@ main
 #titlebar, #close
 	position absolute
 	line-height 1em
+#close
 	top 1.5rem
 #close, #titlebar
 	right 1.5rem
 #titlebar
 	left 1.5rem
+	top 0.5rem
 	color var(--color-border)
 </style>
