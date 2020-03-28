@@ -1,8 +1,7 @@
 <template lang="slm">
 div#modal.center.fade-in :class.contained=contained @keyup.esc=close :tabindex="!contained?-1:null" ref=modal
 	div#background.fill @click=close
-	.slot-container
-		slot
+	slot
 </template>
 
 <script lang="coffee">
@@ -32,11 +31,6 @@ export default
 	&.contained
 		position absolute
 		box-shadow inset 0 0 8px 5px white
-	.slot-container
-		position relative // Otherwise button presses can fail due to background in foreground
-		max-width 98%
-		max-height 98%
-		display flex
 #background
 	position absolute
 </style>

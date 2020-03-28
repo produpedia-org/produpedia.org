@@ -1,6 +1,6 @@
 <template lang="slm">
 modal @close=close
-	main.box.padding-xl
+	main.box.padding-xl v-moveable=""
 		button#close @click=close ╳
 		slot
 </template>
@@ -16,9 +16,10 @@ export default
 
 <style lang="stylus" scoped>
 main
-	max-height 100%
+	max-height 98vh
 	min-width 50px
 	min-height 50px
+	position relative
 	overflow auto
 	box-sizing border-box
 #close
