@@ -6,6 +6,7 @@ import { create_store } from './store/root-store'
 import storage_service from '@/services/storage-service'
 import './directives/drag'
 import './directives/drop'
+import './directives/moveable'
 # todo all in /components/ ?
 import AutoexpandingTextarea from '@/components/AutoexpandingTextarea'
 import FilterSelect from '@/components/FilterSelect'
