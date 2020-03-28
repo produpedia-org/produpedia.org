@@ -21,8 +21,10 @@ table border=1
 						div.row.center v-drag="!readonly && can_drag && shower_id" @dragstart=dragging_column=true @dragend=dragging_column=false
 							div.center
 								span.grip v-if="!readonly && can_drag" ⠿
-							/ FIXME UNIT if number
-							div.name $attributes_by_id[shower_id].name
+							div
+								div.name $attributes_by_id[shower_id].name
+								div.unit v-if=attributes_by_id[shower_id].unit
+									| $attributes_by_id[shower_id].unit
 						div.sort.column
 							button.sort-up.disabled :disabled=readonly @click="toggle_sort_direction(shower_id, 1)" :class.highlighted=sorters_by_attribute_id[shower_id].direction===1
 								/ ˄ todo svg
@@ -215,6 +217,13 @@ tbody
 	.name
 		white-space nowrap
 		user-select text
+	.unit
+		color var(--color-disabled)
+		font-size small
+		&::before
+			content '['
+		&::after
+			content ']'
 	.grip
 		font-weight normal
 		color var(--color-disabled)
