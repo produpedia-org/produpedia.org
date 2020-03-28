@@ -11,6 +11,7 @@ modal @close=close
 <script lang="coffee">
 export default
 	name: 'Popup'
+	methods:
 		close: ->
 			@$store.dispatch 'offer_focus'
 			@$emit 'close'
