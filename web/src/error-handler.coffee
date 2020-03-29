@@ -13,9 +13,9 @@ export install_error_handler = ({ store, router }) =>
 		# debugger
 		depth++
 		_console_error(...args);
-		if depth > 4
-			# Only allow two error reports per site load. This also prevents
-			# recursive error reportings
+		if depth > 2
+			# Only allow two error reports per site load. This possibly prevents
+			# unintentional spam, duplicate and recursive error reportings
 			return
 		try
 			status = args[0]?.status
@@ -28,7 +28,7 @@ export install_error_handler = ({ store, router }) =>
 				return
 			if 500 == status
 				store.dispatch 'set_global_error_message',
-					'Internal Server Error :-( Sorry! Please try reloading the page!\n\nStatus 500\nAdministrator should have received a notification. We will try to fix this quickly.'
+					'Internal Server Error\n:-(\nSorry! Please try reloading the page!\n\nStatus 500\nAdministrator should have received a notification. We will try to fix this quickly.'
 				return
 			# ignore_stati = [ 403 ]
 			# if ignore_stati.includes status
@@ -46,7 +46,7 @@ export install_error_handler = ({ store, router }) =>
 				.join '<br>'
 			console.log error_stringified
 			# console.trace()
-			user_prompt = "An unexpected error happened :-( Sorry! Please try reloading the page!\n\n#{error_stringified}"
+			user_prompt = "An unexpected error happened\n:-(\nSorry! Please try reloading the page!\n\n#{error_stringified}"
 			try
 				resp = await fetch "#{process.env.VUE_APP_API_ROOT}/error",
 					method: "POST"
@@ -60,7 +60,7 @@ export install_error_handler = ({ store, router }) =>
 				user_prompt += "\n\n######### Error was sent to the administrator ✓. We'll check this very soon. #{text} #########"
 			catch e1
 				console.log "fetch post error failed", e1
-				user_prompt += "\n\n######### Error could **NOT** automatically be sent to the administrator. Maybe you are offline. Otherwise, please be so kind to report the error manually. #########"
+				user_prompt += "\n\n######### Error could **NOT** automatically be sent to the administrator. Maybe you are offline. Otherwise, please be so kind to report the error yourself. #########"
 			try
 				store.dispatch 'set_global_error_message', user_prompt
 			catch e2

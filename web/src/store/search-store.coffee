@@ -132,7 +132,7 @@ export default
 				.map (sorter) => "#{sorter.attribute_id}:#{sorter.direction}"
 				.join ','
 			filters_param = state.filters
-				.map (filter) => "#{filter.attribute_id}:#{filter.condition}:#{filter.condition_value}:#{if not filter.case_sensitive then 'i' else ''}"
+				.map (filter) => "#{filter.attribute_id}:#{filter.condition}:#{filter.value}:#{if not filter.case_sensitive then 'i' else ''}"
 				.join ','
 			response = await axios.get 'p',
 				params:

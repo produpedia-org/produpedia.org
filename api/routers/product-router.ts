@@ -157,7 +157,7 @@ interface Sorter {
 interface Filter {
     attribute: Attribute;
     condition: string;
-    condition_value: string;
+    value: string;
     case_sensitive: boolean;
 }
 type MongoFilter = {[key: string]: any};
@@ -190,7 +190,7 @@ product_router.get('/', async (req, res) => {
         filter_param
             .split(',').filter(Boolean)
             .map(async (s: string): Promise<Filter | null> => {
-                const [attribute_id, condition, condition_value, case_str] = s.split(':');
+                const [attribute_id, condition, value, case_str] = s.split(':');
                 const case_sensitive = !case_str || case_str !== 'i';
                 // TODO: is this cached or same request for same attribute multiple times?
                 const attribute = await Attribute.findOne({
@@ -199,7 +199,7 @@ product_router.get('/', async (req, res) => {
                 if (!attribute)
                     return null;
                 return {
-                    attribute, condition, condition_value, case_sensitive,
+                    attribute, condition, value, case_sensitive,
                 };
             })))
         .filter(Boolean) as Filter[];
@@ -211,11 +211,11 @@ product_router.get('/', async (req, res) => {
                 switch (filter.condition) {
                 case 'lt':
                     filter_condition_formatted = {
-                        $lt: parse_single_value_or_throw(filter.condition_value, filter.attribute),
+                        $lt: parse_single_value_or_throw(filter.value, filter.attribute),
                     }; break;
                 case 'gt':
                     filter_condition_formatted = {
-                        $gt: parse_single_value_or_throw(filter.condition_value, filter.attribute),
+                        $gt: parse_single_value_or_throw(filter.value, filter.attribute),
                     }; break;
                 case 'nu':
                     filter_condition_formatted = {
@@ -227,20 +227,20 @@ product_router.get('/', async (req, res) => {
                     }; break;
                 case 'con':
                     filter_condition_formatted =
-                        new RegExp(regexp_escape(String(filter.condition_value)), filter.case_sensitive ? undefined : 'i');
+                        new RegExp(regexp_escape(String(filter.value)), filter.case_sensitive ? undefined : 'i');
                     break;
                 case 'ne':
                     filter_condition_formatted = {
-                        $ne: parse_single_value_or_throw(filter.condition_value, filter.attribute),
+                        $ne: parse_single_value_or_throw(filter.value, filter.attribute),
                     }; break;
                 case 'eq':
                 default:
                     if (filter.attribute.type !== 'string' || filter.case_sensitive) {
                         filter_condition_formatted =
-                            parse_single_value_or_throw(filter.condition_value, filter.attribute);
+                            parse_single_value_or_throw(filter.value, filter.attribute);
                     } else {
                         filter_condition_formatted =
-                            new RegExp(`^${regexp_escape(String(filter.condition_value))}$`, 'i');
+                            new RegExp(`^${regexp_escape(String(filter.value))}$`, 'i');
                     }
                     break;
                 }

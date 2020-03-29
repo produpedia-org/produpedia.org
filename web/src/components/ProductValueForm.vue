@@ -1,7 +1,7 @@
 <template lang="slm">
 promise-form v-bind="$attrs" v-on="$listeners"
 	slot name=before
-	div.value
+	div.value v-if=!novalue
 		/ FIXME: arrays (not boolean)
 		label.column v-if="attribute.type==='string'"
 			| Value
@@ -29,6 +29,9 @@ export default
 		attribute:
 			type: Object
 			required: true
+		novalue:
+			type: Boolean
+			default: false
 </script>
 
 <style lang="stylus" scoped>

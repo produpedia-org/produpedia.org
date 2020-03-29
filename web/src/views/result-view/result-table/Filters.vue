@@ -3,8 +3,8 @@ div
 	div.filters.justify-center
 		div.filter.box v-for="filter in filters"
 			span $condition_by_id[filter.condition].long&nbsp;
-			strong.value v-if=filter.condition_value :class.case_sensitive=filter.case_sensitive
-				| $filter.condition_value&nbsp;
+			strong.value v-if=filter.value :class.case_sensitive=filter.case_sensitive
+				| $filter.value&nbsp;
 			button @click=remove_filter(filter) v-if=!readonly ╳
 		label.justify-center v-if="!show_form && !readonly"
 			span.disabled v-if=!filters.length Add filter&nbsp;
@@ -12,8 +12,10 @@ div
 				| +
 	div.center.column
 		popup v-if=show_form @close=show_form=false
+			h5 Add a filter:
+			h4 $attribute.name
 			/ TODO btn float right not working? even if this is prmose form directly	
-			product-value-form#form :action=add_filter button_float_right="" :attribute=attribute :class.novalue=!condition_needs_value
+			product-value-form#form :action=add_filter button_float_right="" :attribute=attribute :novalue=!condition_needs_value
 				template #before=""
 					/ todo currently unused
 					div.attribute-select.padding v-if=!attribute_id
@@ -142,7 +144,4 @@ export default
 			width 62px
 			font-family monospace
 			margin 0 auto
-	&.novalue
-		>>> .value
-			display none
 </style>
