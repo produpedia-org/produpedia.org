@@ -15,11 +15,11 @@
 						option :value=-1 All
 		
 		div#result-table-container.flex-fill ref=result_table_container tabindex=-1 @scroll=on_table_scroll
-			result-table#result-table v-if=data_fetched @datum_clicked=datum_clicked($event) :readonly=readonly
+			result-table#result-table v-if=data_fetched @datum_clicked=editing=$event :readonly=readonly
 			p.disabled.center v-else="" Loading...
 		
 		/ maybe use linus borgs portal instead?
-		popup v-if=editing @close=finish_editing
+		popup v-if=editing @close=editing=null
 			edit-datum-dialog :product=editing.product :attribute_id=editing.attribute_id
 
 		div.center.margin-l v-if=!readonly
@@ -46,7 +46,7 @@ export default
 		show_add_product_dialog: false
 		editing: null
 		readonly: false
-		selectable_limits: [ 5, 10, 20, 50, 100, 500, 1000, 10000 ]
+		selectable_limits: [ 5, 10, 20, 50, 100, 500, 1000, 1000 ]
 	methods:
 		register_search_store: ->
 			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
@@ -54,10 +54,6 @@ export default
 			Promise.all
 				-	@$store.dispatch('search/search')
 				-	@$store.dispatch('search/get_attributes')
-		datum_clicked: (editing) ->
-			@editing = editing
-		finish_editing: ->
-			@editing = null
 		on_table_scroll: (event) ->
 			ref = event.target
 			is_scrolled_to_bottom = ref.scrollHeight - ref.scrollTop == ref.clientHeight
