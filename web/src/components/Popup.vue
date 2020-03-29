@@ -37,4 +37,5 @@ main
 	left 1.5rem
 	top 0.5rem
 	color var(--color-border)
+	user-select none
 </style>
