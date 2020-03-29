@@ -67,10 +67,13 @@ table border=1
 					button.edit.create v-if=!readonly
 						/ 🖉
 						| +
-		/ tr.actions
-		/ 	td colspan=100
-		/ 		div.load-more.center
-		/ 			promise-button.btn :action=fetch_next_page Load more
+		tr.actions
+			td colspan=100
+				div.load-more.center
+					/ Fallback in case the autoscroll doesnt work
+					/ OR *cannot* work because there is no scroll bar, 
+					/ e.g. when there are but a few results
+					promise-button.btn :action=fetch_next_page Load more
 </template>
 
 <script lang="coffee">
@@ -270,7 +273,7 @@ td.datum
 		padding-left 1em
 		display inline-block
 		margin 0
-// tr.actions
-// 	.load-more
-// 		max-width 100vw
+tr.actions
+	.load-more
+		max-width 100vw
 </style>
