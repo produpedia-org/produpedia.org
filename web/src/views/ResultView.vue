@@ -1,15 +1,23 @@
 <template lang="slm">
 	div.flex-fill.column.padding-l
 
-		div#readonly-mode
-			label
-				| Readonly mode
-				input type=checkbox v-model=readonly
-
-		div#result-table-container.flex-fill ref=result_table_container tabindex=-1
+		/ A better semantic element might be `menu`, but it is supported nowhere
+		aside#configuration.row.center.padding
+			.left
+				label
+					| Readonly mode
+					input type=checkbox v-model=readonly
+			.right
+				label
+					| Rows to load 
+					select.limit v-model=limit
+						option v-for="l of selectable_limits" :value=l $l
+						option :value=-1 All
+		
+		div#result-table-container.flex-fill ref=result_table_container tabindex=-1 @scroll=on_table_scroll
 			result-table#result-table v-if=data_fetched @datum_clicked=datum_clicked($event) :readonly=readonly
 			p.disabled.center v-else="" Loading...
-
+		
 		/ maybe use linus borgs portal instead?
 		popup v-if=editing @close=finish_editing
 			edit-datum-dialog :product=editing.product :attribute_id=editing.attribute_id
@@ -23,12 +31,12 @@
 
 <script lang="coffee">
 import search_store_module from '@/store/search-store'
-
+import { mapActions } from 'vuex'
 import ResultTable from '@/views/result-view/ResultTable'
 import EditDatumDialog from '@/views/result-view/EditDatumDialog'
 import AddProductDialog from '@/views/result-view/AddProductDialog'
 
-export default(
+export default
 	components: { ResultTable, EditDatumDialog, AddProductDialog }
 	name: 'ResultView'
 	serverPrefetch: -> # note: docs say: You may find the same fetchItem() logic repeated multiple times (in serverPrefetch, mounted and watch callbacks) in each component - it is recommended to create your own abstraction (e.g. a mixin or a plugin) to simplify such code. (todo)
@@ -38,6 +46,7 @@ export default(
 		show_add_product_dialog: false
 		editing: null
 		readonly: false
+		selectable_limits: [ 5, 10, 20, 50, 100, 500, 1000, 10000 ]
 	methods:
 		register_search_store: ->
 			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
@@ -49,9 +58,16 @@ export default(
 			@editing = editing
 		finish_editing: ->
 			@editing = null
-	computed: {
+		on_table_scroll: (event) ->
+			ref = event.target
+			is_scrolled_to_bottom = ref.scrollHeight - ref.scrollTop == ref.clientHeight
+			if is_scrolled_to_bottom
+				@$store.dispatch 'search/fetch_next_page'
+	computed:
 		data_fetched: -> !!@$store.state.search?.attributes
-	}
+		limit:
+			get: -> @$store.state.search.limit
+			set: (v) -> @$store.dispatch 'search/set_limit', v
 	created: ->
 		@register_search_store()
 	mounted: ->
@@ -62,10 +78,18 @@ export default(
 	destroyed: ->
 		@$store.unregisterModule 'search'
 		@$store.dispatch 'set_default_focus_target', null
-)
 </script>
 
 <style lang="stylus" scoped>
+#configuration
+	justify-content space-between
+	color var(--color-clickable)
+	font-size small
+	select.limit
+		padding 2px 0
+		text-align-last right
+		> option
+			direction rtl
 #result-table-container
 	@media (min-height 690px)
 		// on small devices, dont scroll here, but scroll the entire #app

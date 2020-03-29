@@ -14,11 +14,15 @@ A search request consists out of user-defined request modifiers:
 	Attributes to sort with
 - `showers`: [] - optional
 	Attributes to be included in the result product data: [`shower1`, `shower2`, ... `showerN`]
-	Each product data result will include max(N, columns) entries.
+	Each product data result (row) will include max(N, columns) entries (cols).
 	Showers are what the server sent, and may be configured by the user (add / remove / move cols around, maybe in order to sort / filter by them or jff)
 - `columns`: number
 	Amount of attributes to respond with. If <= showers, ignored.
 	If < 1, no values will be returned
+- `limit`: number
+	Amount of products to respond with
+- `offset`: number
+	Amount of products to skip in request
 
 # Search result (answer)
 
@@ -63,10 +67,14 @@ export default
 		shower_ids: []
 		sorters: [
 		]
-		columns: 15
+		columns: 1000
+		limit: 20
+		offset: 0
 		### server response; readonly ###
 		attributes: null
 		products: null
+		### other ###
+		reached_the_end: false
 	getters:
 		attribute_ids: (state) ->
 			state.attributes.map (a) => a._id # todo add map('str') prototype
@@ -102,6 +110,7 @@ export default
 		add_sorter: (state, sorter) -> state.sorters.push sorter
 		set_products: (state, products) -> state.products = products
 		add_product: (state, product) -> state.products.push product
+		add_products: (state, products) -> state.products.push ...products
 		add_product_datum: (state, { product, attribute_id, datum }) ->
 			Vue.set product.data, attribute_id, datum
 		set_shower_ids: (state, shower_ids) -> state.shower_ids = shower_ids
@@ -112,6 +121,11 @@ export default
 			state.attributes = attributes
 		add_filter: (state, filter) -> state.filters.push filter
 		remove_filter: (state, filter) -> Vue.delete state.filters, state.filters.indexOf(filter)
+		set_columns: (state, columns) -> state.columns = columns
+		set_limit: (state, limit) -> state.limit = limit
+		set_offset: (state, offset) -> state.offset = offset
+		end_reached: (state) -> state.reached_the_end = true
+		end_not_yet_reached: (state) -> state.reached_the_end = false
 	actions:
 		toggle_sort_direction: ({ commit, dispatch, state, getters }, { attribute_id, direction }) ->
 			sorter = getters.sorters_by_attribute_id[attribute_id]
@@ -122,10 +136,16 @@ export default
 			commit 'add_sorter', { attribute_id, direction }
 			dispatch 'search'
 		### aka get_products ### # todo rename
-		search: ({ commit, state }) ->
-			# commit('set_shower_ids', [])
-			commit 'set_products', []
-			{ subject, columns } = state
+		search: ({ commit, state }, { append = false } = {}) ->
+			if append and state.reached_the_end
+				# To prevent unnecessary requests when the last appending request
+				# already returned an empty set
+				return
+			commit 'end_not_yet_reached'
+			if not append
+				commit 'set_products', []
+				commit 'set_offset', 0
+			{ subject, columns, limit, offset } = state
 			shower_ids_param = state.shower_ids
 				.join ','
 			sorters_param = state.sorters
@@ -141,8 +161,12 @@ export default
 					f: filters_param,
 					so: sorters_param,
 					c: columns
+					l: limit
+					o: offset
 			commit 'set_shower_ids', response.data.shower_ids
-			commit 'set_products', response.data.products
+			commit 'add_products', response.data.products
+			if not response.data.products.length
+				commit 'end_reached'
 		move_shower_to: ({ dispatch, commit, state }, { index, shower_id }) ->
 			current_pos = state.shower_ids.findIndex (e) => e == shower_id
 			new_pos = index
@@ -185,3 +209,11 @@ export default
 		remove_filter: ({ commit, dispatch }, filter) ->
 			commit 'remove_filter', filter
 			dispatch 'search'
+		set_limit: ({ commit, dispatch }, limit) ->
+			commit 'set_limit', limit
+			dispatch 'search'
+		fetch_next_page: ({ commit, dispatch, state }) ->
+			commit 'set_offset', state.offset + state.limit
+			dispatch 'search', { append: true }
+		# add_column: ({ commit, state }) ->
+		# 	commit 'set_column', state.column + 1

@@ -168,6 +168,10 @@ type MongoFilter = {[key: string]: any};
 product_router.get('/', async (req, res) => {
     /*********** parse  *********/
     const subject: string = req.query.t;
+    let limit: number|undefined = Number(req.query.l);
+    if (limit < 0)
+        limit = undefined;
+    const offset = Number(req.query.o);
     let shower_ids: string[] = req.query.sh
         .split(',').filter(Boolean);
     const sorters_param: string = req.query.so;
@@ -258,13 +262,13 @@ product_router.get('/', async (req, res) => {
 
     /*********** determine showers if not given **********/
     if (!shower_ids.length) {
-        const count: number = Number(req.query.c);
+        const columns_count: number = Number(req.query.c);
         shower_ids = (await Attribute.find({
             select: ['_id'],
             where: {
                 subject,
             },
-            take: count,
+            take: columns_count,
             order: {
                 interest: 'DESC',
             },
@@ -292,7 +296,8 @@ product_router.get('/', async (req, res) => {
         order: {
             ...sorters_formatted,
         },
-        take: 30, // FIXME
+        take: limit,
+        skip: offset,
     });
 
     // todo fix this with typeorm (idk)

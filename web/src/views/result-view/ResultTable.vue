@@ -67,6 +67,10 @@ table border=1
 					button.edit.create v-if=!readonly
 						/ 🖉
 						| +
+		/ tr.actions
+		/ 	td colspan=100
+		/ 		div.load-more.center
+		/ 			promise-button.btn :action=fetch_next_page Load more
 </template>
 
 <script lang="coffee">
@@ -81,7 +85,7 @@ export default
 	data: =>
 		can_drag: true
 		dragging_column: false
-	methods:
+	methods: {
 		toggle_sort_direction: (attribute_id, direction) ->
 			@$store.dispatch 'search/toggle_sort_direction', { attribute_id, direction }
 		datum_clicked: (product, attribute_id) ->
@@ -91,6 +95,9 @@ export default
 			@$store.dispatch 'search/move_shower_to', { shower_id, index }
 		remove_shower: (shower_id) ->
 			@$store.dispatch 'search/remove_shower', shower_id
+		...mapActions 'search',
+			-	'fetch_next_page'
+	}
 	computed: {
 		...mapState 'search',
 			-	'products'
@@ -263,4 +270,7 @@ td.datum
 		padding-left 1em
 		display inline-block
 		margin 0
+// tr.actions
+// 	.load-more
+// 		max-width 100vw
 </style>
