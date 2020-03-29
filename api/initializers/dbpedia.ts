@@ -16,6 +16,7 @@ if (process.argv.length !== 4) {
 const data_json = JSON.parse(readFileSync(process.argv[2], 'utf-8'));
 const rows = data_json.rows;
 const predicates: string[] = data_json.predicates.filter((p: string) => ! p.match(/:/));
+const labels = data_json.labels;
 const mapping_json = JSON.parse(readFileSync(process.argv[3], 'utf-8'));
 const predicate_infos = mapping_json.relevant_predicates.reduce((all: any, p: any) => {
     all[p.predicate] = p;
@@ -39,6 +40,12 @@ const attributes = predicates
         return attr;
     });
 
+const resource_to_source = (resource: string) =>
+    `http://dbpedia.org/resource/${resource.split(':')[1]}`;
+
+const label_to_name = (label: string) =>
+    label.replace(/@[a-z]+/, '');
+
 (async () => {
     try {
         await createConnection();
@@ -55,16 +62,36 @@ const attributes = predicates
 
         error('Storing products');
         const products = rows.map((r: any) => {
+            const source = resource_to_source(r.resource);
             const data = predicates.reduce((all: any, p: string) => {
                 if (r[p]) {
                     const attr = attributes_by_predicate[p];
                     if (!attr)
                         return all;
-                    const value: ProductDatumValue = parse_product_datum_value_or_throw(r[p], attr);
+                    let value: ProductDatumValue = parse_product_datum_value_or_throw(r[p], attr);
+                    if (!value)
+                        throw new Error('value is not set: ' + r[p]);
+                    // Change value to label of value using labels object, if it is a resource with label,
+                    // for each array element or for the value directly if not array,
+                    if (attr.type === 'string') {
+                        const labelify_value = (single_value: AttributeType) => {
+                            // This is still a little messy. Might be an idea to
+                            // not only store the value(object) in downloader/structure transformer,
+                            // but also the specific value type
+                            if (typeof single_value === 'string' && single_value.includes(':') && labels[single_value])
+                                return label_to_name(labels[single_value]);
+                            return single_value;
+                        };
+                        if (Array.isArray(value)) {
+                            value = value.map(single_value => labelify_value(single_value));
+                        } else {
+                            value = labelify_value(value);
+                        }
+                    }
                     all[attr._id.toHexString()] = new PrimaryProductDatum({
                         value,
                         verified: false,
-                        source: 'dbpedia',
+                        source,
                         user: 'system',
                     });
                 }
@@ -72,7 +99,8 @@ const attributes = predicates
             }, {});
             return new Product({
                 subject: 'Smartphone',
-                name: r.resource,
+                name: label_to_name(r['rdfs:label']),
+                source,
                 data,
                 verified: false,
             });

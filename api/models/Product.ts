@@ -1,4 +1,4 @@
-import { IsBoolean, Length, IsOptional, IsObject } from 'class-validator';
+import { IsBoolean, Length, IsOptional, IsObject, IsUrl } from 'class-validator';
 import { BaseEntity, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
 import PrimaryProductDatum from './PrimaryProductDatum';
 
@@ -26,6 +26,9 @@ class Product extends BaseEntity {
     @IsObject()
     public data!: PrimaryProductData; // todo nested validation
     // FIXME user and source and maybe put these two (three? plus verified) into some interface
+    @Column()
+    @IsUrl()
+    public source!: string;
 
     public constructor(init: Partial<Product>) {
         super();
