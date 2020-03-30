@@ -33,7 +33,7 @@ a
 		color var(--color-hover)
 	text-decoration none
 
-a, button
+button
 	font-size 13px
 fieldset {
 	border: 2px solid #eeeeee; // TODO: breaks .box in login, also has border or shadow or both
