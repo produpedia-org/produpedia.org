@@ -13,7 +13,7 @@ import product_router from './routers/product-router';
 import user_router from './routers/user-router';
 import MailService from './services/MailService';
 import TokenService from './services/TokenService';
-import { env, error, log, html_escape } from './utils';
+import { env, error, log, html_escape, is_production } from './utils';
 import { createConnection } from 'typeorm';
 
 // ///////////////// CONFIG
@@ -57,17 +57,19 @@ app.use('/a', attribute_router);
 app.use(async (err, req, res, next) => {
     error(err);
     const info = err && (err.stack || err.status || err.errmsg || err.message || err) || 'no error message available';
-    await mail_service.send_mail(
+    if (is_production) {
+        await mail_service.send_mail(
         'error@produpedia.org',
         'API 500 / 422',
         html_escape(JSON.stringify(info)));
+    }
     if (err.length && (err[0] instanceof ValidationError || err[0].constraints)) { // TODO: class-validator whitelisting errors arent instanceof ValidationError. Probably a bug?
         // TODO: err doesnt include the stack trace
         return res.status(UNPROCESSABLE_ENTITY).send(err);
     }
-    const user_message = 'Internal Server Error';
-    // if (!is_production) // TODO revert
-    //  user_message += ' - ' + info;
+    let user_message = 'Internal Server Error';
+    if (!is_production)
+        user_message += ' - ' + info;
     return res.status(500).send(user_message);
 });
 

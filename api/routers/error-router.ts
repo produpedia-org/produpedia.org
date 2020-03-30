@@ -1,6 +1,6 @@
 import express from 'express';
 import { UNPROCESSABLE_ENTITY } from 'http-status-codes';
-import { html_escape, error } from '../utils';
+import { html_escape, error, is_production } from '../utils';
 import MailService from '../services/MailService';
 
 export default (mail_service: MailService) => {
@@ -16,10 +16,12 @@ export default (mail_service: MailService) => {
         error('Error message received', req.body);
         if (!req.body.error)
             return res.status(UNPROCESSABLE_ENTITY).send('field error missing');
-        await mail_service.send_mail(
+        if (is_production) {
+            await mail_service.send_mail(
             'error@produpedia.org',
             'Error message received',
             html_escape(req.body.error.replace(/\\n/g, '\n')));
+        }
         return res.end();
     });
 

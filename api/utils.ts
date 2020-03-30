@@ -15,3 +15,5 @@ export const html_escape = (s: string) =>
 
 export const regexp_escape = (s: string) =>
     s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+
+export const is_production = process.env.NODE_ENV === 'production';
