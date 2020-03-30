@@ -13,7 +13,7 @@ table border=1
 					| ╳ Hide column
 				div.center v-else=""
 					| Name
-			th.dropzone.move v-for="shower_id, index in shower_ids" :key="shower_id+'_'+index" v-drop=move_shower_to(index)
+			th.dropzone.move v-for="shower_id, index in shower_ids" :key="shower_id+'_'+index" v-drop=move_shower_to(index) :set="attribute=attributes_by_id[shower_id]"
 				.attribute.column.center
 					div.actions.center v-if="!readonly && !can_drag"
 						button.moveto @click=move_shower_to(index-1)(shower_id) ←
@@ -24,9 +24,12 @@ table border=1
 							div.center
 								span.grip v-if="!readonly && can_drag" ⠿
 							div
-								div.name $attributes_by_id[shower_id].name
-								div.unit v-if=attributes_by_id[shower_id].unit
-									| $attributes_by_id[shower_id].unit
+								div.name :class.disabled=attribute.messy $attribute.name
+								div.unit v-if=attribute.unit
+									| $attribute.unit
+								div.messy-warning.highlighted v-if=attribute.messy
+									| ⚠️ 
+									small Messy category
 						div.sort.column
 							button.sort-up.disabled :disabled=readonly @click="toggle_sort_direction(shower_id, 1)" :class.highlighted=sorters_by_attribute_id[shower_id].direction===1
 								/ ˄ todo svg
@@ -237,6 +240,8 @@ tbody
 			content '['
 		&::after
 			content ']'
+	.messy-warning
+		white-space nowrap
 	.grip
 		font-weight normal
 		color var(--color-disabled)

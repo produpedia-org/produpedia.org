@@ -23,7 +23,10 @@ class Attribute extends BaseEntity {
     @Max(100)
     public interest: number = 0;
     @Column()
-    @Length(1, 20)
+    @IsBoolean()
+    public messy: boolean = false;
+    @Column()
+    @Length(1, 50)
     public name!: string;
     @Column()
     @IsOptional()

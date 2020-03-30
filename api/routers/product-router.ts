@@ -189,7 +189,7 @@ product_router.get('/', async (req, res) => {
         .reduce((all: object, sorter) => ({
             ...all,
             [`data.${sorter.attribute_id}.value`]: sorter.direction,
-        }),     {});
+        }), {});
     const filter_param: string = req.query.f;
     const name_filters: Filter[] = [];
     const filters: Filter[] = (await Promise.all(
@@ -270,6 +270,7 @@ product_router.get('/', async (req, res) => {
             },
             take: columns_count,
             order: {
+                messy: 'ASC',
                 interest: 'DESC',
             },
         }))

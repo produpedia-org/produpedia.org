@@ -15,7 +15,7 @@ if (process.argv.length !== 4) {
 
 const data_json = JSON.parse(readFileSync(process.argv[2], 'utf-8'));
 const rows = data_json.rows;
-const predicates: string[] = data_json.predicates.filter((p: string) => ! p.match(/:/));
+const predicates: string[] = data_json.predicates; // .filter((p: string) => ! p.match(/:/));
 const labels = data_json.labels;
 const mapping_json = JSON.parse(readFileSync(process.argv[3], 'utf-8'));
 const predicate_infos = mapping_json.relevant_predicates.reduce((all: any, p: any) => {
@@ -24,27 +24,41 @@ const predicate_infos = mapping_json.relevant_predicates.reduce((all: any, p: an
 }, {});
 const attributes_by_predicate: { [predicate: string]: Attribute } = {};
 
-error('Storing attributes');
-const attributes = predicates
-    .map(p => predicate_infos[p])
-    .filter(Boolean)
-    .map((p) => {
-        const { predicate, mapTo, ...rest } = p;
-        const attr = new Attribute({
-            subject: 'Smartphone',
-            interest: 0,
-            ...rest,
-            type: p.type === 'resource' ? 'string' : p.type,
-        });
-        attributes_by_predicate[p.predicate] = attr;
-        return attr;
-    });
-
 const resource_to_source = (resource: string) =>
     `http://dbpedia.org/resource/${resource.split(':')[1]}`;
 
 const label_to_name = (label: string) =>
     label.replace(/@[a-z]+/, '');
+
+error('Storing attributes');
+const attributes = predicates
+    .map(p => predicate_infos[p])
+    .filter(Boolean)
+    .filter(p => p.export !== false)
+    .map((p) => {
+        const { predicate, mapTo, name, export: _, comment, ...rest } = p;
+        let name_transformed = name;
+        let messy = false;
+        if (!name) {
+            name_transformed = predicate; // FIXME: label_to_name(labels[predicate]);
+            messy = true;
+        }
+        let type = p.type;
+        if (!type || type === 'resource')
+            type = 'string';
+        if (messy)
+            type = 'string';
+        const attr = new Attribute({
+            name: name_transformed,
+            subject: 'Smartphone',
+            interest: 0,
+            messy,
+            ...rest,
+            type,
+        });
+        attributes_by_predicate[p.predicate] = attr;
+        return attr;
+    });
 
 (async () => {
     try {

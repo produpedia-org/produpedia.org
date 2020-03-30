@@ -4,6 +4,13 @@ div.edit-datum
 	h3
 		em $attribute.name 
 		| of $product.name
+	div v-if=attribute.messy
+		div.highlighted ⚠️ This category is messy. You can filter the values as you please, but they are not organized and often contain weird values.
+		read-more
+			template #summary=""
+				div.highlighted Details
+			p The values for $attribute.name originate from the "generic infobox-properties" dataset from DBpedia (details below). Contrary to the mapped, ontologybased values, these are mostly copied <em>as is</em> from Wikipedia, without much processing.
+			p Until these categories are tidied up or replaced by a high quality dataset, they will stay because it is better to have messy values than to not have any at all.
 	div.current v-if=datum
 		h4 Current value
 		dl
@@ -50,7 +57,7 @@ div.edit-datum
 	h4 Add new value
 	read-more
 		template #summary=""
-			p.highlighted This is currently NOT supported! Click for more info
+			p Editing is currently NOT supported! Click for more info
 		p This is only for demonstration purposes; You can submit values here and they will be saved, but the database will be reset soon.
 		p Currently, you can <em>not</em> lastingly edit the values on Produpedia.org. But this will be changed, as the primary goal of this site is to be an open and collaborative effort.
 		p Right now, the only way is to participate in the development of the site or edit values in Wikipedia directly. They will then find their way into Produpedia.org eventually.
