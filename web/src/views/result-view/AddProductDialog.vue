@@ -4,6 +4,9 @@ div
 		label
 			| Name
 			input name=name placeholder=Name maxlength=255 minlength=3 required=""
+		label.column
+			| Source
+			input type=url name=source placeholder=Source required=""
 		template #button_label="" Add product
 </template>
 

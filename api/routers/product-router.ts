@@ -76,12 +76,13 @@ export function parse_product_datum_value_or_throw(raw: any, attribute: Attribut
 const product_router = express.Router();
 
 product_router.post('/', async (req, res) => {
-    const { name, subject } = req.body;
+    const { name, subject, source } = req.body;
     const product = new Product({
         name,
         subject,
         verified: false,
         data: {},
+        source,
     });
     await product.save();
     res.send(product);
