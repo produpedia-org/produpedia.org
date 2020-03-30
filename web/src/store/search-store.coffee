@@ -99,6 +99,8 @@ export default
 				all[attribute_id] = state.filters.filter (filter) => filter.attribute_id == attribute_id
 				all
 			, {})
+		name_filters: (state) ->
+			state.filters.filter (filter) => filter.attribute_id == 'name'
 		sorters_amount: (state) -> state.sorters.length
 		# todo docs belong here not top
 		hidden_attribute_ids: (state, getters) ->

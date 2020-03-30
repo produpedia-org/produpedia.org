@@ -3,14 +3,16 @@
 table border=1
 	thead
 		tr
-			td
+			td.filters
+				filters :filters=name_filters :readonly=readonly
 			td.filters v-for="shower_id in shower_ids"
 				filters :filters=filters_by_attribute_id[shower_id] :attribute_id=shower_id :readonly=readonly
 		tr.attributes :class.drop-target=dragging_column
 			th
 				.dropzone.remove v-if=dragging_column v-drop=remove_shower
 					| ╳ Hide column
-				div v-else=""
+				div.center v-else=""
+					| Name
 			th.dropzone.move v-for="shower_id, index in shower_ids" :key="shower_id+'_'+index" v-drop=move_shower_to(index)
 				.attribute.column.center
 					div.actions.center v-if="!readonly && !can_drag"
@@ -107,6 +109,7 @@ export default
 			-	'shower_ids'
 		...mapGetters 'search',
 			-	'filters_by_attribute_id'
+			-	'name_filters'
 			-	'sorters_by_attribute_id'
 			-	'sorters_amount'
 			-	'attributes_by_id'

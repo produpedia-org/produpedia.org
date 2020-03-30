@@ -13,16 +13,11 @@ div
 	div.center.column
 		popup v-if=show_form @close=show_form=false
 			h5 Add a filter:
-			h4 $attribute.name
+			h4 {{ attribute.name || 'Product name' }}
 			/ TODO btn float right not working? even if this is prmose form directly	
 			product-value-form#form :action=add_filter button_float_right="" :attribute=attribute :novalue=!condition_needs_value
 				template #before=""
-					/ todo currently unused
-					div.attribute-select.padding v-if=!attribute_id
-						label.column
-							| Attribute
-							attribute-select name=attribute_id required="" :attribute_ids=attribute_ids
-					input v-else="" type=hidden name=attribute_id :value=attribute_id
+					input type=hidden name=attribute_id :value=attribute_id
 					div.condition.padding
 						label.column
 							| Condition
@@ -49,7 +44,10 @@ export default
 			required: true
 		attribute_id:
 			type: String
-			default: ''
+			# This is a little hacky. TODO: Make this component more
+			# reusable-y, mostly by moving the actions to the parent component.
+			# ResultTable can then decide what to do with a changed filter
+			default: 'name'
 		readonly:
 			default: false
 	data: ->
@@ -103,19 +101,19 @@ export default
 	}
 	computed: {
 		...mapGetters 'search',
-			-	'attribute_ids'
 			-	'attributes_by_id'
 		condition_by_id: -> @conditions.reduce((all, condition) =>
 			all[condition.id] = condition
 			all
 		, {})
 		attribute: ->
-			@$store.getters['search/attributes_by_id'][@$props.attribute_id]
+			@$store.getters['search/attributes_by_id'][@$props.attribute_id] or
+				type: 'string'
 		condition_needs_value: ->
 			@condition_by_id[@condition_id].needs_value
 		condition_can_be_case_sensitive: ->
 			@condition_needs_value and
-				@attribute.type == 'string'
+				(not @attribute or @attribute.type == 'string')
 	}
 </script>
 

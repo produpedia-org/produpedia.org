@@ -191,12 +191,22 @@ product_router.get('/', async (req, res) => {
             [`data.${sorter.attribute_id}.value`]: sorter.direction,
         }),     {});
     const filter_param: string = req.query.f;
+    const name_filters: Filter[] = [];
     const filters: Filter[] = (await Promise.all(
         filter_param
             .split(',').filter(Boolean)
             .map(async (s: string): Promise<Filter | null> => {
                 const [attribute_id, condition, value, case_str] = s.split(':');
                 const case_sensitive = !case_str || case_str !== 'i';
+                if (attribute_id === 'name') {
+                    // TODO: This is a little ugly, modifying an external array
+                    // inside a .map()
+                    name_filters.push({
+                        attribute: new Attribute({
+                            type: 'string',
+                        }), condition, value, case_sensitive });
+                    return null;
+                }
                 // TODO: is this cached or same request for same attribute multiple times?
                 const attribute = await Attribute.findOne({
                     _id: new ObjectID(attribute_id),
@@ -208,49 +218,34 @@ product_router.get('/', async (req, res) => {
                 };
             })))
         .filter(Boolean) as Filter[];
+    const filter_to_formatted_filter_condition = (filter: Filter) => {
+        switch (filter.condition) {
+        case 'lt':
+            return { $lt: parse_single_value_or_throw(filter.value, filter.attribute) };
+        case 'gt':
+            return { $gt: parse_single_value_or_throw(filter.value, filter.attribute) };
+        case 'nu':
+            return { $exists: false };
+        case 'nn':
+            return { $exists: true };
+        case 'con':
+            return new RegExp(regexp_escape(String(filter.value)), filter.case_sensitive ? undefined : 'i');
+        case 'ne':
+            return { $ne: parse_single_value_or_throw(filter.value, filter.attribute) };
+        case 'eq':
+        default:
+            if (filter.attribute.type !== 'string' || filter.case_sensitive)
+                return parse_single_value_or_throw(filter.value, filter.attribute);
+            return new RegExp(`^${regexp_escape(String(filter.value))}$`, 'i');
+        }
+    };
     let filters_formatted: MongoFilter[];
     try {
         filters_formatted = filters
-            .map((filter) => {
-                let filter_condition_formatted;
-                switch (filter.condition) {
-                case 'lt':
-                    filter_condition_formatted = {
-                        $lt: parse_single_value_or_throw(filter.value, filter.attribute),
-                    }; break;
-                case 'gt':
-                    filter_condition_formatted = {
-                        $gt: parse_single_value_or_throw(filter.value, filter.attribute),
-                    }; break;
-                case 'nu':
-                    filter_condition_formatted = {
-                        $exists: false,
-                    }; break;
-                case 'nn':
-                    filter_condition_formatted = {
-                        $exists: true,
-                    }; break;
-                case 'con':
-                    filter_condition_formatted =
-                        new RegExp(regexp_escape(String(filter.value)), filter.case_sensitive ? undefined : 'i');
-                    break;
-                case 'ne':
-                    filter_condition_formatted = {
-                        $ne: parse_single_value_or_throw(filter.value, filter.attribute),
-                    }; break;
-                case 'eq':
-                default:
-                    if (filter.attribute.type !== 'string' || filter.case_sensitive) {
-                        filter_condition_formatted =
-                            parse_single_value_or_throw(filter.value, filter.attribute);
-                    } else {
-                        filter_condition_formatted =
-                            new RegExp(`^${regexp_escape(String(filter.value))}$`, 'i');
-                    }
-                    break;
-                }
-                return { [`data.${filter.attribute._id.toHexString()}.value`]: filter_condition_formatted };
-            });
+            .map(filter => ({
+                [`data.${filter.attribute._id.toHexString()}.value`]:
+                    filter_to_formatted_filter_condition(filter),
+            }));
     } catch (error_msg) {
         return res.status(UNPROCESSABLE_ENTITY).send(error_msg);
     }
@@ -260,6 +255,10 @@ product_router.get('/', async (req, res) => {
     filters_formatted.push(...sorters
         .filter(sorter => sorter.direction === 1)
         .map(sorter => ({ [`data.${sorter.attribute_id}.value`]: { $exists: true } })));
+    // Name filters are separate because, currently, name is not an attribute
+    // but a simple property on product
+    filters_formatted.push(...name_filters
+        .map(filter => ({ name: filter_to_formatted_filter_condition(filter) })));
 
     /*********** determine showers if not given **********/
     if (!shower_ids.length) {
