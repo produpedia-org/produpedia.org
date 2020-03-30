@@ -6,8 +6,8 @@ div
 			strong.value v-if=filter.value :class.case_sensitive=filter.case_sensitive
 				| $filter.value&nbsp;
 			button @click=remove_filter(filter) v-if=!readonly ╳
-		label.justify-center v-if="!show_form && !readonly"
-			span.disabled v-if=!filters.length Add filter&nbsp;
+		label.add-filter.justify-center v-if="!show_form && !readonly"
+			span.disabled v-if=!filters.length Add filter 
 			button.disabled.fade-in @click=show_form=true
 				| +
 	div.center.column
@@ -135,6 +135,8 @@ export default
 			display inline-block
 			&.case_sensitive:first-letter
 				text-decoration underline var(--color-foreground)
+	.add-filter
+		white-space pre
 #form
 	max-width 750px
 	.attribute-select, .condition-value
