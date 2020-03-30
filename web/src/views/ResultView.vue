@@ -46,7 +46,7 @@ export default
 		show_add_product_dialog: false
 		editing: null
 		readonly: false
-		selectable_limits: [ 5, 10, 20, 50, 100, 500, 1000, 1000 ]
+		selectable_limits: [ 5, 10, 20, 50, 100, 500, 1000 ]
 	methods:
 		register_search_store: ->
 			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
