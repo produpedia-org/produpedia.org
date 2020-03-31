@@ -1,1 +1,1 @@
-**Work in progress** repository for an upcoming Open Data product search engine software system, Website + API, supposed to be reading primarily from DBpedia. Details will follow when due.
+Please check again in a few hours for detailed description.
