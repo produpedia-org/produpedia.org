@@ -6,10 +6,12 @@
   "scripts": {
     "lint": "tslint",
     "ts-node-debug": "node --inspect node_modules/.bin/ts-node --files --",
+    "dev": "yarn ts-node-debug index.ts",
+    "prod": "environment=production node index.js",
     "initialize-dev": "yarn ts-node-debug initializers/dev.ts",
     "initialize-random": "yarn ts-node-debug initializers/random.ts",
-    "dev": "yarn ts-node-debug index.ts",
-    "upgrade-all": "ncu -u && yarn install && yarn upgrade"
+    "upgrade-all": "ncu -u && yarn install && yarn upgrade",
+    "migrate": "ts-node ./node_modules/typeorm/cli.js migration:run"
   },
   "dependencies": {
     "@types/jwt-simple": "^0.5.33",
