@@ -8,20 +8,10 @@ import { error } from '../utils';
 import { parse_product_datum_value_or_throw } from '../routers/product-router';
 import { ProductDatumValue } from '../models/ProductDatum';
 
-if (process.argv.length !== 4) {
-    error('Syntax: dbpedia.ts [path-to-data-json] [path-to-mapping-json]');
-    process.exit(1);
-}
-
 const data_json = JSON.parse(readFileSync(process.argv[2], 'utf-8'));
 const rows = data_json.rows;
-const predicates: string[] = data_json.predicates; // .filter((p: string) => ! p.match(/:/));
+const predicates: string[] = data_json.predicates.filter((p: string) => p.match(/dbo:.+/));
 const labels = data_json.labels;
-const mapping_json = JSON.parse(readFileSync(process.argv[3], 'utf-8'));
-const predicate_infos = mapping_json.relevant_predicates.reduce((all: any, p: any) => {
-    all[p.predicate] = p;
-    return all;
-}, {});
 const attributes_by_predicate: { [predicate: string]: Attribute } = {};
 
 const resource_to_source = (resource: string) =>
@@ -32,36 +22,17 @@ const label_to_name = (label: string) =>
 
 error('Storing attributes');
 const attributes = predicates
-    .map(p => predicate_infos[p])
-    .filter(Boolean)
-    .filter(p => p.export !== false)
     .map((p) => {
-        const { predicate, mapTo, name, export: _, comment, ...rest } = p;
-        let messy = false;
-        let name_transformed = name;
-        if (!name) {
-            if (!labels[predicate]) {
-                console.warn('label missing for predicate ' + predicate);
-                name_transformed = predicate;
-            } else {
-                name_transformed = label_to_name(labels[predicate]);
-            }
-            messy = true;
-        }
-        let type = p.type;
-        if (!type || type === 'resource')
-            type = 'string';
-        if (messy)
-            type = 'string';
+        const messy = false;
+        const name_transformed = p;
         const attr = new Attribute({
             name: name_transformed,
-            subject: 'Smartphone',
+            subject: 'Cheese',
             interest: 0,
             messy,
-            ...rest,
-            type,
+            type: 'string',
         });
-        attributes_by_predicate[p.predicate] = attr;
+        attributes_by_predicate[p] = attr;
         return attr;
     });
 
@@ -70,14 +41,14 @@ const attributes = predicates
         await createConnection();
 
         error('Deleting all attributes');
-        await getMongoRepository(Attribute).deleteMany({});
+        await getMongoRepository(Attribute).deleteMany({ subject: 'Cheese' });
 
         error('Adding attributes');
         // console.debug(attributes);
         await Attribute.save(attributes);
 
         error('Deleting all products');
-        await getMongoRepository(Product).deleteMany({});
+        await getMongoRepository(Product).deleteMany({ subject: 'Cheese' });
 
         error('Storing products');
         const products = rows.map((r: any) => {
@@ -117,8 +88,8 @@ const attributes = predicates
                 return all;
             }, {});
             return new Product({
-                subject: 'Smartphone',
-                name: label_to_name(r['rdfs:label']),
+                subject: 'Cheese',
+                name: r['rdfs:label'] ? label_to_name(r['rdfs:label']) : r.resource,
                 source,
                 data,
                 verified: false,
