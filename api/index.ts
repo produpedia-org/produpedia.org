@@ -1,7 +1,9 @@
 /// <reference types="./types/express-form-data" />
 import bodyParser from 'body-parser';
+import fs from 'fs';
 import { ValidationError } from 'class-validator';
-import express from 'express';
+import express, { Express } from 'express';
+import https from 'https';
 import expressFormData from 'express-form-data';
 import { NO_CONTENT, UNPROCESSABLE_ENTITY } from 'http-status-codes';
 import 'reflect-metadata';
@@ -15,6 +17,7 @@ import MailService from './services/MailService';
 import TokenService from './services/TokenService';
 import { env, error, log, html_escape, is_production } from './utils';
 import { createConnection } from 'typeorm';
+import { Server } from 'http';
 
 // ///////////////// CONFIG
 
@@ -51,6 +54,7 @@ app.use('/user', user_router);
 app.use('/error', error_router(mail_service));
 app.use('/p', product_router);
 app.use('/a', attribute_router);
+app.use('/', express.static(__dirname + '/public'));
 
 // @ts-ignore
 // Global error fallback handler, including promises
@@ -58,6 +62,7 @@ app.use(async (err, req, res, next) => {
     error(err);
     const info = err && (err.stack || err.status || err.errmsg || err.message || err) || 'no error message available';
     if (is_production) {
+        // TODO: use system-configured mail instead
         await mail_service.send_mail(
         'error@produpedia.org',
         'API 500 / 422',
@@ -77,7 +82,17 @@ app.use(async (err, req, res, next) => {
     await createConnection();
     const PORT = Number(env('PORT'));
     const HOST = env('HOST');
-    app.listen(PORT, HOST, () => log(`running on ${PORT}`));
+
+    let server: Server | Express;
+    if (is_production) {
+        server = https.createServer({
+            key: fs.readFileSync('/etc/letsencrypt/live/api.produpedia.org/privkey.pem'),
+            cert: fs.readFileSync('/etc/letsencrypt/live/api.produpedia.org/fullchain.pem'),
+        }, app);
+    } else {
+        server = app;
+    }
+    server.listen(PORT, HOST, () => log(`running on ${HOST}:${PORT}`));
 })().catch((e) => {
     error(e);
     process.exit(1);
