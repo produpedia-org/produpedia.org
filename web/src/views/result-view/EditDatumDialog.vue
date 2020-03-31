@@ -5,7 +5,7 @@ div.edit-datum
 		em $attribute.name 
 		| of $product.name
 	div v-if=attribute.messy
-		div.highlighted ⚠️ This category is messy. You can filter the values as you please, but they are not organized and often contain weird values.
+		div.highlighted ⚠️ This category is messy. You can filter the values as you please, but they are not organized, have invalid types and often contain weird values.
 		read-more
 			template #summary=""
 				div.highlighted Details
