@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import session_module from './session-store'
-# import search_module from './search-store'
+import search_module from './search-store'
 
 Vue.use Vuex
 
@@ -48,5 +48,4 @@ export create_store = =>
 					state.default_focus_target.focus()
 		modules:
 			session: session_module
-			# When adding here, see ssr docs. Global submodules *seem* to need a factory wrapper too
-			# Better still, load submodules dynamically like in ResultView
+			search: search_module
