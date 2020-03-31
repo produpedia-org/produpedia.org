@@ -16,7 +16,7 @@
 		
 		div#result-table-container.flex-fill ref=result_table_container tabindex=-1 @scroll=on_table_scroll
 			result-table#result-table v-if=data_fetched @datum_clicked=editing=$event :readonly=readonly
-			p.disabled.center v-else="" Loading...Smartphone Smartphones
+			p.disabled.center v-else="" Loading...
 		
 		/ maybe use linus borgs portal instead?
 		popup v-if=editing @close=editing=null
@@ -65,7 +65,7 @@ export default
 	created: ->
 		@register_search_store()
 	beforeRouteUpdate: (to, from, next) ->
-		@$store.dispatch 'search/change_subject', to.params.subject
+		await @$store.dispatch 'search/change_subject', to.params.subject
 		next()
 	mounted: ->
 		@$refs.result_table_container.focus()
