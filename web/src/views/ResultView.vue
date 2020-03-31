@@ -39,12 +39,17 @@ import AddProductDialog from '@/views/result-view/AddProductDialog'
 export default
 	components: { ResultTable, EditDatumDialog, AddProductDialog }
 	name: 'ResultView'
+	serverPrefetch: -> # note: docs say: You may find the same fetchItem() logic repeated multiple times (in serverPrefetch, mounted and watch callbacks) in each component - it is recommended to create your own abstraction (e.g. a mixin or a plugin) to simplify such code. (todo)
+		await @fetch_table_data() # axios networking error handler doesnt display ssr: it modifies another component; this serverPrefetch only cares for ResultView. thus, serverPrefetch errors must (and semantically also should) be handled individually
+		# if error, bubble throw: Then dont allow the rendering process to continue. Better to see a page with no data than not seeing any page at all for the user, but status code should really be 500, especially for bots
 	data: ->
 		show_add_product_dialog: false
 		editing: null
 		readonly: false
 		selectable_limits: [ 5, 10, 20, 50, 100, 500, 1000 ]
 	methods:
+		register_search_store: ->
+			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
 		fetch_table_data: ->
 			Promise.all
 				-	@$store.dispatch('search/search')
@@ -59,10 +64,13 @@ export default
 		limit:
 			get: -> @$store.state.search.limit
 			set: (v) -> @$store.dispatch 'search/set_limit', v
+	created: ->
+		@register_search_store()
 	mounted: ->
 		@$refs.result_table_container.focus()
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
-		await @fetch_table_data()
+		if !@data_fetched
+			await @fetch_table_data()
 	destroyed: ->
 		@$store.unregisterModule 'search'
 		@$store.dispatch 'set_default_focus_target', null
