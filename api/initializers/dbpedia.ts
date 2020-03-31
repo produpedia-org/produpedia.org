@@ -37,10 +37,15 @@ const attributes = predicates
     .filter(p => p.export !== false)
     .map((p) => {
         const { predicate, mapTo, name, export: _, comment, ...rest } = p;
-        let name_transformed = name;
         let messy = false;
+        let name_transformed = name;
         if (!name) {
-            name_transformed = predicate; // FIXME: label_to_name(labels[predicate]);
+            if (!labels[predicate]) {
+                console.warn('label missing for predicate ' + predicate);
+                name_transformed = predicate;
+            } else {
+                name_transformed = label_to_name(labels[predicate]);
+            }
             messy = true;
         }
         let type = p.type;
