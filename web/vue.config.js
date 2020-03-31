@@ -1,9 +1,12 @@
 const path = require('path');
+const https = require('https');
 const coffeescript = require('coffeescript');
 const fs = require('fs');
 const fetch = require('node-fetch');
 
 process.env.VUE_APP_APP_VERSION = require('./package.json').version;
+
+const is_production = process.env.NODE_ENV === 'production';
 
 module.exports = {
   productionSourceMap: true, // doesnt work: https://github.com/Akryum/vue-cli-plugin-ssr/issues/84
@@ -63,7 +66,15 @@ module.exports = {
     // https://vue-cli-plugin-ssr.netlify.com/guide/configuration.html
     ssr: {
       port: 8080,
-      host: '0.0.0.0',
+      // host: '0.0.0.0',
+      extendServer: is_production? ((app) => {
+        https
+          .createServer({
+              key: fs.readFileSync("/etc/letsencrypt/live/produpedia.org/privkey.pem"),
+              cert: fs.readFileSync("/etc/letsencrypt/live/produpedia.org/fullchain.pem")
+            }, app)
+          .listen(process.env.PORT, process.env.HOST, console.log(`running on ${process.env.PORT}`));
+      }) : undefined,
       copyUrlOnStart: false,
       defaultTitle: 'Produpedia.org',
       criticalCSS: false, // ! TODO
