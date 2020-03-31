@@ -61,7 +61,7 @@ export default
 		### static ###
 		#
 		### (optionally) user-defined ###
-		subject: 'Smartphone'
+		subject: ''
 		filters: [
 		]
 		shower_ids: []
@@ -108,8 +108,10 @@ export default
 				.filter (attribute_id) =>
 					!state.showers.includes attribute_id
 	mutations:
+		set_subject: (state, subject) -> state.subject = subject
 		remove_sorter_at: (state, index) -> Vue.delete state.sorters, index
 		add_sorter: (state, sorter) -> state.sorters.push sorter
+		set_sorters: (state, sorters) -> state.sorters = sorters
 		set_products: (state, products) -> state.products = products
 		add_product: (state, product) -> state.products.push product
 		add_products: (state, products) -> state.products.push ...products
@@ -123,12 +125,21 @@ export default
 			state.attributes = attributes
 		add_filter: (state, filter) -> state.filters.push filter
 		remove_filter: (state, filter) -> Vue.delete state.filters, state.filters.indexOf(filter)
+		set_filters: (state, filters) -> state.filters = filters
 		set_columns: (state, columns) -> state.columns = columns
 		set_limit: (state, limit) -> state.limit = limit
 		set_offset: (state, offset) -> state.offset = offset
 		end_reached: (state) -> state.reached_the_end = true
 		end_not_yet_reached: (state) -> state.reached_the_end = false
 	actions:
+		change_subject: ({ commit, dispatch }, subject) ->
+			commit 'set_subject', subject
+			commit 'set_filters', []
+			commit 'set_sorters', []
+			commit 'set_shower_ids', []
+			Promise.all
+				-	dispatch 'search'
+				-	dispatch 'get_attributes'
 		toggle_sort_direction: ({ commit, dispatch, state, getters }, { attribute_id, direction }) ->
 			sorter = getters.sorters_by_attribute_id[attribute_id]
 			if sorter

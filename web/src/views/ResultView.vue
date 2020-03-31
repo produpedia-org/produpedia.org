@@ -4,7 +4,7 @@
 		/ A better semantic element might be `menu`, but it is supported nowhere
 		aside#configuration.row.center.padding
 			.left
-				label
+				label.center
 					| Readonly mode
 					input type=checkbox v-model=readonly
 			.right
@@ -16,7 +16,7 @@
 		
 		div#result-table-container.flex-fill ref=result_table_container tabindex=-1 @scroll=on_table_scroll
 			result-table#result-table v-if=data_fetched @datum_clicked=editing=$event :readonly=readonly
-			p.disabled.center v-else="" Loading...
+			p.disabled.center v-else="" Loading...Smartphone Smartphones
 		
 		/ maybe use linus borgs portal instead?
 		popup v-if=editing @close=editing=null
@@ -51,9 +51,7 @@ export default
 		register_search_store: ->
 			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
 		fetch_table_data: ->
-			Promise.all
-				-	@$store.dispatch('search/search')
-				-	@$store.dispatch('search/get_attributes')
+			await @$store.dispatch 'search/change_subject', @$route.params.subject
 		on_table_scroll: (event) ->
 			ref = event.target
 			is_scrolled_to_bottom = ref.scrollHeight - ref.scrollTop == ref.clientHeight
@@ -66,6 +64,9 @@ export default
 			set: (v) -> @$store.dispatch 'search/set_limit', v
 	created: ->
 		@register_search_store()
+	beforeRouteUpdate: (to, from, next) ->
+		@$store.dispatch 'search/change_subject', to.params.subject
+		next()
 	mounted: ->
 		@$refs.result_table_container.focus()
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container

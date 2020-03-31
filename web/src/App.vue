@@ -7,8 +7,10 @@ section#app.column.fill-h
 			| Loading... ($loading_counter)
 	header.center
 		nav.center
-			router-link exact="" to=/ [LOGO]
-			router-link exact="" to=/p search result
+			div List of...
+			router-link exact="" to=/p/Smartphone Smartphones
+			router-link exact="" to=/p/Cheese Cheeses
+			router-link exact="" to=/about (About)
 		nav.center
 			/ todo
 			div.session-info v-if=is_logged_in
@@ -73,7 +75,7 @@ export default
 		// border-bottom 1px solid var(--color-secondary-background)
 		justify-content space-between
 		nav:not(:last-child), nav > *:not(:last-child) // TODO
-			margin-right 1.5em
+			margin-right 1.5vw
 		nav > *
 			white-space nowrap
 			overflow hidden
