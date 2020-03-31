@@ -1,10 +1,10 @@
 import { ObjectID } from 'mongodb';
 import 'reflect-metadata';
-import connection from '../connection';
 import Attribute from '../models/Attribute';
 import Product from '../models/Product';
 import { error } from '../utils';
 import { attributeTypeTypes } from './../models/Attribute';
+import { createConnection } from 'typeorm';
 
 error('Generating attributes');
 const attributes = [...Array(30).keys()].map(i => new Attribute({
@@ -37,7 +37,7 @@ const generate_random_primary_product_data = () => attribute_ids
     }), {});
 
 (async () => {
-    await connection;
+    await createConnection();
 
     error('Deleting all attributes');
     await Attribute.delete({ subject: 'test' }); // TODO: doesnt work ??
