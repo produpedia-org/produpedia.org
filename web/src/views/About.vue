@@ -2,9 +2,9 @@
 .center.padding-xl
 	article.padding-xl.box
 		header
-			h2 Produpedia v $app_version
+			h2 Produpedia version $app_version
 		section
-			p This site is very much still in progress and currently in demo state. The only two current subjects (Smartphones, Cheese) will be expanded to match most of the buyable entities from <a href="http://mappings.dbpedia.org/server/ontology/classes/">mappings.dbpedia.org/server/ontology/classes</a> and more.
+			p This site is very much still in progress and currently in demo state. The list of subjects (currently only two: Smartphones, Cheese) will be expanded to match most of the buyable entities from <a href="http://mappings.dbpedia.org/server/ontology/classes/">mappings.dbpedia.org/server/ontology/classes</a> and more.
 			p Eventually, everything will be editable and verifiable, and include other datasets too.
 		section
 			h2 Contact
