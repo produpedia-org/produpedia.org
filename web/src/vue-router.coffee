@@ -8,6 +8,9 @@ export create_router = (store) ->
 		mode: 'history'
 		base: process.env.BASE_URL # maybe maybe fixme
 		routes:
+			-	path: '/'
+				name: 'Index'
+				component: => `import('@/views/Index')`
 			-	path: '/about'
 				name: 'About'
 				component: => `import('@/views/About')` # todo this is soon supported natively by cs
@@ -23,7 +26,7 @@ export create_router = (store) ->
 				name: 'ResultView'
 				component: => `import('@/views/ResultView')`
 			-	path: '*'
-				redirect: '/p/Smartphone'
+				redirect: '/'
 			# corresponding store modules can also be lazyloaded. see ssr vuejs docs
 	router.beforeEach (to, from, next) =>
 		if to.matched.some (record) => record.meta.requires_auth
