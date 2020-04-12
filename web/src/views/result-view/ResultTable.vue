@@ -169,7 +169,7 @@ table, td, th
 
 th, td, th > *
 	z-index 1
-	min-width 3vw
+	min-width 5vw
 td, th
 	position relative
 th
