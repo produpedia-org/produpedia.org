@@ -133,7 +133,7 @@ export default
 		end_not_yet_reached: (state) -> state.reached_the_end = false
 	actions:
 		change_subject: ({ commit, dispatch }, subject) ->
-			commit 'set_attributes', []
+			commit 'set_attributes', null
 			commit 'set_subject', subject
 			commit 'set_filters', []
 			commit 'set_sorters', []
