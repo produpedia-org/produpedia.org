@@ -68,6 +68,13 @@ module.exports = {
       port: 8080,
       // host: '0.0.0.0',
       extendServer: is_production? ((app) => {
+        // 1st: HTTP, PORT 80, only redirect
+        const http = express();
+        http.get('*', function(req, res) {
+          res.redirect('https://' + req.headers.host + req.url);
+        })
+        http.listen(80, '0.0.0.0', console.log('running redirector on 80'));
+        // 2nd: HTTPS, PORT CONFIGURED (usually 443)
         https
           .createServer({
               key: fs.readFileSync("/etc/letsencrypt/live/produpedia.org/privkey.pem"),
