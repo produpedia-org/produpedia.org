@@ -7,6 +7,8 @@ section#app.column.fill-h
 			| Loading... ($loading_counter)
 	header.center
 		nav.center
+			small: i
+				| (Status: DEMO)
 			div List of...
 			router-link exact="" to=/p/Smartphone Smartphones
 			router-link exact="" to=/p/Cheese Cheeses
