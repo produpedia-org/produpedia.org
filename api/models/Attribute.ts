@@ -1,5 +1,6 @@
 import { IsBoolean, IsIn, IsInt, IsNumber, IsOptional, Length, Max, Min } from 'class-validator';
-import { BaseEntity, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ObjectIdColumn } from 'typeorm';
+import { ObjectID } from 'mongodb';
 
 // todo ... ways to prevent the duplicate declarations here?
 // TODO: fifth type? "resource". currently, resources are simply dbr: strings
@@ -10,6 +11,7 @@ export const attributeTypeTypes: AttributeTypeType[] = ['string', 'number', 'boo
 @Entity()
 class Attribute extends BaseEntity {
     @ObjectIdColumn()
+    @IsOptional()
     public _id!: ObjectID;
     @Column()
     @Length(3, 20)

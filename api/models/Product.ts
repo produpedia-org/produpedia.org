@@ -1,6 +1,7 @@
 import { IsBoolean, Length, IsOptional, IsObject, IsUrl } from 'class-validator';
-import { BaseEntity, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
+import { BaseEntity, Column, Entity, ObjectIdColumn } from 'typeorm';
 import PrimaryProductDatum from './PrimaryProductDatum';
+import { ObjectID } from 'mongodb';
 
 interface PrimaryProductData {
     [attribute_id: string]: PrimaryProductDatum;
