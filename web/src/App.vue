@@ -13,14 +13,14 @@ section#app.column.fill-h
 			router-link exact="" to=/p/Cheese Cheeses
 			| . (Status: DEMO) 
 			router-link exact="" to=/about (About)
-		nav.center
-			/ todo
-			div.session-info v-if=is_logged_in
+		nav
+			span.session-info v-if=is_logged_in
 				span.logged-in-prompt Logged in as 
 				span v-if=session.name $session.name
 				span v-else-if=session.email $session.email
 				span v-else-if=session.external_type $session.external_identifier [$session.external_type]
-			router-link v-if=is_logged_in exact="" to=/settings Settings
+				| . 
+			router-link v-if=is_logged_in exact="" to=/settings Settings 
 			button.btn v-if=is_logged_in @click=logout Logout
 			button.btn v-if=!is_logged_in @click=show_authenticate_popup
 				| Sign in
@@ -72,9 +72,6 @@ export default
 		justify-content space-between
 		// nav:not(:last-child), nav > *:not(:last-child) // TODO
 		// 	margin-right 1.5vw
-		nav > *
-			white-space nowrap
-			overflow hidden
 		button
 			padding 1px 4px
 		.session-info
