@@ -168,14 +168,14 @@ type MongoFilter = {[key: string]: any};
 // todo add checks for code 422 etc
 product_router.get('/', async (req, res) => {
     /*********** parse  *********/
-    const subject: string = req.query.t;
+    const subject: string = req.query.t as string;
     let limit: number|undefined = Number(req.query.l);
     if (limit < 0)
         limit = undefined;
     const offset = Number(req.query.o);
-    let shower_ids: string[] = req.query.sh
+    let shower_ids: string[] = (req.query.sh as string)
         .split(',').filter(Boolean);
-    const sorters_param: string = req.query.so;
+    const sorters_param: string = req.query.so as string;
     const sorters: Sorter[] = sorters_param
         .split(',').filter(Boolean)
         .map((s: string): Sorter => {
@@ -190,7 +190,7 @@ product_router.get('/', async (req, res) => {
             ...all,
             [`data.${sorter.attribute_id}.value`]: sorter.direction,
         }), {});
-    const filter_param: string = req.query.f;
+    const filter_param: string = req.query.f as string;
     const name_filters: Filter[] = [];
     const filters: Filter[] = (await Promise.all(
         filter_param

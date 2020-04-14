@@ -20,11 +20,9 @@ attribute_router.post('/', async (req, res) => {
 });
 
 attribute_router.get('/', async (req, res) => {
-    const subject = req.query.t;
+    const subject = req.query.t as string;
     const attributes = await Attribute.find({
-        where: {
-            subject,
-        },
+        subject,
     });
     res.send(attributes);
 });
