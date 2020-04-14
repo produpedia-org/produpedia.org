@@ -14,7 +14,7 @@
 						option v-for="l of selectable_limits" :value=l $l
 						option :value=-1 All
 		
-		div#result-table-container.flex-fill ref=result_table_container tabindex=-1 @scroll=on_table_scroll
+		div#result-table-container.flex-fill.box ref=result_table_container tabindex=-1 @scroll=on_table_scroll
 			result-table#result-table v-if=data_fetched @datum_clicked=editing=$event :readonly=readonly
 			p.disabled.center v-else="" Loading...
 		
