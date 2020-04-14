@@ -56,11 +56,11 @@ class FacebookLoginProvider extends ExternalLoginProvider
 	load: ->
 		await super.load()
 		await append_script 'https://connect.facebook.net/en_US/sdk.js'
-		window.fb_async_init = => window.FB.init
+		window.fbAsyncInit = => window.FB.init
 			appId: process.env.VUE_APP_FACEBOOK_APP_ID
 			cookie: true
 			xfbml: true
-			version: 'v2.7'
+			version: 'v3.0'
 	initialize: ->
 		await super.initialize()
 		@initialized = true
