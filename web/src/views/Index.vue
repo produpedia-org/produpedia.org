@@ -1,7 +1,7 @@
 <template lang="slm">
 .center.padding-xl
 	.padding-xl.box
-		p Please choose one of the products above!
+		p Please choose one of the categories above!
 </template>
 
 <script lang="coffee">

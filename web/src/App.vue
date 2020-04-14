@@ -6,12 +6,12 @@ section#app.column.fill-h
 		.box.padding-l
 			| Loading... ($loading_counter)
 	header.center
-		nav.center
-			small: i
-				| (Status: DEMO)
-			div List of...
+		nav
+			| Lists of 
 			router-link exact="" to=/p/Smartphone Smartphones
+			| , 
 			router-link exact="" to=/p/Cheese Cheeses
+			| . (Status: DEMO) 
 			router-link exact="" to=/about (About)
 		nav.center
 			/ todo
@@ -66,18 +66,12 @@ export default
 	// necessary because https://stackoverflow.com/a/60794348/3779853
 	// (for when #result-table-container overflow is unset)
 	overflow auto
-	$header-width = 20px
 	> header
-		z-index 1
-		position absolute // only really necessary because horizontal scrolling for when #result-table-container does not scroll
-		left 0
-		right 0
-		height $header-width
 		padding 5px 15px
 		// border-bottom 1px solid var(--color-secondary-background)
 		justify-content space-between
-		nav:not(:last-child), nav > *:not(:last-child) // TODO
-			margin-right 1.5vw
+		// nav:not(:last-child), nav > *:not(:last-child) // TODO
+		// 	margin-right 1.5vw
 		nav > *
 			white-space nowrap
 			overflow hidden
@@ -88,9 +82,7 @@ export default
 				@media (max-width: 600px)
 					display none
 	> main
-		z-index 2
 		background var(--color-background)
-		margin-top $header-width + 10px
 		width 100%
 		@media (max-height 690px)
 			// So the header is properly overlayed by the sticky table headers
