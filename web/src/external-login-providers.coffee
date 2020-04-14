@@ -60,7 +60,7 @@ class FacebookLoginProvider extends ExternalLoginProvider
 			appId: process.env.VUE_APP_FACEBOOK_APP_ID
 			cookie: true
 			xfbml: true
-			version: 'v3.0'
+			version: 'v2.7'
 	initialize: ->
 		await super.initialize()
 		@initialized = true
