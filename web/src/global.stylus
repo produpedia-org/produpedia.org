@@ -123,9 +123,6 @@ details > summary {
 .no-click button
 	pointer-events none
 
-.force-hidden
-	display none !important
-
 .moveable
 	cursor move
 
