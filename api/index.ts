@@ -1,9 +1,7 @@
 /// <reference types="./types/express-form-data" />
 import bodyParser from 'body-parser';
-import fs from 'fs';
 import { ValidationError } from 'class-validator';
-import express, { Express } from 'express';
-import https from 'https';
+import express from 'express';
 import expressFormData from 'express-form-data';
 import { NO_CONTENT, UNPROCESSABLE_ENTITY } from 'http-status-codes';
 import 'reflect-metadata';
@@ -17,7 +15,6 @@ import MailService from './services/MailService';
 import TokenService from './services/TokenService';
 import { env, error, log, html_escape, is_production } from './utils';
 import { createConnection } from 'typeorm';
-import { Server } from 'http';
 
 // ///////////////// CONFIG
 
@@ -83,16 +80,7 @@ app.use(async (err, req, res, next) => {
     const PORT = Number(env('PORT'));
     const HOST = env('HOST');
 
-    let server: Server | Express;
-    if (is_production) {
-        server = https.createServer({
-            key: fs.readFileSync('/etc/letsencrypt/live/api.produpedia.org/privkey.pem'),
-            cert: fs.readFileSync('/etc/letsencrypt/live/api.produpedia.org/fullchain.pem'),
-        }, app);
-    } else {
-        server = app;
-    }
-    server.listen(PORT, HOST, () => log(`running on ${HOST}:${PORT}`));
+    app.listen(PORT, HOST, () => log(`running on ${HOST}:${PORT}`));
 })().catch((e) => {
     error(e);
     process.exit(1);
