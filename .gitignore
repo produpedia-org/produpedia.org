@@ -12,6 +12,7 @@ run*
 
 todo*
 deploy.sh
+privacy.html
 
 # local env files
 .env.local
