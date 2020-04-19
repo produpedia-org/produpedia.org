@@ -1,6 +1,5 @@
 export default
-	# fixme: as soon as the first item gets saved or retrieved, show some stupid cookie banner
-	get: (item) -> # todo getter setter instead
+	get: (item) ->
 		JSON.parse localStorage.getItem(item)
 	set: (item, value) ->
 		if !value
@@ -8,7 +7,6 @@ export default
 		else
 			cookies_accepted = @get 'cookies_accepted'
 			if not cookies_accepted
-				# TODO: link to privacy policy
 				if not confirm """
 					COOKIE WARNING
 					
@@ -16,6 +14,8 @@ export default
 					
 					If you accept, you will not be asked again.
 					If you deny, some things may not work as expected.
+
+					You can find details about our cookie usage at https://produpedia.org/privacy.html
 				"""
 					throw new Error 'Cookie consent denied'
 				localStorage.setItem 'cookies_accepted', 1
