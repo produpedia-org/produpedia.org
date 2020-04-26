@@ -88,7 +88,7 @@ export default
 		> option
 			direction rtl
 #result-table-container
-	@media (min-height 690px)
+	@media (min-height 780px)
 		// on small devices, dont scroll here, but scroll the entire #app
 		// so the space is bigger
 		overflow auto

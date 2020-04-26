@@ -82,7 +82,7 @@ export default
 	> main
 		background var(--color-background)
 		width 100%
-		@media (max-height 690px)
+		@media (max-height 780px)
 			// So the header is properly overlayed by the sticky table headers
 			// on the right when scrolling down when body==scrollcontainer
 			// (also see result-view)
