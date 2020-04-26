@@ -36,12 +36,17 @@ import ResultTable from '@/views/result-view/ResultTable'
 import EditDatumDialog from '@/views/result-view/EditDatumDialog'
 import AddProductDialog from '@/views/result-view/AddProductDialog'
 
+make_title = (subject) =>
+	"#{if subject then subject+' – ' else ''}Produpedia.org"
+
 export default
 	components: { ResultTable, EditDatumDialog, AddProductDialog }
 	name: 'ResultView'
 	serverPrefetch: -> # note: docs say: You may find the same fetchItem() logic repeated multiple times (in serverPrefetch, mounted and watch callbacks) in each component - it is recommended to create your own abstraction (e.g. a mixin or a plugin) to simplify such code. (todo)
-		await @fetch_table_data() # axios networking error handler doesnt display ssr: it modifies another component; this serverPrefetch only cares for ResultView. thus, serverPrefetch errors must (and semantically also should) be handled individually
+		# axios networking error handler doesnt display ssr: it modifies another component; this serverPrefetch only cares for ResultView. thus, serverPrefetch errors must (and semantically also should) be handled individually
 		# if error, bubble throw: Then dont allow the rendering process to continue. Better to see a page with no data than not seeing any page at all for the user, but status code should really be 500, especially for bots
+		await @fetch_table_data()
+		@$ssrContext.title = make_title @$store.state.search.subject
 	data: ->
 		show_add_product_dialog: false
 		editing: null
@@ -66,15 +71,18 @@ export default
 		@register_search_store()
 	beforeRouteUpdate: (to, from, next) ->
 		await @$store.dispatch 'search/change_subject', to.params.subject
+		document.title = make_title to.params.subject
 		next()
 	mounted: ->
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
 		@$store.dispatch 'offer_focus'
 		if !@data_fetched
 			await @fetch_table_data()
+			document.title = make_title @$route.params.subject
 	destroyed: ->
 		@$store.unregisterModule 'search'
 		@$store.dispatch 'set_default_focus_target', null
+		document.title = make_title()
 </script>
 
 <style lang="stylus" scoped>
