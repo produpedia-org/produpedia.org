@@ -16,7 +16,7 @@
 		footer.margin-l
 			small
 				| Last updated by <a href="https://waritschlager.de">Philip Waritschlager</a>: 
-				time datetime="2020-03-31" March 31th 2020
+				time datetime="2020-04-26" April 26th 2020
 </template>
 
 <script lang="coffee">
