@@ -1,5 +1,5 @@
 <template lang="slm">
-	div.flex-fill.column.padding-l
+	div.flex-fill.column.padding
 
 		/ A better semantic element might be `menu`, but it is supported nowhere
 		aside#configuration.row.center.padding
@@ -47,6 +47,18 @@ export default
 		# if error, bubble throw: Then dont allow the rendering process to continue. Better to see a page with no data than not seeing any page at all for the user, but status code should really be 500, especially for bots
 		await @fetch_table_data()
 		@$ssrContext.title = make_title @$store.state.search.subject
+	created: ->
+		@register_search_store()
+	beforeRouteUpdate: (to, from, next) ->
+		await @$store.dispatch 'search/change_subject', to.params.subject
+		document.title = make_title to.params.subject
+		next()
+	mounted: ->
+		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
+		@$store.dispatch 'offer_focus'
+		if !@data_fetched
+			await @fetch_table_data()
+			document.title = make_title @$route.params.subject
 	data: ->
 		show_add_product_dialog: false
 		editing: null
@@ -67,18 +79,6 @@ export default
 		limit:
 			get: -> @$store.state.search.limit
 			set: (v) -> @$store.dispatch 'search/set_limit', v
-	created: ->
-		@register_search_store()
-	beforeRouteUpdate: (to, from, next) ->
-		await @$store.dispatch 'search/change_subject', to.params.subject
-		document.title = make_title to.params.subject
-		next()
-	mounted: ->
-		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
-		@$store.dispatch 'offer_focus'
-		if !@data_fetched
-			await @fetch_table_data()
-			document.title = make_title @$route.params.subject
 	destroyed: ->
 		@$store.unregisterModule 'search'
 		@$store.dispatch 'set_default_focus_target', null
