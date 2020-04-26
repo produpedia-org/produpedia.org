@@ -9,9 +9,6 @@ export create_router = (store) ->
 		base: process.env.BASE_URL # maybe maybe fixme
 		routes:
 			-	path: '/'
-				name: 'Index'
-				component: => `import('@/views/Index')`
-			-	path: '/about'
 				name: 'About'
 				component: => `import('@/views/About')` # todo this is soon supported natively by cs
 			-	path: '/logincallback'
