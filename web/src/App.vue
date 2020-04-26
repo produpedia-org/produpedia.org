@@ -7,12 +7,12 @@ section#app.column.fill-h
 			| Loading... ($loading_counter)
 	header.center
 		nav
-			| Lists of 
+			| Lists of Things: 
 			router-link exact="" to=/p/Smartphone Smartphones
 			| , 
 			router-link exact="" to=/p/Cheese Cheeses
 			| . (Status: DEMO) 
-			router-link exact="" to=/about (About)
+			router-link exact="" to=/ (About)
 		nav
 			span.session-info v-if=is_logged_in
 				span.logged-in-prompt Logged in as 
