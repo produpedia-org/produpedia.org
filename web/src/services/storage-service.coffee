@@ -12,7 +12,7 @@ export default
 					
 					This action will store cookies and/or local storage data in your browser. Do you agree?
 					
-					If you accept, you will not be asked again.
+					If you accept, you will not be asked again once further cookie usage occurs.
 					If you deny, some things may not work as expected.
 
 					You can find details about our cookie usage at https://produpedia.org/privacy.html
