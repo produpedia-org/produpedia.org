@@ -40,7 +40,7 @@ table border=1
 						div.sort.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_id[shower_id].index >= 0"
 							| $sorters_by_attribute_id[shower_id].index+1
 
-	tbody
+	tbody v-dragscrollable="{ scroll_target: scroll_container, on_dragscroll_start, on_dragscroll_end }"
 		tr.product v-for="product in products"
 			th.name
 				| $product.name
@@ -93,11 +93,13 @@ export default
 	data: =>
 		can_drag: true
 		dragging_column: false
+		scroll_container: null
+		is_scrolling_container: false
 	methods: {
 		toggle_sort_direction: (attribute_id, direction) ->
 			@$store.dispatch 'search/toggle_sort_direction', { attribute_id, direction }
 		datum_clicked: (product, attribute_id) ->
-			if @readonly then return
+			if @readonly or @is_scrolling_container then return
 			@$emit 'datum_clicked', { product, attribute_id }
 		move_shower_to: (index) -> (shower_id) =>
 			@$store.dispatch 'search/move_shower_to', { shower_id, index }
@@ -105,6 +107,10 @@ export default
 			@$store.dispatch 'search/remove_shower', shower_id
 		...mapActions 'search',
 			-	'fetch_next_page'
+		on_dragscroll_start: ->
+			@is_scrolling_container = true
+		on_dragscroll_end: ->
+			@is_scrolling_container = false
 	}
 	computed: {
 		...mapState 'search',
@@ -119,6 +125,7 @@ export default
 	}
 	mounted: ->
 		@can_drag = !(`'ontouchstart' in window` || navigator.maxTouchPoints) # todo "in" in cs? / todo css solution? media query blah
+		@scroll_container = @$parent.$refs.result_table_container
 </script>
 
 <style lang="stylus" scoped>
