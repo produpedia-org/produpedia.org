@@ -68,8 +68,8 @@ export default
 		await @$store.dispatch 'search/change_subject', to.params.subject
 		next()
 	mounted: ->
-		@$refs.result_table_container.focus()
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
+		@$store.dispatch 'offer_focus'
 		if !@data_fetched
 			await @fetch_table_data()
 	destroyed: ->
