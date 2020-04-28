@@ -263,7 +263,7 @@ button.btn, input[type="submit"], input[type="reset"], input[type="button"]
 	border-width 0 1px 2px 0
 	border-color transparent #e8e8e8 #e0e0e0 transparent
 	background-clip padding-box
-	/* top + left border, only subtle and thin */ \
+	/* top + left border, only subtle and thin */
 	box-shadow -1px -1px 0 0 #f3f3f3
 
 	// (not disabled)
