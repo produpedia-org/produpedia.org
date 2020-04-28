@@ -13,7 +13,7 @@ section#app.column.fill-h
 			router-link exact="" to=/p/Cheese Cheeses
 			| . (Status: DEMO) 
 			router-link exact="" to=/ (About)
-		nav
+		nav.right
 			span.session-info v-if=is_logged_in
 				span.logged-in-prompt Logged in as 
 				span v-if=session.name $session.name
@@ -64,13 +64,17 @@ export default
 
 <style lang="stylus" scoped>
 #app
-	// necessary because https://stackoverflow.com/a/60794348/3779853
-	// (for when #result-table-container overflow is unset)
-	overflow auto
 	> header
-		padding 5px 15px
+		padding 0.5vh 1vw
 		// border-bottom 1px solid var(--color-secondary-background)
 		justify-content space-between
+		white-space nowrap
+		nav
+			overflow hidden
+			text-overflow ellipsis
+			&.right
+				text-align right
+				flex-shrink 0
 		// nav:not(:last-child), nav > *:not(:last-child) // TODO
 		// 	margin-right 1.5vw
 		button
@@ -82,11 +86,6 @@ export default
 	> main
 		background var(--color-background)
 		width 100%
-		@media (max-height 780px)
-			// So the header is properly overlayed by the sticky table headers
-			// on the right when scrolling down when body==scrollcontainer
-			// (also see result-view)
-			min-width fit-content
 		.error
 			max-width 100vw
 			overflow auto
