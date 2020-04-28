@@ -64,6 +64,7 @@ export default
 		editing: null
 		readonly: false
 		selectable_limits: [ 5, 10, 20, 50, 100, 500, 1000 ]
+		is_scrolled_to_bottom: false
 	methods:
 		register_search_store: ->
 			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
@@ -72,8 +73,9 @@ export default
 		on_table_scroll: (event) ->
 			ref = event.target
 			is_scrolled_to_bottom = ref.scrollHeight - ref.scrollTop == ref.clientHeight
-			if is_scrolled_to_bottom
+			if not @is_scrolled_to_bottom and is_scrolled_to_bottom
 				@$store.dispatch 'search/fetch_next_page'
+			@is_scrolled_to_bottom = is_scrolled_to_bottom
 	computed:
 		data_fetched: -> !!@$store.state.search?.attributes
 		limit:
