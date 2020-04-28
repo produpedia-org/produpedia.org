@@ -10,7 +10,7 @@ table border=1
 		tr.attributes :class.drop-target=dragging_column
 			th
 				.dropzone.remove v-if=dragging_column v-drop=remove_shower
-					| ╳ Hide column
+					| ╳ Drop<br>to hide
 				div.center v-else=""
 					| Name
 			th.dropzone.move v-for="shower_id, index in shower_ids" :key="shower_id+'_'+index" v-drop=move_shower_to(index)
@@ -235,6 +235,7 @@ tbody
 	&.remove
 		text-transform uppercase
 		color var(--color-highlighted)
+		white-space nowrap
 		&.drop
 			background var(--color-hover)
 .attribute
@@ -258,6 +259,11 @@ tbody
 		margin-right 4px
 		position relative
 		top 1px
+		/[draggable=true]
+			&:hover
+				.grip
+					color var(--color-clickable)
+					text-shadow 2px 2px 2px var(--color-clickable)
 	.sort
 		padding-left 3px
 		user-select none

@@ -42,9 +42,8 @@ fieldset {
 details > summary {
 	cursor: pointer;
 }
-[draggable=true] {
-	cursor: move;
-}
+[draggable=true]
+	cursor move
 
 // CLASSES /////////////////////////
 
