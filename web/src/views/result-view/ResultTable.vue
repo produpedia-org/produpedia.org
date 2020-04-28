@@ -185,6 +185,9 @@ th
 thead th
 	z-index 3
 	top 0
+	&:first-child
+		z-index 4
+		left 0
 	height 2em
 	padding 0
 	// background linear-gradient(#fff, 93%, transparent) // weird grey color on firefox, so using this:
