@@ -126,7 +126,7 @@ details > summary {
 	pointer-events none
 
 .moveable
-	cursor move	
+	cursor grab
 
 // The below code is partly adopted from the Sakura CSS style/reset
 // This will be redone and limited to what is only actually needed, probably
