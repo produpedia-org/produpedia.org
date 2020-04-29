@@ -5,26 +5,47 @@ section#app.column.fill-h
 	modal v-if=loading_counter
 		.box.padding-l
 			| Loading... ($loading_counter)
-	header.center
-		nav
-			| Lists of Things: 
-			router-link exact="" to=/p/Smartphone Smartphones
-			| , 
-			router-link exact="" to=/p/Cheese Cheeses
-			| . (Status: DEMO) 
-			router-link exact="" to=/ (About)
-		nav.right
-			span.session-info v-if=is_logged_in
-				span.logged-in-prompt Logged in as 
-				span v-if=session.name $session.name
-				span v-else-if=session.email $session.email
-				span v-else-if=session.external_type $session.external_identifier [$session.external_type]
-				| . 
-			a href=/privacy.html : small Privacy & Imprint 
-			router-link v-if=is_logged_in exact="" to=/settings Settings 
-			button.btn v-if=is_logged_in @click=logout Logout
-			button.btn v-if=!is_logged_in @click=show_authenticate_popup
-				| Sign in
+	header
+		read-more.hamburger noliststyle=""
+			template #summary=""
+				.navs.fill.center
+					nav
+						| (Status: DEMO) 
+						| Lists of other things: 
+						router-link exact="" to=/p/Smartphone Smartphones
+						| , 
+						router-link exact="" to=/p/Cheese Cheeses
+						| . 
+					nav.noshrink.fakelink
+						| More...
+					nav.right.noshrink.row
+						router-link exact="" to=/ (About)
+						div.hamburger ☰
+			.navs.fill.center
+				nav
+					| Lists of:
+					ul
+						li
+							router-link exact="" to=/p/Smartphone Smartphones
+						li
+							router-link exact="" to=/p/Cheese Cheeses
+						li
+							| ...and much more to come. See 
+							router-link exact="" to=/ About
+							|  page.
+				nav.right.row.center
+					div.session-info
+						span v-if=is_logged_in
+							span.logged-in-prompt Logged in as 
+							span v-if=session.name $session.name
+							span v-else-if=session.email $session.email
+							span v-else-if=session.external_type $session.external_identifier [$session.external_type]
+							| . 
+						a href=/privacy.html : small Privacy & Imprint 
+						router-link v-if=is_logged_in exact="" to=/settings Settings 
+						button.btn v-if=is_logged_in @click=logout Logout
+						button.btn v-if=!is_logged_in @click=show_authenticate_popup
+							| Sign in
 	main.flex-fill.column
 		div.error.fade-in.column v-if=global_error_message
 			pre $global_error_message
@@ -65,24 +86,36 @@ export default
 <style lang="stylus" scoped>
 #app
 	> header
-		padding 0.5vh 1vw
-		// border-bottom 1px solid var(--color-secondary-background)
-		justify-content space-between
-		white-space nowrap
-		nav
-			overflow hidden
-			text-overflow ellipsis
-			&.right
-				text-align right
-				flex-shrink 0
-		// nav:not(:last-child), nav > *:not(:last-child) // TODO
-		// 	margin-right 1.5vw
+		margin 0.5vh 1vw
+		.navs
+			justify-content space-between
+			padding 2px 5px
+			nav
+				flex 1
+				overflow hidden
+				text-overflow ellipsis
+				&.right
+					text-align right
+					justify-content flex-end
+					align-items center
+				&.noshrink
+					flex-shrink 0
+		details
+			>>> summary
+				&:focus
+					background-color unset
+				.hamburger
+					font-size 19pt
+					line-height 29px
+					padding 0 2vw
+		background var(--color-secondary-background)
+		border-bottom 1px solid var(--color-disabled)
 		button
 			padding 1px 4px
 		.session-info
 			.logged-in-prompt
 				@media (max-width: 600px)
-					display none
+					display none // FIXME revise
 	> main
 		background var(--color-background)
 		width 100%
