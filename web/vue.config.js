@@ -68,7 +68,7 @@ module.exports = {
     ssr: {
       // Dev only, in production it's process.env.PORT / HOST
       port: 8080,
-      // host: '0.0.0.0',
+      host: '0.0.0.0',
       copyUrlOnStart: false,
       defaultTitle: 'Produpedia.org',
       criticalCSS: false, // ! TODO
