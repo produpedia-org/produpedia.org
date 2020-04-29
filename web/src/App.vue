@@ -11,18 +11,18 @@ section#app.column.fill-h
 				.navs.fill.center
 					nav
 						| (Status: DEMO) 
-						| Lists of other things: 
+						| Lists of things: 
 						router-link exact="" to=/p/Smartphone Smartphones
 						| , 
 						router-link exact="" to=/p/Cheese Cheeses
 						| . 
-					nav.noshrink.fakelink
-						| More...
-					nav.right.noshrink.row
+					nav.middle.fakelink
+						em Click for more...
+					nav.right.row
 						router-link exact="" to=/ (About)
 						div.hamburger ☰
 			.navs.fill.center
-				nav
+				nav.flex-fill
 					| Lists of:
 					ul
 						li
@@ -33,7 +33,7 @@ section#app.column.fill-h
 							| ...and much more to come. See 
 							router-link exact="" to=/ About
 							|  page.
-				nav.right.row.center
+				nav.flex-fill.right.row.center
 					div.session-info
 						span v-if=is_logged_in
 							span.logged-in-prompt Logged in as 
@@ -90,18 +90,22 @@ export default
 		.navs
 			justify-content space-between
 			padding 2px 5px
+			box-sizing border-box
 			nav
-				flex 1
 				overflow hidden
 				text-overflow ellipsis
+				&.middle
+					flex-grow 1
+					flex-shrink 0
 				&.right
+					flex-shrink 0
 					text-align right
 					justify-content flex-end
 					align-items center
-				&.noshrink
-					flex-shrink 0
 		details
 			>>> summary
+				.navs
+					white-space pre
 				&:focus
 					background-color unset
 				.hamburger
@@ -118,7 +122,9 @@ export default
 					display none // FIXME revise
 	> main
 		background var(--color-background)
+		overflow auto
 		width 100%
+		word-break break-word
 		.error
 			max-width 100vw
 			overflow auto
