@@ -1,37 +1,40 @@
 <template lang="slm">
-	div.flex-fill.column.padding
+article#result-view.flex-fill.column
 
-		/ A better semantic element might be `menu`, but it is supported nowhere
-		aside#configuration.row.center.padding
-			.left
-				label.center
-					| Readonly mode
-					input type=checkbox v-model=readonly
-			.right
-				label
-					| Rows to load 
-					select.limit v-model=limit
-						option v-for="l of selectable_limits" :value=l $l
-						option :value=-1 All
-		
-		div#result-table-container.flex-fill.box ref=result_table_container tabindex=-1 @scroll=on_table_scroll
-			result-table#result-table v-if=data_fetched @datum_clicked=editing=$event :readonly=readonly
-			p.disabled.center v-else="" Loading...
-		
-		/ maybe use linus borgs portal instead?
-		popup v-if=editing @close=editing=null
-			edit-datum-dialog :product=editing.product :attribute_id=editing.attribute_id
+	/ A better semantic element might be `menu`, but it is supported nowhere
+	aside#configuration.row.center
+		.left
+			label.center
+				| Readonly mode
+				input type=checkbox v-model=readonly
+		.middle
+			h3 List of {{ subject }}s
+		.right
+			label
+				| Rows to load 
+				select.limit v-model=limit
+					option v-for="l of selectable_limits" :value=l $l
+					option :value=-1 All
+	
+	div#result-table-container.flex-fill.box ref=result_table_container tabindex=-1 @scroll=on_table_scroll
+		result-table#result-table v-if=data_fetched @datum_clicked=editing=$event :readonly=readonly
+		promise-button#load-more.btn v-if=data_fetched :action=fetch_next_page Load more
+		p.disabled.center v-else="" Loading...
+	
+	/ maybe use linus borgs portal instead?
+	popup v-if=editing @close=editing=null
+		edit-datum-dialog :product=editing.product :attribute_id=editing.attribute_id
 
-		div.center.margin-l v-if=!readonly
-			/ todo add toggle component
-			button.btn @click=show_add_product_dialog=true
-				| + Add
-			add-product-dialog v-if=show_add_product_dialog
+	div.center.margin-l v-if=!readonly
+		/ todo add toggle component
+		button.btn @click=show_add_product_dialog=true
+			| + Add
+		add-product-dialog v-if=show_add_product_dialog
 </template>
 
 <script lang="coffee">
 import search_store_module from '@/store/search-store'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 import ResultTable from '@/views/result-view/ResultTable'
 import EditDatumDialog from '@/views/result-view/EditDatumDialog'
 import AddProductDialog from '@/views/result-view/AddProductDialog'
@@ -65,7 +68,7 @@ export default
 		readonly: false
 		selectable_limits: [ 5, 10, 20, 50, 100, 500, 1000 ]
 		is_scrolled_to_bottom: false
-	methods:
+	methods: {
 		register_search_store: ->
 			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
 		fetch_table_data: ->
@@ -76,11 +79,17 @@ export default
 			if not @is_scrolled_to_bottom and is_scrolled_to_bottom
 				@$store.dispatch 'search/fetch_next_page'
 			@is_scrolled_to_bottom = is_scrolled_to_bottom
-	computed:
+		...mapActions 'search',
+			-	'fetch_next_page'
+	}
+	computed: {
 		data_fetched: -> !!@$store.state.search?.attributes
 		limit:
 			get: -> @$store.state.search.limit
 			set: (v) -> @$store.dispatch 'search/set_limit', v
+		...mapState 'search',
+			-	'subject'
+	}
 	destroyed: ->
 		@$store.unregisterModule 'search'
 		@$store.dispatch 'set_default_focus_target', null
@@ -88,7 +97,10 @@ export default
 </script>
 
 <style lang="stylus" scoped>
+#result-view
+	padding 1vh 1vw 0 1vw
 #configuration
+	margin-bottom 8px
 	justify-content space-between
 	color var(--color-clickable)
 	font-size small
@@ -102,4 +114,7 @@ export default
 #result-table
 	margin 0 auto
 	max-width 100%
+button#load-more
+	position sticky
+	left 50%
 </style>

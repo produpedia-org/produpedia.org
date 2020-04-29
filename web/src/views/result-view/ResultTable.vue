@@ -72,13 +72,6 @@ table border=1
 					button.edit.create v-if=!readonly
 						/ 🖉
 						| +
-		tr.actions
-			td colspan=100
-				div.load-more.center
-					/ Fallback in case the autoscroll doesnt work
-					/ OR *cannot* work because there is no scroll bar, 
-					/ e.g. when there are but a few results
-					promise-button.btn :action=fetch_next_page Load more
 </template>
 
 <script lang="coffee">
