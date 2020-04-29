@@ -19,7 +19,7 @@ article#result-view.flex-fill.column
 	
 	div#result-table-container.flex-fill.box ref=result_table_container tabindex=-1 @scroll=on_table_scroll
 		result-table#result-table v-if=data_fetched @datum_clicked=editing=$event :readonly=readonly
-		promise-button#load-more.btn v-if=data_fetched :action=fetch_next_page Load more
+		promise-button#load-more.btn v-if=data_fetched :action=fetch_next_page :disabled=fetching_next_page Load more
 		p.disabled.center v-else="" Loading...
 	
 	/ maybe use linus borgs portal instead?
@@ -69,6 +69,7 @@ export default
 		readonly: false
 		selectable_limits: [ 5, 10, 20, 50, 100, 500, 1000 ]
 		is_scrolled_to_bottom: false
+		fetching_next_page: false
 	methods: {
 		register_search_store: ->
 			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
@@ -79,7 +80,9 @@ export default
 			# Cannot use == 0 here because on some mobile devices there is always 1 pixel left for some reason
 			is_scrolled_to_bottom = ref.scrollHeight - ref.scrollTop - ref.clientHeight <= 1
 			if not @is_scrolled_to_bottom and is_scrolled_to_bottom
-				@$store.dispatch 'search/fetch_next_page'
+				@fetching_next_page = true
+				@$store.dispatch('search/fetch_next_page').then =>
+					@fetching_next_page = false
 			@is_scrolled_to_bottom = is_scrolled_to_bottom
 		...mapActions 'search',
 			-	'fetch_next_page'
