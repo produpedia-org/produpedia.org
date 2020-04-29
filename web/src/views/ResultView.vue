@@ -2,16 +2,17 @@
 article#result-view.flex-fill.column
 
 	/ A better semantic element might be `menu`, but it is supported nowhere
-	aside#configuration.row.center
-		.left
+	header.row.center
+		aside.left
 			label.center
-				| Readonly mode
 				input type=checkbox v-model=readonly
-		.middle
-			h3 List of {{ subject }}s
-		.right
-			label
-				| Rows to load 
+				div Readonly
+		h3
+			span.list-of List of 
+			| {{ subject }}s
+		aside.right
+			label.center
+				div Rows
 				select.limit v-model=limit
 					option v-for="l of selectable_limits" :value=l $l
 					option :value=-1 All
@@ -99,16 +100,37 @@ export default
 <style lang="stylus" scoped>
 #result-view
 	padding 1vh 1vw 0 1vw
-#configuration
+header
 	margin-bottom 8px
 	justify-content space-between
+	word-break keep-all
 	color var(--color-clickable)
 	font-size small
+	aside
+		overflow hidden
+		label > *
+			overflow hidden
+			text-overflow ellipsis
+	aside.right
+		text-align right
+		select, input
+			margin-left 6px
+	aside.left
+		select, input
+			margin-right 6px
 	select.limit
 		padding 2px 0
 		text-align-last right
 		> option
 			direction rtl
+	h3
+		flex-grow 1
+		flex-shrink 0
+		text-align center
+		margin 0 7px
+		.list-of
+			@media (max-width: 600px)
+				display none
 #result-table-container
 	overflow auto
 #result-table

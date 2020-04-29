@@ -116,10 +116,6 @@ export default
 		border-bottom 1px solid var(--color-disabled)
 		button
 			padding 1px 4px
-		.session-info
-			.logged-in-prompt
-				@media (max-width: 600px)
-					display none // FIXME revise
 	> main
 		background var(--color-background)
 		overflow auto
