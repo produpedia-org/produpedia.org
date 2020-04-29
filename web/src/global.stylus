@@ -17,7 +17,7 @@ body, html {
 	margin: 0;
 	width: 100%;
 	height: 100%;
-	font-family Arial
+	font-family monospace
 }
 form
 	input:not([type=checkbox]), label, select {
@@ -26,7 +26,7 @@ form
 input[type=checkbox] + label {
 	display: inline;
 }
-a
+a, .fakelink
 	cursor: pointer
 	&, &:visited
 		color var(--color-clickable)
@@ -159,11 +159,6 @@ details > summary {
 
 // @import 'https://fonts.googleapis.com/css?family=Fira+Mono|Noto+Serif|Noto+Sans:300,400,500';
 
-/* Body */
-html {
-	font-family: "Noto Serif", "Arial", "Helvetica", sans-serif;
-}
-
 body {
 	color: var(--color-foreground);
 	background-color: var(--color-background);
@@ -251,6 +246,7 @@ button.btn, input[type="submit"], input[type="reset"], input[type="button"]
 	background-image: linear-gradient(rgba(255, 255, 255, 0.45) 50%, transparent 52%);
 	box-sizing: border-box
 	font-weight bolder
+	font-family unset
 	transition all 0.1s linear
 	position: relative
 	border-radius 0
