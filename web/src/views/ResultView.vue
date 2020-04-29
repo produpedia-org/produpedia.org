@@ -76,7 +76,8 @@ export default
 			await @$store.dispatch 'search/change_subject', @$route.params.subject
 		on_table_scroll: (event) ->
 			ref = event.target
-			is_scrolled_to_bottom = ref.scrollHeight - ref.scrollTop == ref.clientHeight
+			# Cannot use == 0 here because on some mobile devices there is always 1 pixel left for some reason
+			is_scrolled_to_bottom = ref.scrollHeight - ref.scrollTop - ref.clientHeight <= 1
 			if not @is_scrolled_to_bottom and is_scrolled_to_bottom
 				@$store.dispatch 'search/fetch_next_page'
 			@is_scrolled_to_bottom = is_scrolled_to_bottom
