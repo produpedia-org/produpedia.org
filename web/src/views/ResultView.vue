@@ -71,6 +71,7 @@ export default
 		is_scrolled_to_bottom: false
 		fetching_next_page: false
 	methods: {
+		# todo revise the workflow according to https://github.com/vuejs/vue-ssr-docs/pull/281/files
 		register_search_store: ->
 			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
 		fetch_table_data: ->

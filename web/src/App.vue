@@ -41,7 +41,7 @@ section#app.column.fill-h
 							span v-else-if=session.email $session.email
 							span v-else-if=session.external_type $session.external_identifier [$session.external_type]
 							| . 
-						a href=/privacy.html : small Privacy & Imprint 
+						a href=/static/privacy.html : small Privacy & Imprint 
 						router-link v-if=is_logged_in exact="" to=/settings Settings 
 						button.btn v-if=is_logged_in @click=logout Logout
 						button.btn v-if=!is_logged_in @click=show_authenticate_popup

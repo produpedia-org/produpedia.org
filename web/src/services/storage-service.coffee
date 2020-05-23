@@ -15,7 +15,7 @@ export default
 					If you accept, you will not be asked again once further cookie usage occurs.
 					If you deny, some things may not work as expected.
 
-					You can find details about our cookie usage at https://produpedia.org/privacy.html
+					You can find details about our cookie usage at https://produpedia.org/static/privacy.html
 				"""
 					throw new Error 'Cookie consent denied'
 				localStorage.setItem 'cookies_accepted', 1

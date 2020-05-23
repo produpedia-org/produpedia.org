@@ -2,7 +2,8 @@
 .center.padding-xl
 	article.padding-xl.box
 		header
-			h2 Produpedia version $app_version
+			h2 Produpedia
+			h3 Version $app_version
 		section
 			p
 				strong Please choose one of the categories above!
