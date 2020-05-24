@@ -1,6 +1,4 @@
 const path = require('path');
-const https = require('https');
-const express = require('express');
 const coffeescript = require('coffeescript');
 const fs = require('fs');
 const fetch = require('node-fetch');
@@ -27,6 +25,9 @@ module.exports = {
       .rule('coffee')
         .after('vue')
         .test(/\.coffee$/)
+          .use('coffee/babel')
+            .loader('babel-loader')
+            .end()
           .use('coffee/loader')
             .loader('coffee-loader')
             .end()
@@ -47,7 +48,8 @@ module.exports = {
   },
   pwa: {
     workboxOptions: {
-      skipWaiting: true
+      skipWaiting: true,
+      directoryIndex: 'null' // TODO test if this actually did anything
     },
     name: 'Produpedia.org',
     themeColor: '#ffecaf',
