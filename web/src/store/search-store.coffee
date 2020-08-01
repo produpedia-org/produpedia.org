@@ -195,7 +195,7 @@ export default
 			search = false
 			attribute_filters = getters.filters_by_attribute_id[shower_id]
 			if attribute_filters.length
-				if !confirm "There are #{attribute_filters.length} filter(s) configured for '#{getters.attributes_by_id[shower_id].name}' that will be removed. Continue?"
+				if not await dispatch 'confirm_ask', "There are #{attribute_filters.length} filter(s) configured for '#{getters.attributes_by_id[shower_id].name}' that will be removed. Continue?", root: true
 					return
 				for filter from attribute_filters
 					commit 'remove_filter', filter
