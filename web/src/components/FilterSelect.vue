@@ -17,7 +17,7 @@ export default
 	mixins: [ emitting_model ]
 	props:
 		options:
-			type: Array
+			type: Array # todo str array (because emitted values are also always string)
 			default: => []
 	mounted: ->
 		@check_model()
@@ -26,12 +26,19 @@ export default
 	methods:
 		check_model: ->
 			if not @model or not @filtered_options.map((o)=>o.value).includes @model
-				# do not use @model as it might result in an endless loop, freezing the site to death
-				@internal_value = @filtered_options[0]?.value
+				new_value = @filtered_options[0]?.value
+				if new_value
+					@model = new_value
 	computed:
 		filtered_options: ->
-			@$props.options.filter (option) =>
-				option.name.includes @filter
+			@options
+				.map (option) =>
+					if option.name
+						option
+					else
+						value: option, name: option
+				.filter (option) =>
+					option.name.toLowerCase().includes @filter.toLowerCase()
 	watch:
 		filtered_options: ->
 			@check_model()

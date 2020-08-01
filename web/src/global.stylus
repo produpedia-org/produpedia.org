@@ -48,17 +48,17 @@ details > summary {
 // CLASSES /////////////////////////
 
 .padding
-	padding: 0.5vw
+	padding: 0.5vmax
 .padding-l
-	padding: 1vw
+	padding: 1vmax
 .padding-xl
-	padding: 3vw
+	padding: 3vmax
 .margin
-	margin: 0.5vw
+	margin: 0.5vmax
 .margin-l
-	margin: 1vw
+	margin: 1vmax
 .margin-xl
-	margin: 3vw
+	margin: 3vmax
 .note
 	font-size:80%
 	opacity:0.8
@@ -121,7 +121,7 @@ details > summary {
 .danger, .error
 	color var(--color-error)
 
-.no-click button
+.no-click *
 	pointer-events none
 
 .moveable
@@ -230,9 +230,12 @@ button // buttons, by default, should not have any specific styling so they can 
 button, input[type="submit"], input[type="reset"], input[type="button"], label
 	cursor: pointer
 
-.button[disabled], button[disabled], input[type="submit"][disabled], input[type="reset"][disabled], input[type="button"][disabled] {
-	cursor default
-	color: var(--color-disabled)
+.no-click, .no-click button, *[disabled], *[disabled] button, *[disabled] input, *[disabled] select, *[readonly], *[readonly] button, *[readonly] input, *[readonly] select {
+	// opacity 0.7
+	pointer-events none
+	cursor: default;
+	// opacity: .5;
+	color graytext !important
 }
 // TODO: .btn = button-like styling, should not be used as button identifier
 button.btn, input[type="submit"], input[type="reset"], input[type="button"]

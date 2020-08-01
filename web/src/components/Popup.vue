@@ -1,41 +1,46 @@
 <template lang="slm">
 modal @close=close
-	main.box.padding-xl ref=main
-		/ FIXME: Only on mobile, same as result table handles, via css
-		div#titlebar.center v-moveable="{parent:true}"
-			| ⠿⠿⠿⠿⠿
-		button#close @click=close ╳
-		slot
+	main.box.column ref=main
+		header
+			div.titlebar.center v-moveable="{move_target}"
+				| ⠿⠿⠿⠿⠿
+			button.close @click=close type=button ╳
+		.popup-content v-dragscrollable=""
+			/ FIXME: Only on mobile, same as result table handles, via css
+			slot
 </template>
 
 <script lang="coffee">
 export default
 	name: 'Popup'
+	data: ->
+		move_target: null
 	methods:
 		close: ->
 			@$store.dispatch 'offer_focus'
 			@$emit 'close'
+	mounted: ->
+		@move_target = @$refs.main
 </script>
 
 <style lang="stylus" scoped>
 main
 	max-height 98vh
+	max-width 98vw
 	min-width 50px
 	min-height 50px
 	position relative
-	overflow auto
 	box-sizing border-box
+	overflow auto
 	resize both
-#titlebar, #close
+.titlebar, .close
+	line-height 2em
+	margin-top 1vmax
+.close
 	position absolute
-	line-height 1em
-#close
-	top 1.5rem
-#close, #titlebar
-	right 1.5rem
-#titlebar
-	left 1.5rem
-	top 0.5rem
-	color var(--color-border)
-	user-select none
+	top 0
+	right 1.5vmax
+.popup-content
+	padding 0 2vmax 3vmax
+	overflow auto
 </style>

@@ -7,6 +7,7 @@ export default
 		else
 			cookies_accepted = @get 'cookies_accepted'
 			if not cookies_accepted
+				# todo use await @$store.dispatch 'confirm_ask', '...' instead when store is available
 				if not confirm """
 					COOKIE WARNING
 					

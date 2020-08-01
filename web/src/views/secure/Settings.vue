@@ -35,7 +35,7 @@ export default
 		...mapActions 'session',
 			-	'invalidate_all_tokens'
 		delete_account: ->
-			if not confirm 'Are you sure you want to delete your account?'
+			if not await @$store.dispatch 'confirm_ask', 'Are you sure you want to delete your account?'
 				return
 			await @$store.dispatch 'session/delete_account'
 			@$router.push '/'
