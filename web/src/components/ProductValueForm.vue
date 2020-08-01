@@ -16,6 +16,7 @@ promise-form v-bind="$attrs" v-on="$listeners"
 			/ FIXME: make radio yes/no instead
 			| Active
 		slot
+	/ todo need some kind of legal confirmation for data usage and licensing?
 	template #button_label=""
 		slot name=button_label
 </template>
