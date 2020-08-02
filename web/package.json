@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "dayjs": "^1.8.31",
     "node-fetch": "^2.6.0",
     "register-service-worker": "^1.7.1",
     "vue": "^2.6.11",
