@@ -15,7 +15,7 @@ div
 							| You can simply login by requesting a login link via mail. If you are afraid someone else might have gained access to the login link, you can invalidate all current ones in the user settings.
 						p
 							| The main reasons for implementing a password-less login can be found in 
-							a href="https://goo.gl/czxFnf" this article
+							a target=_blank href="https://www.freecodecamp.org/news/360-million-reasons-to-destroy-all-passwords-9a100b2b5001" this article
 							|. In short: Passwords are more of a security threat than measurement.
 						p
 							strike If you feel you <em>really</em> need to use a password, you can configure one in the account settings once you are logged in.
