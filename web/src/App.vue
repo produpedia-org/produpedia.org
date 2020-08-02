@@ -8,21 +8,25 @@ section#app.column.fill-h
 	header
 		read-more.hamburger noliststyle=""
 			template #summary=""
-				.navs.fill.center
-					nav
-						| (Status: DEMO) 
-						| Lists of things: 
+				.navs.types.fill.center
+					nav.left
+						/
+							/| Lists of things: 
+							router-link exact="" to=/p/Smartphone Smartphones
+							| , 
+							router-link exact="" to=/p/Cheese Cheeses
+							/ | . 
+					nav.middle
+						/ em.fakelink Click for more...
 						router-link exact="" to=/p/Smartphone Smartphones
 						| , 
 						router-link exact="" to=/p/Cheese Cheeses
-						| . 
-					nav.middle.fakelink
-						em Click for more...
 					nav.right.row
-						router-link exact="" to=/ (About)
+						router-link exact="" to=/ About
 						div.hamburger ☰
 			.navs.fill.center
 				nav.flex-fill
+					| (Status: DEMO) – 
 					| Lists of:
 					ul
 						li
@@ -34,15 +38,15 @@ section#app.column.fill-h
 							router-link exact="" to=/ About
 							|  page.
 				nav.flex-fill.right.row.center
-					div.session-info
+					div.session-info.column
 						span v-if=is_logged_in
 							span.logged-in-prompt Logged in as 
 							span v-if=session.name $session.name
 							span v-else-if=session.email $session.email
 							span v-else-if=session.external_type $session.external_identifier [$session.external_type]
 							| . 
-						a href=/static/privacy.html : small Privacy & Imprint 
 						router-link v-if=is_logged_in exact="" to=/settings Settings 
+						a href=/static/privacy.html : small Privacy & Imprint 
 						button.btn v-if=is_logged_in @click=logout Logout
 						button.btn v-if=!is_logged_in @click=show_authenticate_popup
 							| Sign in
@@ -94,14 +98,19 @@ export default
 			nav
 				overflow hidden
 				text-overflow ellipsis
+				&.left
+					flex 1
 				&.middle
-					flex-grow 1
-					flex-shrink 0
+					font-family monospace
+					font-size 16px
+					text-align center
 				&.right
-					flex-shrink 0
+					flex 1
 					text-align right
 					justify-content flex-end
 					align-items center
+			.session-info
+				align-items flex-end
 		details
 			>>> summary
 				.navs
@@ -113,9 +122,6 @@ export default
 					line-height 29px
 					padding 0 2vw
 		background var(--color-secondary-background)
-		border-bottom 1px solid var(--color-disabled)
-		button
-			padding 1px 4px
 	> main
 		background var(--color-background)
 		overflow auto

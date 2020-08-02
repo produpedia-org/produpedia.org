@@ -120,7 +120,6 @@ export default
 <style lang="stylus" scoped>
 .filters
 	flex-wrap wrap
-	font-size 80%
 	> *
 		margin 3px // TODO: only distance to each other, none to outside
 	.filter

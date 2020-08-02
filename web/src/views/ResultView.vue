@@ -4,22 +4,25 @@ article#result-view.flex-fill.column
 	/ A better semantic element might be `menu`, but it is supported nowhere
 	header.row.center
 		aside.left
-			label.center
-				input type=checkbox v-model=readonly
-				div Readonly
+			.center
+				label.row
+					input type=checkbox v-model=readonly
+					div Readonly
 		h3
 			span.list-of List of 
 			| {{ subject }}s
 		aside.right
-			label.center
-				div Rows
-				select.limit v-model=limit
-					option v-for="l of selectable_limits" :value=l $l
-					option :value=-1 All
+			.center
+				label.row
+					div Rows
+					select.limit v-model=limit
+						option v-for="l of selectable_limits" :value=l $l
+						option :value=-1 All
 	
 	div#result-table-container.flex-fill.box ref=result_table_container tabindex=-1 @scroll=on_table_scroll
 		result-table#result-table v-if=data_fetched @datum_clicked=editing=$event :readonly=readonly
-		promise-button#load-more.btn v-if=data_fetched :action=fetch_next_page :disabled=fetching_next_page Load more
+		#load-more.center v-if=data_fetched
+			promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
 		p.disabled.center v-else="" Loading...
 	
 	/ maybe use linus borgs portal instead?
@@ -104,20 +107,24 @@ export default
 
 <style lang="stylus" scoped>
 #result-view
+	font-family monospace
+	font-size 14px
 	padding 1vh 1vw 0 1vw
 header
 	margin-bottom 8px
 	justify-content space-between
 	word-break keep-all
 	color var(--color-clickable)
-	font-size small
+	// font-size small
 	aside
 		overflow hidden
+		flex 1
+		text-align center
 		label > *
 			overflow hidden
 			text-overflow ellipsis
 	aside.right
-		text-align right
+		// text-align right
 		select, input
 			margin-left 6px
 	aside.left
@@ -129,8 +136,6 @@ header
 		> option
 			direction rtl
 	h3
-		flex-grow 1
-		flex-shrink 0
 		text-align center
 		margin 0 7px
 		.list-of
@@ -141,7 +146,6 @@ header
 #result-table
 	margin 0 auto
 	max-width 100%
-button#load-more
+#load-more
 	position sticky
-	left 50%
 </style>

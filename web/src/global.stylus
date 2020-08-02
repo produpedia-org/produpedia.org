@@ -17,7 +17,8 @@ body, html {
 	margin: 0;
 	width: 100%;
 	height: 100%;
-	font-family monospace
+	font-family sans-serif
+	font-size 15px
 }
 form
 	input:not([type=checkbox]), label, select {
@@ -307,11 +308,11 @@ progress
 	// This can be removed once focus-visible works........
 	outline none
 	&:not([tabindex="-1"])
-		background-color #fffdb5
-	// ........... .
+		outline 1px dotted grey
+	// ........... until here
 	&::-moz-focus-inner
 		border initial
 	// support for this is very patchy, chrome only with flag and firefox not at all
 	// there is a polyfill, but it's 4 KB, zipped 1 KB :-(
 	&:not(:focus-visible)
-		background-color unset
+		outline unset
