@@ -5,7 +5,7 @@ article#result-view.flex-fill.column
 	header.row.center
 		aside.left
 			.center
-				label.row
+				label.row.center
 					input type=checkbox v-model=readonly
 					div Readonly
 		h3
@@ -13,7 +13,7 @@ article#result-view.flex-fill.column
 			| {{ subject }}s
 		aside.right
 			.center
-				label.row
+				label.row.center
 					div Rows
 					select.limit v-model=limit
 						option v-for="l of selectable_limits" :value=l $l
