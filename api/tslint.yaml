@@ -16,5 +16,6 @@ rules: {
     object-shorthand-properties-first: false,
     prefer-template: false,
     no-increment-decrement: false,
-    align: false
+    align: false,
+    no-console: false
 }

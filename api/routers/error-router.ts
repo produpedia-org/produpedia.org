@@ -1,6 +1,6 @@
 import express from 'express';
 import { UNPROCESSABLE_ENTITY } from 'http-status-codes';
-import { html_escape, error, is_production } from '../utils';
+import { xml_escape, error, is_production } from '../utils';
 import MailService from '../services/MailService';
 
 export default (mail_service: MailService) => {
@@ -20,7 +20,7 @@ export default (mail_service: MailService) => {
             await mail_service.send_mail(
             'error@produpedia.org',
             'Error message received',
-            html_escape(req.body.error.replace(/\\n/g, '\n')));
+            xml_escape(req.body.error.replace(/\\n/g, '\n')));
         }
         return res.end();
     });
@@ -32,7 +32,7 @@ export default (mail_service: MailService) => {
         await mail_service.send_mail(
             '??????',
             req.body.subject,
-            html_escape(req.body.body.replace(/\n/g, '\n\n'))
+            xml_escape(req.body.body.replace(/\n/g, '\n\n'))
                 .replace(/\n/g, '\n<br>'));
         return res.end();
     });

@@ -76,12 +76,18 @@ export function parse_product_datum_value_or_throw(raw: any, attribute: Attribut
 const product_router = express.Router();
 
 product_router.post('/', async (req, res) => {
-    const { name, subject, source } = req.body;
+    const { name, label, source, categories } = req.body;
+    const categories_arr = categories.split(',');
     const product = new Product({
         name,
-        subject,
+        categories: categories_arr,
         verified: false,
-        data: {},
+        data: {
+            label: new PrimaryProductDatum({
+                value: label,
+                user: 'unknown', // TODO
+            }),
+        },
         source,
     });
     await product.save();
@@ -168,7 +174,7 @@ type MongoFilter = {[key: string]: any};
 // todo add checks for code 422 etc
 product_router.get('/', async (req, res) => {
     /*********** parse  *********/
-    const subject: string = req.query.t as string;
+    const category: string = req.query.t as string;
     let limit: number|undefined = Number(req.query.l);
     if (limit < 0)
         limit = undefined;
@@ -266,11 +272,10 @@ product_router.get('/', async (req, res) => {
         shower_ids = (await Attribute.find({
             select: ['_id'],
             where: {
-                subject,
+                category,
             },
             take: columns_count,
             order: {
-                messy: 'ASC',
                 interest: 'DESC',
             },
         }))
@@ -286,7 +291,7 @@ product_router.get('/', async (req, res) => {
     const products = await Product.find({
         where: {
             $and: [
-                { subject },
+                { category },
                 ...filters_formatted,
             ],
         } as any,

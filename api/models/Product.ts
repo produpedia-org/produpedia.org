@@ -1,9 +1,9 @@
-import { IsBoolean, Length, IsOptional, IsObject, IsUrl } from 'class-validator';
+import { IsBoolean, Length, IsOptional, IsObject, IsUrl, IsArray, IsString } from 'class-validator';
 import { BaseEntity, Column, Entity, ObjectIdColumn } from 'typeorm';
 import PrimaryProductDatum from './PrimaryProductDatum';
 import { ObjectID } from 'mongodb';
 
-interface PrimaryProductData {
+export interface PrimaryProductData {
     [attribute_id: string]: PrimaryProductDatum;
 }
 
@@ -13,11 +13,18 @@ class Product extends BaseEntity {
     @IsOptional()
     public _id!: ObjectID;
     @Column()
-    @Length(3, 20)
-    public subject!: string; // objectid?
+    @IsArray()
+    @Length(1, 255, { each: true }) // todo test, and other files
+    public categories!: string[];
     @Column()
-    @Length(3, 255) // todo revert to 1
+    @Length(1, 255)
     public name!: string;
+    @Column()
+    @IsArray()
+    @IsOptional()
+    @Length(1, 255, { each: true })
+    /** Alternative labels */
+    public aliases?: string[];
     @Column()
     @IsBoolean()
     public verified: boolean = false;
@@ -28,7 +35,8 @@ class Product extends BaseEntity {
     public data!: PrimaryProductData; // todo nested validation
     // FIXME user and source and maybe put these two (three? plus verified) into some interface
     @Column()
-    @IsUrl()
+    @IsString()
+    @IsOptional()
     public source!: string;
 
     public constructor(init: Partial<Product>) {

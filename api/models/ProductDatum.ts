@@ -17,7 +17,6 @@ class ProductDatum extends BaseEntity {
     @IsNotIn([undefined])
     public value!: ProductDatumValue;
     @Column()
-    @IsUrl()
     public source!: string; // todo: collaborative array (maybe)
 
 }

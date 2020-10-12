@@ -6,7 +6,7 @@ export const log = console.log;
 
 export const error = console.error;
 
-export const html_escape = (s: string) =>
+export const xml_escape = (s: string) =>
     s.replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')

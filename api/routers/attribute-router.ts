@@ -5,12 +5,13 @@ import Attribute from '../models/Attribute';
 const attribute_router = express.Router();
 
 attribute_router.post('/', async (req, res) => {
-    const { name, description, subject, unit, type } = req.body;
+    const { category, name, description, unit, type , label } = req.body;
     const attribute = new Attribute({
-        subject,
+        category, // TODO verfify
         verified: false,
         interest: 0,
         name,
+        label,
         description,
         unit,
         type,
@@ -20,9 +21,9 @@ attribute_router.post('/', async (req, res) => {
 });
 
 attribute_router.get('/', async (req, res) => {
-    const subject = req.query.t as string;
+    const category = req.query.t as string;
     const attributes = await Attribute.find({
-        subject,
+        category,
     });
     res.send(attributes);
 });

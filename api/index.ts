@@ -13,7 +13,7 @@ import product_router from './routers/product-router';
 import user_router from './routers/user-router';
 import MailService from './services/MailService';
 import TokenService from './services/TokenService';
-import { env, error, log, html_escape, is_production } from './utils';
+import { env, error, log, xml_escape, is_production } from './utils';
 import { createConnection } from 'typeorm';
 
 // ///////////////// CONFIG
@@ -63,7 +63,7 @@ app.use(async (err, req, res, next) => {
         await mail_service.send_mail(
         'error@produpedia.org',
         'API 500 / 422',
-        html_escape(JSON.stringify(info)));
+        xml_escape(JSON.stringify(info)));
     }
     if (err.length && (err[0] instanceof ValidationError || err[0].constraints)) { // TODO: class-validator whitelisting errors arent instanceof ValidationError. Probably a bug?
         // TODO: err doesnt include the stack trace
