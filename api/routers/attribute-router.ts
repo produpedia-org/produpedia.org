@@ -21,7 +21,7 @@ attribute_router.post('/', async (req, res) => {
 });
 
 attribute_router.get('/', async (req, res) => {
-    const category = req.query.t as string;
+    const category = req.query.category as string;
     const attributes = await Attribute.find({
         category,
     });
