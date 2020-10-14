@@ -153,7 +153,7 @@ export default
 				# To prevent unnecessary requests when the last appending request
 				# already returned an empty set
 				return
-			commit 'end_not_yet_reached'
+			commit 'end_not_yet_reached' #  todo rename has_more and set_has_more true
 			if not append
 				commit 'set_products', []
 				commit 'set_offset', 0
@@ -175,7 +175,8 @@ export default
 					columns: columns
 					limit: limit
 					offset: offset
-			commit 'set_shower_names', response.data.shower_names
+			shower_names = response.data.shower_names
+			commit 'set_shower_names', shower_names
 			commit 'add_products', response.data.products
 			if not response.data.products.length
 				commit 'end_reached'
@@ -215,6 +216,19 @@ export default
 		get_attributes: ({ commit, state }) ->
 			response = await axios.get 'a', { params: { category: state.category } }
 			attributes = response.data
+			attributes.unshift
+				category: 'Thing'
+				verified: true
+				name: 'thumbnail'
+				label: 'Thumbnail'
+				type: 'resource'
+			,
+				category: 'Thing'
+				verified: true
+				name: 'label'
+				label: 'Name'
+				type: 'string'
+			console.log attributes
 			commit 'set_attributes', attributes
 		add_filter: ({ commit, dispatch, getters }, { values }) -> # todo formdata?
 			commit 'add_filter', values

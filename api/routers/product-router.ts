@@ -252,6 +252,8 @@ product_router.get('/', async (req, res) => {
             },
         }))
         .map((attribute: Attribute) => attribute.name);
+
+        shower_names.unshift('thumbnail', 'label');
     }
 
     /************ compute *************/
@@ -268,7 +270,6 @@ product_router.get('/', async (req, res) => {
             ],
         } as any,
         select: [
-            'data.thumbnail' as keyof Product, 'data.label' as keyof Product,
             'name', 'verified', 'categories', 'aliases', 'source',
             ...shower_names_formatted,
         ],

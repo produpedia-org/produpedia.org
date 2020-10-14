@@ -2,18 +2,13 @@
 / Setting border in case the user disabled CSS
 table border=1
 	thead
+		tr v-if=dragging_column
+			td.dropzone.remove v-drop=remove_shower colspan=9999
+				| ╳ Drop<br>to hide
 		tr
-			td
-			td
 			td.filters v-for="shower_name in shower_names"
 				filters :filters=filters_by_attribute_name[shower_name] :attribute_name=shower_name :readonly=readonly
 		tr.attributes :class.drop-target=dragging_column
-			th
-			th
-				.dropzone.remove v-if=dragging_column v-drop=remove_shower
-					| ╳ Drop<br>to hide
-				div.center v-else=""
-					| Name
 			th.dropzone.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop=move_shower_to(index)
 				.attribute.column.center
 					div.actions.center v-if="!readonly && !can_drag"
@@ -25,7 +20,7 @@ table border=1
 							div.center
 								span.grip v-if="!readonly && can_drag" ⠿
 							div
-								div.name $attributes_by_name[shower_name].name
+								div.label $attributes_by_name[shower_name].label
 								div.unit v-if=attributes_by_name[shower_name].unit
 									| $attributes_by_name[shower_name].unit
 						div.sort.column
@@ -40,24 +35,21 @@ table border=1
 
 	tbody v-dragscrollable="{ scroll_target: scroll_container, on_dragscroll_start, on_dragscroll_end }"
 		tr.product v-for="product in products"
-			th.thumbnail
-				img v-if=product.data.thumbnail :src="product.data.thumbnail.value.replace('width=300','width=100')" alt=Thumbnail
-			th.name
-				| $product.data.label.value
-			td.datum v-for="shower_name in shower_names" @click=datum_clicked(product,shower_name) :set="datum=product.data[shower_name]"
+			td.datum v-for="shower_name, shower_index in shower_names" @click=datum_clicked(product,shower_name) :set="datum=product.data[shower_name]"
 				div v-if=datum
-					/
-						TODO
-						div v-if=datum.verified
-							span.verified
-								| $datum.value
-							button.edit.disabled v-if=!readonly
-								/ ✔ ✓
-								| ✎
-						div v-else=""
+					/ 	TODO
+					/ 	div v-if=datum.verified
+					/ 		span.verified
+					/ 			| $datum.value
+					/ 		button.edit.disabled v-if=!readonly
+					/ 			/ ✔ ✓
+					/ 			| ✎
+					/ 	div v-else=""
 					div
+						div.thumbnail v-if=shower_index===0
+							img alt=Thumbnail :src="datum.value.replace('width=300','width=190')"
 						/ .disabled TODO
-						| $datum.value
+						span v-else="" $datum.value
 						button.edit v-if=!readonly
 							| ✎
 				div v-else=""
@@ -229,9 +221,11 @@ tbody
 .attribute
 	.row
 		position relative
-	.name
+	.label
 		white-space nowrap
 		user-select text
+		&:first-letter
+			text-transform capitalize
 	.unit
 		color var(--color-disabled)
 		font-size small
@@ -267,22 +261,32 @@ tbody
 		.remove
 			font-size 50%
 			margin 0 13px
-td.datum
-	text-align center
-	button.edit
-		user-select none
-		position absolute
-		right 0
-		bottom 0
-		&.create
-			color #A0AB82
-	.verified
-		color #0B6721
-	ul
-		text-align left
-		padding-left 1em
-		display inline-block
-		margin 0
+tr.product
+	td.datum
+		text-align center
+		button.edit
+			user-select none
+			position absolute
+			right 0
+			bottom 0
+			&.create
+				color #A0AB82
+		.verified
+			color #0B6721
+		ul
+			text-align left
+			padding-left 1em
+			display inline-block
+			margin 0
+		height 36px
+		&:first-child
+			max-width unset
+			.thumbnail
+				width 190px
+				max-height 190px
+		&:nth-child(2)
+			font-weight bold
+			min-width 135px
 tr.actions
 	.load-more
 		max-width 100vw
