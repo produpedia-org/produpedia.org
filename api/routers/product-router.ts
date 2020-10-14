@@ -18,7 +18,7 @@ import { regexp_escape } from '../utils';
  * properties, and throws a string with an error message if the raw input doesnt
  * make sense or has the wrong format
  */
-function parse_single_value_or_throw(raw_single: string, attribute: Attribute): AttributeType {
+function parse_value_or_throw(raw_single: string, attribute: Attribute): AttributeType {
     let value: AttributeType;
     if (attribute.type === 'string') {
         if (typeof raw_single !== 'string') { // && raw_single !== null) {
@@ -59,20 +59,6 @@ function parse_single_value_or_throw(raw_single: string, attribute: Attribute): 
     return value;
 }
 
-/**
- * Transforms @param raw into a proper ProductDatumValue value, which means
- * returning `parse_single_value_or_throw()` as an array or a single value.
- */
-export function parse_product_datum_value_or_throw(raw: any, attribute: Attribute): ProductDatumValue {
-    if (typeof raw === 'string') {
-        const splits = raw.split(';');
-        if (splits.length > 1) {
-            return splits.map(s => parse_single_value_or_throw(s, attribute));
-        }
-    }
-    return parse_single_value_or_throw(raw, attribute);
-}
-
 const product_router = express.Router();
 
 product_router.post('/', async (req, res) => {
@@ -94,23 +80,22 @@ product_router.post('/', async (req, res) => {
     res.send(product);
 });
 
-product_router.delete('/:id', admin_secured, async (req, res) => {
+product_router.delete('/:name', admin_secured, async (req, res) => {
     res.send(await Product.delete({
-        _id: new ObjectID(req.params._id),
+        name: req.params.name,
     }));
 });
 
 /** Propose a ProductDatum */
-product_router.post('/:product_id/data/:attribute_id', async (req, res) => {
-    const { product_id, attribute_id } = req.params;
+product_router.post('/:product_name/data/:attribute_name', async (req, res) => {
+    const { product_name, attribute_name } = req.params;
     const { value: input_value, source } = req.body;
-    const attribute = await Attribute.findOne({ _id: new ObjectID(attribute_id) });
+    const attribute = await Attribute.findOne({ name: attribute_name });
     if (!attribute) {
         return res.status(NOT_FOUND).send('Attribute not found');
     }
-    const product_obj_id = new ObjectID(product_id);
     const product = await Product.findOne({
-        where: { _id: product_obj_id },
+        where: { name: product_name },
         // select: [ `data.${attribute_id}` ] // todo
     });
     if (!product) {
@@ -120,7 +105,7 @@ product_router.post('/:product_id/data/:attribute_id', async (req, res) => {
     // value validation //////
     let value: ProductDatumValue;
     try {
-        value = parse_product_datum_value_or_throw(input_value, attribute);
+        value = parse_value_or_throw(input_value, attribute);
     } catch (error_msg) {
         return res.status(UNPROCESSABLE_ENTITY).send(error_msg);
     }
@@ -131,8 +116,8 @@ product_router.post('/:product_id/data/:attribute_id', async (req, res) => {
     };
     const datum_proposal = new ProductDatumProposal({
         ...datum,
-        attribute: attribute._id.toHexString(),
-        product: product._id.toHexString(),
+        attribute: attribute.name,
+        product: product.name,
     });
     const primary_datum = new PrimaryProductDatum({
         ...datum,
@@ -144,8 +129,8 @@ product_router.post('/:product_id/data/:attribute_id', async (req, res) => {
     if (!product.data) {
         product.data = {};
     }
-    if (!product.data[attribute_id]) {
-        product.data[attribute_id] = primary_datum;
+    if (!product.data[attribute_name]) {
+        product.data[attribute_name] = primary_datum;
         await product.save();
         // todo which one?  what if product select todo is active?
         /*await Product.update({
@@ -158,7 +143,7 @@ product_router.post('/:product_id/data/:attribute_id', async (req, res) => {
 });
 
 interface Sorter {
-    attribute_id: string;
+    attribute_name: string;
     direction: number;
 }
 interface Filter {
@@ -174,48 +159,40 @@ type MongoFilter = {[key: string]: any};
 // todo add checks for code 422 etc
 product_router.get('/', async (req, res) => {
     /*********** parse  *********/
-    const category: string = req.query.t as string;
-    let limit: number|undefined = Number(req.query.l);
+    const category: string = req.query.category as string;
+    let limit: number|undefined = Number(req.query.limit);
     if (limit < 0)
         limit = undefined;
-    const offset = Number(req.query.o);
-    let shower_ids: string[] = (req.query.sh as string)
+    if (Number.isNaN(limit))
+        limit = 25;
+    const offset = Number(req.query.offset);
+    let shower_names: string[] = (req.query.showers as string)
         .split(',').filter(Boolean);
-    const sorters_param: string = req.query.so as string;
+    const sorters_param: string = req.query.sorters as string;
     const sorters: Sorter[] = sorters_param
         .split(',').filter(Boolean)
         .map((s: string): Sorter => {
             const split = s.split(':');
             return {
-                attribute_id: split[0],
+                attribute_name: split[0],
                 direction: Number(split[1]),
             };
         });
     const sorters_formatted: FindOptionsOrder<Product> = sorters
         .reduce((all: object, sorter) => ({
             ...all,
-            [`data.${sorter.attribute_id}.value`]: sorter.direction,
+            [`data.${sorter.attribute_name}.value`]: sorter.direction,
         }), {});
-    const filter_param: string = req.query.f as string;
-    const name_filters: Filter[] = [];
+    const filter_param: string = req.query.filters as string;
     const filters: Filter[] = (await Promise.all(
         filter_param
             .split(',').filter(Boolean)
             .map(async (s: string): Promise<Filter | null> => {
-                const [attribute_id, condition, value, case_str] = s.split(':');
+                const [attribute_name, condition, value, case_str] = s.split(':');
                 const case_sensitive = !case_str || case_str !== 'i';
-                if (attribute_id === 'name') {
-                    // TODO: This is a little ugly, modifying an external array
-                    // inside a .map()
-                    name_filters.push({
-                        attribute: new Attribute({
-                            type: 'string',
-                        }), condition, value, case_sensitive });
-                    return null;
-                }
                 // TODO: is this cached or same request for same attribute multiple times?
                 const attribute = await Attribute.findOne({
-                    _id: new ObjectID(attribute_id),
+                    name: attribute_name,
                 });
                 if (!attribute)
                     return null;
@@ -223,25 +200,24 @@ product_router.get('/', async (req, res) => {
                     attribute, condition, value, case_sensitive,
                 };
             })))
-        .filter(Boolean) as Filter[];
+        .filter((f): f is Filter => !!f);
     const filter_to_formatted_filter_condition = (filter: Filter) => {
         switch (filter.condition) {
-        case 'lt':
-            return { $lt: parse_single_value_or_throw(filter.value, filter.attribute) };
-        case 'gt':
-            return { $gt: parse_single_value_or_throw(filter.value, filter.attribute) };
-        case 'nu':
+        case 'lt': case 'lessthan':
+            return { $lt: parse_value_or_throw(filter.value, filter.attribute) };
+        case 'gt': case 'greaterthan':
+            return { $gt: parse_value_or_throw(filter.value, filter.attribute) };
+        case 'nu': case 'null': case 'nexists': case 'notexists': case 'notexist': case 'nexist':
             return { $exists: false };
-        case 'nn':
+        case 'nn': case 'notnull': case 'exists': case 'exist':
             return { $exists: true };
-        case 'con':
+        case 'con': case 'contains': case 'contain': case 'include': case 'includes':
             return new RegExp(regexp_escape(String(filter.value)), filter.case_sensitive ? undefined : 'i');
-        case 'ne':
-            return { $ne: parse_single_value_or_throw(filter.value, filter.attribute) };
-        case 'eq':
-        default:
+        case 'ne': case 'notequal': case 'notequals': case 'isnot': case 'not':
+            return { $ne: parse_value_or_throw(filter.value, filter.attribute) };
+        case 'eq': case 'equal': case 'equals': case 'is': default:
             if (filter.attribute.type !== 'string' || filter.case_sensitive)
-                return parse_single_value_or_throw(filter.value, filter.attribute);
+                return parse_value_or_throw(filter.value, filter.attribute);
             return new RegExp(`^${regexp_escape(String(filter.value))}$`, 'i');
         }
     };
@@ -249,7 +225,7 @@ product_router.get('/', async (req, res) => {
     try {
         filters_formatted = filters
             .map(filter => ({
-                [`data.${filter.attribute._id.toHexString()}.value`]:
+                [`data.${filter.attribute.name}.value`]:
                     filter_to_formatted_filter_condition(filter),
             }));
     } catch (error_msg) {
@@ -260,17 +236,13 @@ product_router.get('/', async (req, res) => {
     // as "NULLS LAST".
     filters_formatted.push(...sorters
         .filter(sorter => sorter.direction === 1)
-        .map(sorter => ({ [`data.${sorter.attribute_id}.value`]: { $exists: true } })));
-    // Name filters are separate because, currently, name is not an attribute
-    // but a simple property on product
-    filters_formatted.push(...name_filters
-        .map(filter => ({ name: filter_to_formatted_filter_condition(filter) })));
+        .map(sorter => ({ [`data.${sorter.attribute_name}.value`]: { $exists: true } })));
 
     /*********** determine showers if not given **********/
-    if (!shower_ids.length) {
-        const columns_count: number = Number(req.query.c);
-        shower_ids = (await Attribute.find({
-            select: ['_id'],
+    if (!shower_names.length) {
+        const columns_count: number = Number(req.query.columns);
+        shower_names = (await Attribute.find({
+            select: ['name'],
             where: {
                 category,
             },
@@ -279,11 +251,11 @@ product_router.get('/', async (req, res) => {
                 interest: 'DESC',
             },
         }))
-        .map((attribute: Attribute) => attribute._id.toString());
+        .map((attribute: Attribute) => attribute.name);
     }
 
     /************ compute *************/
-    const shower_ids_formatted = shower_ids.map(id => `data.${id}`) as (keyof Product)[];
+    const shower_names_formatted = shower_names.map(name => `data.${name}`) as (keyof Product)[];
 
     /********** Search ***********/
     // TODO: Maybe add a cache table (SQL) that is faster than querying the
@@ -291,13 +263,14 @@ product_router.get('/', async (req, res) => {
     const products = await Product.find({
         where: {
             $and: [
-                { category },
+                { categories: category },
                 ...filters_formatted,
             ],
         } as any,
         select: [
-            '_id', 'name', 'verified', // todo select doesnt work at all (?) https://github.com/typeorm/typeorm/pull/3756 edit only if no default values in class/constructor (?)
-            ...shower_ids_formatted,
+            'data.thumbnail' as keyof Product, 'data.label' as keyof Product,
+            'name', 'verified', 'categories', 'aliases', 'source',
+            ...shower_names_formatted,
         ],
         order: {
             ...sorters_formatted,
@@ -316,7 +289,7 @@ product_router.get('/', async (req, res) => {
     /********** return **********/
     return res.send({
         products,
-        shower_ids, // maybe as seperate request?
+        shower_names, // maybe as seperate request?
     });
 });
 

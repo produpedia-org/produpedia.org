@@ -3,48 +3,48 @@
 table border=1
 	thead
 		tr
-			td.filters
-				filters :filters=name_filters :readonly=readonly
-			td.filters v-for="shower_id in shower_ids"
-				filters :filters=filters_by_attribute_id[shower_id] :attribute_id=shower_id :readonly=readonly
+			td
+			td
+			td.filters v-for="shower_name in shower_names"
+				filters :filters=filters_by_attribute_name[shower_name] :attribute_name=shower_name :readonly=readonly
 		tr.attributes :class.drop-target=dragging_column
+			th
 			th
 				.dropzone.remove v-if=dragging_column v-drop=remove_shower
 					| ╳ Drop<br>to hide
 				div.center v-else=""
 					| Name
-			th.dropzone.move v-for="shower_id, index in shower_ids" :key="shower_id+'_'+index" v-drop=move_shower_to(index)
+			th.dropzone.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop=move_shower_to(index)
 				.attribute.column.center
 					div.actions.center v-if="!readonly && !can_drag"
-						button.moveto @click=move_shower_to(index-1)(shower_id) ←
-						button.remove @click=remove_shower(shower_id) ╳
-						button.moveto @click=move_shower_to(index+2)(shower_id) →
+						button.moveto @click=move_shower_to(index-1)(shower_name) ←
+						button.remove @click=remove_shower(shower_name) ╳
+						button.moveto @click=move_shower_to(index+2)(shower_name) →
 					div.row.center
-						div.row.center v-drag="!readonly && can_drag && shower_id" @dragstart=dragging_column=true @dragend=dragging_column=false
+						div.row.center v-drag="!readonly && can_drag && shower_name" @dragstart=dragging_column=true @dragend=dragging_column=false
 							div.center
 								span.grip v-if="!readonly && can_drag" ⠿
 							div
-								div.name :class.disabled=attributes_by_id[shower_id].messy $attributes_by_id[shower_id].name
-								div.unit v-if=attributes_by_id[shower_id].unit
-									| $attributes_by_id[shower_id].unit
-								div.messy-warning.highlighted v-if=attributes_by_id[shower_id].messy
-									| ⚠️ 
-									small Messy category
+								div.name $attributes_by_name[shower_name].name
+								div.unit v-if=attributes_by_name[shower_name].unit
+									| $attributes_by_name[shower_name].unit
 						div.sort.column
-							button.sort-up.disabled :disabled=readonly @click="toggle_sort_direction(shower_id, 1)" :class.highlighted=sorters_by_attribute_id[shower_id].direction===1
-								/ ˄ todo svg
+							button.sort-up.disabled :disabled=readonly @click="toggle_sort_direction(shower_name, 1)" :class.highlighted=sorters_by_attribute_name[shower_name].direction===1
+								/ ˄ todo png
 								| ▲
-							button.sort-down.disabled :disabled=readonly @click="toggle_sort_direction(shower_id, -1)" :class.highlighted=sorters_by_attribute_id[shower_id].direction===-1
+							button.sort-down.disabled :disabled=readonly @click="toggle_sort_direction(shower_name, -1)" :class.highlighted=sorters_by_attribute_name[shower_name].direction===-1
 								/ ˅
 								| ▼
-						div.sort.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_id[shower_id].index >= 0"
-							| $sorters_by_attribute_id[shower_id].index+1
+						div.sort.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_name[shower_name].index >= 0"
+							| $sorters_by_attribute_name[shower_name].index+1
 
 	tbody v-dragscrollable="{ scroll_target: scroll_container, on_dragscroll_start, on_dragscroll_end }"
 		tr.product v-for="product in products"
+			th.thumbnail
+				img v-if=product.data.thumbnail :src="product.data.thumbnail.value.replace('width=300','width=100')" alt=Thumbnail
 			th.name
-				| $product.name
-			td.datum v-for="shower_id in shower_ids" @click=datum_clicked(product,shower_id) :set="datum=product.data[shower_id]"
+				| $product.data.label.value
+			td.datum v-for="shower_name in shower_names" @click=datum_clicked(product,shower_name) :set="datum=product.data[shower_name]"
 				div v-if=datum
 					/
 						TODO
@@ -57,11 +57,7 @@ table border=1
 						div v-else=""
 					div
 						/ .disabled TODO
-						ul v-if=Array.isArray(datum.value)
-							li v-for="value of datum.value"
-								| $value
-						span v-else=""
-							| $datum.value
+						| $datum.value
 						button.edit v-if=!readonly
 							| ✎
 				div v-else=""
@@ -89,15 +85,15 @@ export default
 		scroll_container: null
 		is_scrolling_container: false
 	methods: {
-		toggle_sort_direction: (attribute_id, direction) ->
-			@$store.dispatch 'search/toggle_sort_direction', { attribute_id, direction }
-		datum_clicked: (product, attribute_id) ->
+		toggle_sort_direction: (attribute_name, direction) ->
+			@$store.dispatch 'search/toggle_sort_direction', { attribute_name, direction }
+		datum_clicked: (product, attribute_name) ->
 			if @readonly or @is_scrolling_container then return
-			@$emit 'datum_clicked', { product, attribute_id }
-		move_shower_to: (index) -> (shower_id) =>
-			@$store.dispatch 'search/move_shower_to', { shower_id, index }
-		remove_shower: (shower_id) ->
-			@$store.dispatch 'search/remove_shower', shower_id
+			@$emit 'datum_clicked', { product, attribute_name }
+		move_shower_to: (index) -> (shower_name) =>
+			@$store.dispatch 'search/move_shower_to', { shower_name, index }
+		remove_shower: (shower_name) ->
+			@$store.dispatch 'search/remove_shower', shower_name
 		...mapActions 'search',
 			-	'fetch_next_page'
 		on_dragscroll_start: ->
@@ -108,13 +104,12 @@ export default
 	computed: {
 		...mapState 'search',
 			-	'products'
-			-	'shower_ids'
+			-	'shower_names'
 		...mapGetters 'search',
-			-	'filters_by_attribute_id'
-			-	'name_filters'
-			-	'sorters_by_attribute_id'
+			-	'filters_by_attribute_name'
+			-	'sorters_by_attribute_name'
 			-	'sorters_amount'
-			-	'attributes_by_id'
+			-	'attributes_by_name'
 	}
 	mounted: ->
 		@can_drag = !(`'ontouchstart' in window` || navigator.maxTouchPoints) # todo "in" in cs? / todo css solution? media query blah
@@ -244,8 +239,6 @@ tbody
 			content '['
 		&::after
 			content ']'
-	.messy-warning
-		white-space nowrap
 	.grip
 		font-weight normal
 		color var(--color-disabled)

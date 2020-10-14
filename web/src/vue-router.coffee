@@ -19,7 +19,7 @@ export create_router = (store) ->
 				component: => `import('@/views/secure/Settings')`
 				meta:
 					requires_auth: true
-			-	path: '/p/:subject'
+			-	path: '/p/:category'
 				name: 'ResultView'
 				component: => `import('@/views/ResultView')`
 			-	path: '*'

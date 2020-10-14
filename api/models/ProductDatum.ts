@@ -2,7 +2,7 @@ import { IsNotIn, IsUrl, IsString, IsOptional } from 'class-validator';
 import { BaseEntity, Column, Entity, ObjectID, ObjectIdColumn } from 'typeorm';
 import { AttributeType } from './Attribute';
 
-export type ProductDatumValue = AttributeType | AttributeType[] | null;
+export type ProductDatumValue = AttributeType | null;
 
 // todo prevent instantiation AND saving, only derived allowed
 @Entity()

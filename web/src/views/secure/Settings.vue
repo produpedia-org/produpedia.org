@@ -20,7 +20,7 @@
 					| Confirm deletion
 				read-more
 					p This action will log you out and remove your user details from the system without trace.
-					p Next time you log in, the acount will be created anew.
+					p Next time you log in, the account will be created anew.
 					p Currently, users cannot really do much in this system, so no valuable data will be lost by deleting your account.
 				template #button_label=""
 					span.danger Delete your account

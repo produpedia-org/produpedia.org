@@ -13,15 +13,15 @@ div
 	div.center.column
 		popup v-if=show_form @close=show_form=false
 			h5 Add a filter:
-			h4 {{ attribute.name || 'Product name' }}
+			h4 $attribute.name
 			/ TODO btn float right not working? even if this is prmose form directly	
 			product-value-form#form :action=add_filter button_float_right="" :attribute=attribute :novalue=!condition_needs_value
 				template #before=""
-					input type=hidden name=attribute_id :value=attribute_id
+					input type=hidden name=attribute_name :value=attribute_name
 					div.condition.padding
 						label.column
 							| Condition
-							select name=condition required="" v-model=condition_id
+							select name=condition required="" v-model=condition_name
 								/ todo why html not | ?
 								option v-for="condition in conditions" :value=condition.id v-html=condition.option_html
 				div.condition-value-case-sensitive.padding.row
@@ -42,12 +42,9 @@ export default
 		filters:
 			type: Array
 			required: true
-		attribute_id:
+		attribute_name:
 			type: String
-			# This is a little hacky. TODO: Make this component more
-			# reusable-y, mostly by moving the actions to the parent component.
-			# ResultTable can then decide what to do with a changed filter
-			default: 'name'
+			default: ''
 		readonly:
 			default: false
 	data: ->
@@ -55,30 +52,30 @@ export default
 		condition_id: 'eq'
 		# todo: regex
 		conditions:
-			-	id: 'eq'
+			-	id: 'equals'
 				abbr: ' ='
 				needs_value: true
-			-	id: 'ne'
+			-	id: 'notequals'
 				abbr: '!='
 				long: 'not'
 				needs_value: true
-			-	id: 'lt'
+			-	id: 'lessthan'
 				abbr: ' &lt;'
 				long: 'less than'
 				needs_value: true
-			-	id: 'gt'
+			-	id: 'greaterthan'
 				abbr: ' &gt;'
 				long: 'more than'
 				needs_value: true
-			-	id: 'con'
+			-	id: 'contains'
 				abbr: ' ∋'
 				needs_value: true
 				long: 'contains'
 				description: 'contains'
-			-	id: 'nu'
+			-	id: 'null'
 				abbr: ' ∅'
 				long: 'empty'
-			-	id: 'nn'
+			-	id: 'notnull'
 				abbr: '!∅'
 				long: 'not empty'
 			.map (condition) =>
@@ -101,19 +98,18 @@ export default
 	}
 	computed: {
 		...mapGetters 'search',
-			-	'attributes_by_id'
+			-	'attributes_by_name'
 		condition_by_id: -> @conditions.reduce((all, condition) =>
 			all[condition.id] = condition
 			all
 		, {})
 		attribute: ->
-			@$store.getters['search/attributes_by_id'][@$props.attribute_id] or
-				type: 'string'
+			@$store.getters['search/attributes_by_name'][@$props.attribute_name]
 		condition_needs_value: ->
 			@condition_by_id[@condition_id].needs_value
 		condition_can_be_case_sensitive: ->
 			@condition_needs_value and
-				(not @attribute or @attribute.type == 'string')
+				@attribute.type == 'string'
 	}
 </script>
 

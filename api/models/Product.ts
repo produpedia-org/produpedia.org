@@ -4,7 +4,7 @@ import PrimaryProductDatum from './PrimaryProductDatum';
 import { ObjectID } from 'mongodb';
 
 export interface PrimaryProductData {
-    [attribute_id: string]: PrimaryProductDatum;
+    [attribute_name: string]: PrimaryProductDatum;
 }
 
 @Entity()

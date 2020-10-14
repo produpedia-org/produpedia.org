@@ -10,7 +10,7 @@ article#result-view.flex-fill.column
 					div Readonly
 		h3
 			span.list-of List of 
-			| {{ subject }}s
+			| {{ category }}s
 		aside.right
 			.center
 				label.row.center
@@ -27,7 +27,7 @@ article#result-view.flex-fill.column
 	
 	/ maybe use linus borgs portal instead?
 	popup v-if=editing @close=editing=null
-		edit-datum-dialog :product=editing.product :attribute_id=editing.attribute_id
+		edit-datum-dialog :product=editing.product :attribute_name=editing.attribute_name
 
 	div.center.margin-l v-if=!readonly
 		/ todo add toggle component
@@ -43,8 +43,8 @@ import ResultTable from '@/views/result-view/ResultTable'
 import EditDatumDialog from '@/views/result-view/EditDatumDialog'
 import AddProductDialog from '@/views/result-view/AddProductDialog'
 
-make_title = (subject) =>
-	"#{if subject then subject+' – ' else ''}Produpedia.org"
+make_title = (category) =>
+	"#{if category then category+' – ' else ''}Produpedia.org"
 
 export default
 	components: { ResultTable, EditDatumDialog, AddProductDialog }
@@ -53,24 +53,24 @@ export default
 		# axios networking error handler doesnt display ssr: it modifies another component; this serverPrefetch only cares for ResultView. thus, serverPrefetch errors must (and semantically also should) be handled individually
 		# if error, bubble throw: Then dont allow the rendering process to continue. Better to see a page with no data than not seeing any page at all for the user, but status code should really be 500, especially for bots
 		await @fetch_table_data()
-		@$ssrContext.title = make_title @$store.state.search.subject
+		@$ssrContext.title = make_title @$store.state.search.category
 	created: ->
 		@register_search_store()
 	beforeRouteUpdate: (to, from, next) ->
-		await @$store.dispatch 'search/change_subject', to.params.subject
-		document.title = make_title to.params.subject
+		await @$store.dispatch 'search/change_category', to.params.category
+		document.title = make_title to.params.category
 		next()
 	mounted: ->
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
 		@$store.dispatch 'offer_focus'
 		if !@data_fetched
 			await @fetch_table_data()
-			document.title = make_title @$route.params.subject
+			document.title = make_title @$route.params.category
 	data: ->
 		show_add_product_dialog: false
 		editing: null
 		readonly: false
-		selectable_limits: [ 5, 10, 20, 50, 100, 500, 1000 ]
+		selectable_limits: [ 5, 10, 20, 50, 100 ]
 		is_scrolled_to_bottom: false
 		fetching_next_page: false
 	methods: {
@@ -78,7 +78,7 @@ export default
 		register_search_store: ->
 			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
 		fetch_table_data: ->
-			await @$store.dispatch 'search/change_subject', @$route.params.subject
+			await @$store.dispatch 'search/change_category', @$route.params.category
 		on_table_scroll: (event) ->
 			ref = event.target
 			# Cannot use == 0 here because on some mobile devices there is always 1 pixel left for some reason
@@ -97,7 +97,7 @@ export default
 			get: -> @$store.state.search.limit
 			set: (v) -> @$store.dispatch 'search/set_limit', v
 		...mapState 'search',
-			-	'subject'
+			-	'category'
 	}
 	destroyed: ->
 		@$store.unregisterModule 'search'

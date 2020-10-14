@@ -2,7 +2,6 @@
 promise-form v-bind="$attrs" v-on="$listeners"
 	slot name=before
 	div.value v-if=!novalue
-		/ FIXME: arrays (not boolean)
 		label.column v-if="attribute.type==='string'"
 			| Value
 			input name=value placeholder=Value required=""

@@ -4,13 +4,6 @@ div.edit-datum
 	h3
 		em $attribute.name 
 		| of $product.name
-	div v-if=attribute.messy
-		div.highlighted ⚠️ This category is messy. You can filter the values as you please, but they are not organized, have invalid types and often contain weird values.
-		read-more
-			template #summary=""
-				div.highlighted Details
-			p The values for $attribute.name originate from the "generic infobox-properties" dataset from DBpedia (details below). Contrary to the mapped, ontologybased values, these are mostly copied <em>as is</em> from Wikipedia, without much processing.
-			p Until these categories are tidied up or replaced by a high quality dataset, they will stay because it is better to have messy values than to not have any at all.
 	div.current v-if=datum
 		h4 Current value
 		dl
@@ -30,7 +23,7 @@ div.edit-datum
 			dd 
 				pre.source
 					a :href=datum.source $datum.source
-				read-more v-if=is_dbpedia_source
+				read-more v-if="datum.source==='dbpedia'"
 					template #summary=""
 						| Information about DBpedia data
 					article
@@ -76,7 +69,7 @@ export default
 		product:
 			type: Object
 			required: true
-		attribute_id:
+		attribute_name:
 			type: String
 			required: true
 	methods: {
@@ -86,17 +79,15 @@ export default
 			@$store.dispatch 'search/save_datum',
 				form_data: form_data
 				product: @product
-				attribute_id: @attribute_id
+				attribute_name: @attribute_name
 	}
 	computed: {
 		...mapGetters 'search',
-			-	'attributes_by_id'
+			-	'attributes_by_name'
 		attribute: ->
-			@attributes_by_id[@attribute_id]
+			@attributes_by_name[@attribute_name]
 		datum: ->
-			@$props.product.data[@$props.attribute_id]
-		is_dbpedia_source: ->
-			!! @datum.source.match /^http:\/\/dbpedia.org\/resource\//
+			@$props.product.data[@$props.attribute_name]
 	}
 </script>
 
