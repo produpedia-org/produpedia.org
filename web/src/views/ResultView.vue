@@ -9,8 +9,7 @@ article#result-view.flex-fill.column
 					input type=checkbox v-model=readonly
 					div Readonly
 		h3
-			span.list-of List of 
-			| {{ category }}s
+			span.list-of List of $category_plural
 		aside.right
 			.center
 				label.row.center
@@ -98,6 +97,11 @@ export default
 			set: (v) -> @$store.dispatch 'search/set_limit', v
 		...mapState 'search',
 			-	'category'
+		category_plural: ->
+			if @category.match /y$/
+				@category.slice(0, -1) + 'ies'
+			else
+				@category + 's'
 	}
 	destroyed: ->
 		@$store.unregisterModule 'search'
