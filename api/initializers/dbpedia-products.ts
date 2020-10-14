@@ -77,7 +77,7 @@ let lineno = 0;
 
         const sql_conditions = product_infos.map(info => `
         { select "${info[0]}" as ?subject ?predicate ?object {
-            <http://dbpedia.org/resource/${xml_escape(info[0])}> ?predicate ?object
+            <http://dbpedia.org/resource/${encodeURI(info[0])}> ?predicate ?object
         } }`).join(' UNION ');
         const sql = `select ?subject ?predicate ?object { ${sql_conditions} }`;
 
