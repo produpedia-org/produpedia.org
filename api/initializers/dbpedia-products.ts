@@ -1,4 +1,3 @@
-import { xml_escape } from './../utils';
 import fs from 'fs';
 import readLine from 'readline';
 import 'reflect-metadata';
@@ -88,6 +87,12 @@ let lineno = 0;
 
             const product_results = results.filter(r => r.subject === resource);
 
+            const label = product_results.find(r => r.predicate === 'rdfs:label')?.object.replace(/^(.+)@[a-z]+/, '$1');
+            if (!label) {
+                console.log('label missing', resource);
+                return null;
+            }
+
             const data: PrimaryProductData = product_results
                 .filter(r => r.predicate.match(/^dbo:/))
                 .reduce((all: PrimaryProductData, r) => {
@@ -131,7 +136,7 @@ let lineno = 0;
                     return all;
                 }, {});
             data.label = new PrimaryProductDatum({
-                value: product_results.find(r => r.predicate === 'rdfs:label')?.object.replace(/^(.+)@[a-z]+/, '$1') || resource,
+                value: label,
                 user: 'system',
                 verified: true,
             });
@@ -157,7 +162,7 @@ let lineno = 0;
                 source: 'dbpedia',
                 data,
             });
-        });
+        }).filter((p): p is Product => !!p);
 
         await Product.save(products);
 
