@@ -9,6 +9,7 @@ import authentication_middleware from './authentication-middleware';
 import attribute_router from './routers/attribute-router';
 import error_router from './routers/error-router';
 import authentication_router from './routers/authentication-router';
+import category_router from './routers/category-router';
 import product_router from './routers/product-router';
 import user_router from './routers/user-router';
 import MailService from './services/MailService';
@@ -51,6 +52,7 @@ app.use('/user', user_router);
 app.use('/error', error_router(mail_service));
 app.use('/product', product_router);
 app.use('/attribute', attribute_router);
+app.use('/category', category_router);
 app.use('/', express.static(__dirname + '/public'));
 
 // @ts-ignore
