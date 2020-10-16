@@ -49,8 +49,8 @@ app.use('/authentication', authentication_router(
 ));
 app.use('/user', user_router);
 app.use('/error', error_router(mail_service));
-app.use('/p', product_router);
-app.use('/a', attribute_router);
+app.use('/product', product_router);
+app.use('/attribute', attribute_router);
 app.use('/', express.static(__dirname + '/public'));
 
 // @ts-ignore

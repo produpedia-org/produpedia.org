@@ -166,7 +166,7 @@ export default
 			filters_param = state.filters
 				.map (filter) => "#{filter.attribute_name}:#{filter.condition}:#{filter.value}:#{if not filter.case_sensitive then 'i' else ''}"
 				.join ','
-			response = await axios.get 'p',
+			response = await axios.get 'product',
 				params:
 					category: category,
 					showers: shower_names_param,
@@ -208,13 +208,13 @@ export default
 				dispatch 'search'
 		add_product: ({ commit, state }, { form_data }) ->
 			form_data.append 'category', state.category
-			response = await axios.post 'p', form_data
+			response = await axios.post 'product', form_data
 			commit 'add_product', response.data
 		save_datum: ({ commit, state }, { product, attribute_name, form_data }) ->
-			response = await axios.post "p/#{product.name}/data/#{attribute_name}", form_data
+			response = await axios.post "product/#{product.name}/data/#{attribute_name}", form_data
 			commit 'add_product_datum', { product, attribute_name, datum: response.data }
 		get_attributes: ({ commit, state }) ->
-			response = await axios.get 'a', { params: { category: state.category } }
+			response = await axios.get 'attribute', { params: { category: state.category } }
 			attributes = response.data
 			attributes.unshift
 				category: 'Thing'
@@ -228,7 +228,6 @@ export default
 				name: 'label'
 				label: 'Name'
 				type: 'string'
-			console.log attributes
 			commit 'set_attributes', attributes
 		add_filter: ({ commit, dispatch, getters }, { values }) -> # todo formdata?
 			commit 'add_filter', values
