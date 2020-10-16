@@ -1,5 +1,6 @@
 <template lang="slm">
 section#app.column.fill-h
+	confirm
 	popup v-if=authenticate_popup @close=hide_authenticate_popup
 		authenticate @authenticated=hide_authenticate_popup
 	modal v-if=loading_counter
@@ -8,48 +9,40 @@ section#app.column.fill-h
 	header
 		read-more.hamburger noliststyle=""
 			template #summary=""
-				.navs.types.fill.center
+				.navs.fill.center
 					nav.left
-						/
-							/| Lists of things: 
-							router-link exact="" to=/p/Smartphone Smartphones
-							| , 
-							router-link exact="" to=/p/Cheese Cheeses
-							/ | . 
+						div.hamburger ☰
+						/ /| Lists of things: 
+						/ router-link exact="" to=/p/Smartphone Smartphones
+						/ | , 
+						/ router-link exact="" to=/p/Cheese Cheeses
+						/ / | . 
 					nav.middle
-						/ em.fakelink Click for more...
-						router-link exact="" to=/p/Smartphone Smartphones
-						| , 
-						router-link exact="" to=/p/Cheese Cheeses
+						/ / em.fakelink Click for more...
+						/ router-link exact="" to=/p/Smartphone Smartphones
+						/ | , 
+						/ router-link exact="" to=/p/Cheese Cheeses
+						/ | $categories
+						| Categories
 					nav.right.row
 						router-link exact="" to=/ About
-						div.hamburger ☰
-			.navs.fill.center
-				nav.flex-fill
-					| (Status: DEMO) – 
-					| Lists of:
-					ul
-						li
-							router-link exact="" to=/p/Smartphone Smartphones
-						li
-							router-link exact="" to=/p/Cheese Cheeses
-						li
-							| ...and much more to come. See 
-							router-link exact="" to=/ About
-							|  page.
-				nav.flex-fill.right.row.center
-					div.session-info.column
-						span v-if=is_logged_in
-							span.logged-in-prompt Logged in as 
-							span v-if=session.name $session.name
-							span v-else-if=session.email $session.email
-							span v-else-if=session.external_type $session.external_identifier [$session.external_type]
-							| . 
-						router-link v-if=is_logged_in exact="" to=/settings Settings 
-						a href=/static/privacy.html : small Privacy & Imprint 
-						button.btn v-if=is_logged_in @click=logout Logout
-						button.btn v-if=!is_logged_in @click=show_authenticate_popup
-							| Sign in
+			.column.padding-l
+				.navs.fill.center
+					nav
+					nav.right.row.align-center.padding-l
+						div.session-info.column
+							span v-if=is_logged_in
+								span.logged-in-prompt Logged in as 
+								span v-if=session.name $session.name
+								span v-else-if=session.email $session.email
+								span v-else-if=session.external_type $session.external_identifier [$session.external_type]
+								| . 
+							router-link v-if=is_logged_in exact="" to=/settings Settings 
+							button.btn v-if=is_logged_in @click=logout Logout
+							button.btn v-if=!is_logged_in @click=show_authenticate_popup
+								| Sign in
+							a href=/static/privacy.html : small Privacy & Imprint 
+				category-tree
 	main.flex-fill.column
 		div.error.fade-in.column v-if=global_error_message
 			pre $global_error_message
@@ -62,10 +55,11 @@ section#app.column.fill-h
 <script lang="coffee">
 import { mapState, mapGetters, mapActions } from 'vuex'
 import Authenticate from '@/views/Authenticate'
+import CategoryTree from '@/views/CategoryTree'
+import Confirm from '@/views/Confirm'
 
 export default
-	components: { Authenticate }
-	name: 'App'
+	components: { Confirm, Authenticate, CategoryTree }
 	computed: {
 		...mapState
 			-	'app_name'
@@ -76,6 +70,8 @@ export default
 			-	'session'
 		...mapGetters 'session',
 			-	'is_logged_in'
+		...mapState 'category',
+			-	'categories'
 	}
 	methods: {
 		...mapActions
@@ -120,8 +116,15 @@ export default
 				.hamburger
 					font-size 19pt
 					line-height 29px
-					padding 0 2vw
-		background var(--color-secondary-background)
+					margin 0 1vw
+					padding 0 1vw
+					color var(--color-clickable)
+					display inline-block
+			&[open]
+				.hamburger
+					color white
+					background var(--color-highlighted)
+			background var(--color-secondary-background)
 	> main
 		background var(--color-background)
 		overflow auto
