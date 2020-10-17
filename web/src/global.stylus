@@ -27,7 +27,7 @@ form
 input[type=checkbox] + label {
 	display: inline;
 }
-a, .fakelink
+a[href], .fakelink
 	cursor: pointer
 	&, &:visited
 		color var(--color-clickable)
@@ -195,10 +195,6 @@ blockquote {
 	padding-left: 1em;
 	// border-left: 3px solid var(--color-secondary-background); todo
 }
-
-img
-	max-width 100%
-	max-height 100%
 
 /* Pre and Code */
 pre {
