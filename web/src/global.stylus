@@ -240,7 +240,7 @@ button, input[type="submit"], input[type="reset"], input[type="button"], label
 button.btn, input[type="submit"], input[type="reset"], input[type="button"]
 	display: inline-block
 	// padding: 6px 13px
-	padding: 0.5em 1.3em;
+	padding: 0.35em 1.3em;
 	text-align: center
 	text-decoration: none
 	// white-space: nowrap
