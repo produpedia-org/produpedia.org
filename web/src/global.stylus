@@ -314,3 +314,6 @@ progress
 	// there is a polyfill, but it's 4 KB, zipped 1 KB :-(
 	&:not(:focus-visible)
 		outline unset
+
+*
+	box-sizing border-box
