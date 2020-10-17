@@ -2,7 +2,7 @@
 
 :root {
 	--color-background: #fff;
-	--color-secondary-background: #f8f8f8;
+	--color-secondary-background: #f1f1f1;
 	--color-clickable: #133d83;
 	--color-foreground: #444;
 	--color-hover: #c4c4c4;
