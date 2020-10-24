@@ -47,7 +47,7 @@ table border=1
 					/ 	div v-else=""
 					div
 						div.thumbnail v-if=shower_index===0
-							img alt=Thumbnail :src="datum.value.replace('width=300','width=190')"
+							img alt=Thumbnail :src="datum.value.replace('width=300','width=190')" loading=lazy
 						/ .disabled TODO
 						span v-else="" $datum.value
 						button.edit v-if=!readonly
