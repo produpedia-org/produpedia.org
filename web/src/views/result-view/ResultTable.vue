@@ -46,8 +46,11 @@ table border=1
 					/ 			| ✎
 					/ 	div v-else=""
 					div
-						div.thumbnail v-if=shower_index===0
-							img alt=Thumbnail :src="datum.value.replace('width=300','width=190')" loading=lazy
+						div.thumbnail.loading v-if=shower_index===0
+							/ TODO: Find a way to show img loading placeholders without JS: https://stackoverflow.com/q/14748750/3779853
+							img alt=Thumbnail :src="datum.value.replace('width=300','width=190')" loading=lazy onload="parentElement.classList.remove('loading')" onerror="parentElement.classList.remove('loading')"
+							div.loading-placeholder.center.disabled
+								| 🖻<br>loading<br>image
 						/ .disabled TODO
 						span v-else="" $datum.value
 						button.edit v-if=!readonly
@@ -283,7 +286,22 @@ tr.product
 			max-width unset
 			.thumbnail
 				width 190px
-				max-height 190px
+				height 190px
+				position relative
+				.loading-placeholder
+					position absolute
+					top 0
+					bottom 0
+					left 0
+					right 0
+					font-size 27px
+					border 1px solid var(--color-border)
+					z-index -1
+				&:not(.loading)
+					.loading-placeholder
+						display none
+				img
+					max-height 190px
 		&:nth-child(2)
 			font-weight bold
 			min-width 135px
