@@ -55,6 +55,8 @@ app.use('/attribute', attribute_router);
 app.use('/category', category_router);
 app.use('/', express.static(__dirname + '/public'));
 
+app.set('query parser', 'simple');
+
 // @ts-ignore
 // Global error fallback handler, including promises
 app.use(async (err, req, res, next) => {
