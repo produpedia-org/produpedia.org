@@ -23,7 +23,7 @@ section#app.column.fill-h
 						/ | , 
 						/ router-link exact="" to=/p/Cheese Cheeses
 						/ | $categories
-						| Categories
+						path-to-category
 					nav.right.row
 						router-link exact="" to=/ About
 			.column.padding-l
@@ -57,9 +57,10 @@ import { mapState, mapGetters, mapActions } from 'vuex'
 import Authenticate from '@/views/Authenticate'
 import CategoryTree from '@/views/CategoryTree'
 import Confirm from '@/views/Confirm'
+import PathToCategory from '@/views/PathToCategory'
 
 export default
-	components: { Confirm, Authenticate, CategoryTree }
+	components: { Confirm, Authenticate, CategoryTree, PathToCategory }
 	computed: {
 		...mapState
 			-	'app_name'
@@ -70,8 +71,6 @@ export default
 			-	'session'
 		...mapGetters 'session',
 			-	'is_logged_in'
-		...mapState 'category',
-			-	'categories'
 	}
 	methods: {
 		...mapActions
@@ -98,7 +97,7 @@ export default
 					flex 1
 				&.middle
 					font-family monospace
-					font-size 16px
+					font-size 12px
 					text-align center
 				&.right
 					flex 1

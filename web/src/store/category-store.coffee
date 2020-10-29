@@ -1,26 +1,21 @@
 import axios from 'axios'
+import base_crud_store from './base-crud-store'
 
-export default
-	namespaced: true
-	state: =>
-		categories: []
+export default base_crud_store { resource_name: 'category', unique: 'name' },
 	getters:
 		# Thing
-		base_category: (state) ->
-			state.categories[state.categories.length-1]
-	mutations:
-		set_categories: (state, categories) ->
-			state.categories = categories
-	actions:
-		get_categories: ({ commit }) ->
-			response = await axios.get 'category'
-			categories = response.data
+		base_category: (state, getters) ->
+			getters.categories[getters.categories.length-1]
+		categories: (state) ->
+			categories = [...state.categories_raw]
 			for c from categories
 				c.parents_ref = []
-				c.children_ref = []
+				c.children_ref = []	
 			for c from categories
 				for d from categories
 					if c.parents.includes d.name
 						c.parents_ref.push d
 						d.children_ref.push c
-			commit 'set_categories', categories
+			categories
+		all_categories_loaded: (state, getters) ->
+			state.categories_raw.length > 716 # todo :-/

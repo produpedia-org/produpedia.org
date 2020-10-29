@@ -1,6 +1,6 @@
 <template lang="slm">
 div.box
-	.preview v-if=!base_category @click=start_get_categories
+	.preview v-if=!all_categories_loaded @click=start_get_categories
 		ul.category-tree
 			li
 				div Thing
@@ -20,7 +20,7 @@ div.box
 						a href=. Family
 		.cloak
 		.click-to-expand
-			promise-button.prompt :action=get_categories ref=get_categories_btn
+			promise-button.prompt :action="()=>get_categories_raw()" ref=get_categories_btn
 				| ↓ Click to expand ↓
 	ul.category-tree v-else=""
 		category-tree-item v-if=base_category :category=base_category
@@ -38,11 +38,12 @@ export default
 		start_get_categories: ->
 			@$refs.get_categories_btn.clicked()
 		...mapActions 'category',
-			-	'get_categories'
+			-	'get_categories_raw'
 	}
 	computed: {
 		...mapGetters 'category',
 			-	'base_category'
+			-	'all_categories_loaded'
 	}
 </script>
 
