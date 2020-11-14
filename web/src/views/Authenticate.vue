@@ -38,7 +38,7 @@ div
 				hr
 				a @click=show_mail_sent=false ⮜ Send another mail
 		section#with-external.box.padding-l
-			legend Or
+			legend Or, if you must:
 			div.provider v-for="provider in external_login_providers" :key=provider.name
 				div.row v-if=!provider.initialized
 					div.center
