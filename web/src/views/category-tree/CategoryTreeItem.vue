@@ -1,7 +1,8 @@
 <template lang="slm">
 li
-	a.label :href="!category.wrapper && '/product/'+category.name"
-		| $category.label
+	.label
+		a :href="!category.wrapper && '/product/'+category.name"
+			| $category.label
 	ul
 		category-tree-item v-for="child of category.children_ref" :category=child :key=child.name
 </template>
@@ -18,8 +19,8 @@ export default
 </script>
 
 <style lang="stylus" scoped>
-a.label
-	display block
+.label > a
+	display inline-block
 	&:first-letter
 		text-transform uppercase
 </style>
