@@ -28,7 +28,6 @@ main
 	max-height 98vh
 	max-width 98vw
 	min-width 50px
-	min-height 50px
 	position relative
 	box-sizing border-box
 	overflow auto
@@ -42,6 +41,7 @@ main
 	position absolute
 	top 0
 	right 1.5vmax
+	font-family revert
 .popup-content
 	padding 0 2vmax 3vmax
 	overflow auto

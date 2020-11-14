@@ -4,9 +4,8 @@ form.column :class.no-click=loading @submit.prevent=submit enctype="multipart/fo
 		slot name=legend
 	slot
 	#actions.row.center.padding
-		/ todo pass loading as slotscope prop to parent
-		slot name=button
-			loading-button.btn v-if="loading||!no_submit_button" :class.right=button_float_right :loading=button_loading :disabled=nosubmit
+		slot name=button :loading=loading
+			loading-button.btn v-if="!no_submit_button||loading" :class.right=button_float_right :loading=button_loading :disabled=nosubmit
 				slot name=button_label
 					| Submit
 				template #used_prompt=""
@@ -100,7 +99,7 @@ export default
 				else if @stepcount
 					@progress += 1/@stepcount
 				else
-					throw new Error "Unexpected  progress #{progress}"
+					throw new Error "Unexpected progress #{progress}"
 				if @progress > 0
 					time_passed = dayjs().diff(@action_start)
 					time_total_est = time_passed / @progress
@@ -109,13 +108,16 @@ export default
 
 			@action_start = new Date
 			try
-				await @action {
-					...values,
-					form_data, values, array_values, event,
-					progress: progress_callback
-				}
+				await Promise.all
+					-	@action {
+							...values,
+							form_data, values, array_values, event,
+							progress: progress_callback
+						}
+					-	sleep 150 # force delay when the network response is quick, because overly fast button responses are confusing to the user imo
 				if not @onetime
 					@button_loading = false
+				@$emit 'success'
 			catch e
 				await @$nextTick() # enforce transition effect even if follow-up error+
 				@error_response = e.data || e

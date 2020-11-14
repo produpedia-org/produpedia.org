@@ -39,6 +39,11 @@ button
 	font-size 13px
 fieldset {
 	border: 2px solid #eeeeee; // TODO: breaks .box in login, also has border or shadow or both
+	// chrome default paddings but without top padding
+	padding-block-start 0
+    padding-inline-start 0.75em
+    padding-inline-end 0.75em
+    padding-block-end 0.625em
 }
 details > summary {
 	cursor: pointer;
@@ -115,9 +120,18 @@ details > summary {
 	height: 100%
 .fill
 	@extend .fill-w, .fill-h
-.box
-	box-shadow 1px 1px 3px 0 #ababab
-	background rgba(253,253,253,0.93)
+@media not print
+	.box, input:not([type=submit]):not([type=range]), select, textarea
+		// box-shadow: 1px 2px 7px 1px #eee
+		// box-shadow: 1px 1px 1px 1px #ddd
+		// box-shadow: 2px 1px 1px 0px #ddd
+		// box-shadow 1px 1px 4px 2px #eee
+		// box-shadow 1px 1px 1px 2px #e2e2e2
+		box-shadow 1px 1px 3px 0px #ababab
+	.box
+		margin-bottom 1px
+		// border: 1px solid #ddd
+		background: rgba(255,255,255,0.93)
 
 .danger, .error
 	color var(--color-error)
@@ -165,6 +179,14 @@ body {
 	background-color: var(--color-background);
 }
 
+
+// basic font family reset, based on browserstyles font modifications
+input:not([type=checkbox]), textarea, keygen, select, button, optgroup, option
+	font inherit
+	line-height 1em
+	height 2em
+	margin 0
+
 h1, h2, h3, h4, h5, h6 {
 	color var(--color-foreground)
 	line-height: 1.1;
@@ -193,8 +215,7 @@ blockquote {
 	font-style: italic;
 	margin-left: 1.5em;
 	padding-left: 1em;
-	// border-left: 3px solid var(--color-secondary-background); todo
-}
+	border-left: 3px solid var(--color-main); }
 
 /* Pre and Code */
 pre {
@@ -222,7 +243,7 @@ ul
 
 button // buttons, by default, should not have any specific styling so they can be used better semantically. for typical button-buttons, use .btn
 	// also see index ssr html
-	-webkit-appearance: none
+	appearance none
 	font inherit
 	color: inherit // FF bug
 
@@ -238,15 +259,15 @@ button, input[type="submit"], input[type="reset"], input[type="button"], label
 }
 // TODO: .btn = button-like styling, should not be used as button identifier
 button.btn, input[type="submit"], input[type="reset"], input[type="button"]
-	display: inline-block
+	display inline-flex
+	align-items center
+	white-space pre-wrap
 	// padding: 6px 13px
-	padding: 0.35em 1.3em;
-	text-align: center
+	padding: 0.5em 1.3em;
 	text-decoration: none
-	// white-space: nowrap
-	background-color #f0f0f0
+	background-color: #f1f1f1
+	color: var(--color-foreground)
 	background-image: linear-gradient(rgba(255, 255, 255, 0.45) 50%, transparent 52%);
-	box-sizing: border-box
 	font-weight bolder
 	font-family unset
 	transition all 0.1s linear
@@ -268,21 +289,25 @@ button.btn, input[type="submit"], input[type="reset"], input[type="button"]
 			opacity: 0.7
 			background unset
 			border-width 2px 0 0 1px
+	&[disabled]
+		pointer-events auto // allow title popup
 
-textarea, select, input {
+textarea, select, input:not([type=range])
 	color: #4a4a4a;
-	padding: 6px 10px;
+	padding: 4px 10px;
 	/* The 6px vertically centers text on FF, ignored by Webkit */
-	background-color: #f1f1f1;
-	border: none;
-	box-shadow: none;
-	box-sizing: border-box; }
-	textarea:focus, select:focus, input[type]:focus {
-		border: 1px solid var(--color-border);
-		outline: 0; }
+	background-color #f1f1f1
+	border none
+	box-shadow none
 
-input[type="checkbox"]:focus {
-	outline: 1px dotted var(--color-border); }
+textarea:focus, select:focus, input[type]:focus
+	border 1px solid var(--color-border)
+	outline 0
+
+input[type=checkbox]
+	margin 3px 11px 3px 0
+	&:focus
+		outline 1px dotted var(--color-border)
 
 legend, label {
 	display: inline-block;
@@ -300,6 +325,13 @@ progress
 		background var(--color-secondary-background)
 	&::-webkit-progress-bar /* chrome */, & /* FF */
 		background var(--color-disabled)
+
+*[title]
+	&:not(button):not(a)
+		cursor help
+	&::first-letter
+		text-decoration underline
+		text-decoration-style dotted
 
 *:focus
 	// Overwrite the styling for focussed elements

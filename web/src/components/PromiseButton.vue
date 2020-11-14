@@ -1,5 +1,5 @@
 <template lang="slm">
-loading-button :loading=button_loading||disabled @click=clicked
+loading-button :loading=button_loading :disabled=disabled @click=clicked
 	slot
 	template #used_prompt=""
 		/ todo pass loading as slotscope (as in promiseform)
@@ -69,15 +69,18 @@ export default
 					# as promise-button also serves the purpose of displaying
 					# errors
 					result = await action_response
-				if @onetime or typeof result == 'string'
+				if typeof result == 'string'
 					# If @action returns a string, it will be shown in place of
 					# the normal button and the button will become onetime implicitly
 					@done_prompt = result
-				else
+				else if not @onetime
 					@button_loading = false
 				# if the action fails, do not reenable the button. show error and become stale.
 			catch e
-				@error = e
+				if e.status == 0
+					@button_loading = false
+				else
+					@error = e
 				throw e
 			finally
 				@loading = false

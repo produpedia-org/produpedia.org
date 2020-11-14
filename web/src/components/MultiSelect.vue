@@ -7,14 +7,17 @@
 					option v-for="option of unselected_options" :value="option.value||option"
 						| {{ option.name || option }}
 				filter-select v-else="" required="" name=value :options=unselected_options
+			slot name=add_fields
 			template #button_label="" Add
-	.list.margin-l
+	.list
 		slot name=rendered :selected_options=selected_options :add=add :remove=remove :move_up=move_up :move_down=move_down
 			.none-selected v-if=!selected_options.length
 				small.disabled empty selection
 			.selected-options.row.justify-center.children-spacing
 				.selected-option.row.center.box v-for="selected_option, index in selected_options"
-					button.name.remove title="Remove this option" @click=remove(index) {{ selected_option.name || selected_option }} ╳
+					button.name.remove title="Remove this option" @click=remove(index)
+						| {{ selected_option.name || selected_option }} 
+						span.x ╳
 </template>
 
 <script lang="coffee">
@@ -34,17 +37,29 @@ export default
 		nofilter:
 			type: Boolean
 			default: false
+		add_action:
+			type: Function
+			default: null
 	data: ->
 		new_option: ''
+		values_type: 'string'
 	created: ->
 		if not @model
 			@model = []
+		if @options.length
+			@values_type = typeof (@options[0].value or @options[0])
 	methods:
 		add: (value) ->
+			# value is now inherently type string. maybe change that:
+			if @values_type == 'number'
+				value = value * 1
 			@model.push value
 			@model = @model
-		add_formdata: ({ value }) ->
-			@add value
+		add_formdata: (promiseform_data) ->
+			if @add_action
+				@add_action promiseform_data
+			else
+				@add promiseform_data.value
 		remove: (index) ->
 			@model.splice index, 1
 			@model = @model
@@ -79,6 +94,8 @@ export default
 	.selected-option
 		padding 4px 7px
 		margin 4px
+		.remove > .x
+			font-family initial
 .list
 	overflow auto
 </style>

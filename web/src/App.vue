@@ -49,11 +49,11 @@ section#app.column.fill-h
 			div.center
 				promise-button.btn :action=reset_global_error_message
 					| Hide
+		confirm
 		router-view
 </template>
 
 <script lang="coffee">
-import { mapState, mapGetters, mapActions } from 'vuex'
 import Authenticate from '@/views/Authenticate'
 import CategoryTree from '@/views/CategoryTree'
 import Confirm from '@/views/Confirm'
