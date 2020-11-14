@@ -58,6 +58,7 @@ import Authenticate from '@/views/Authenticate'
 import CategoryTree from '@/views/CategoryTree'
 import Confirm from '@/views/Confirm'
 import PathToCategory from '@/views/PathToCategory'
+import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default
 	components: { Confirm, Authenticate, CategoryTree, PathToCategory }
