@@ -1,6 +1,7 @@
 // GLOBAL ///////////////////////// 
 
 :root {
+	// Also check process.env.VUE_APP_THEME_PRIMARY_COLOR
 	--color-background: #fff;
 	--color-secondary-background: #f1f1f1;
 	--color-clickable: #133d83;
