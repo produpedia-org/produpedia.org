@@ -24,7 +24,6 @@
 import { mapState } from 'vuex'
 
 export default
-	name: 'About'
 	computed: {
 		...mapState
 			-	'app_version'
