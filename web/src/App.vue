@@ -1,5 +1,7 @@
 <template lang="slm">
 section#app.column.fill-h
+	no-ssr
+		vue-progress-bar
 	confirm
 	popup v-if=authenticate_popup @close=hide_authenticate_popup
 		authenticate @authenticated=hide_authenticate_popup
@@ -58,10 +60,22 @@ import Authenticate from '@/views/Authenticate'
 import CategoryTree from '@/views/CategoryTree'
 import Confirm from '@/views/Confirm'
 import PathToCategory from '@/views/PathToCategory'
+# TODO: requiring a seperate package for this is annoying, solve it manually somehow.
+# v-if=!$isServer is not enough for vue-progress-bar
+# https://github.com/egoist/vue-client-only/blob/master/src/index.js
+import NoSsr from 'vue-no-ssr'
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default
-	components: { Confirm, Authenticate, CategoryTree, PathToCategory }
+	components: { NoSsr, Confirm, Authenticate, CategoryTree, PathToCategory }
+	metaInfo:
+		titleTemplate: (title) =>
+			"#{if title then title+' – ' else ''}Produpedia.org"
+		link:
+			-	rel: 'manifest', href: '/manifest.json' # not actually necessary..? pwa seems to also work without the link
+		meta:
+			-	name: 'description', vmid: 'description', content: 'Detailed lists of everything, Free and Open Data'
+			-	name: 'theme-color', content: process.env.VUE_APP_THEME_PRIMARY_COLOR
 	computed: {
 		...mapState
 			-	'app_name'
