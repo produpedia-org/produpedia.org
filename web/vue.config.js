@@ -1,9 +1,10 @@
 const path = require('path');
 const coffeescript = require('coffeescript');
 const fs = require('fs');
-const fetch = require('node-fetch');
 
 process.env.VUE_APP_APP_VERSION = require('./package.json').version;
+
+process.env.VUE_APP_THEME_PRIMARY_COLOR = '#FFFFFF';
 
 const is_production = process.env.NODE_ENV === 'production';
 
@@ -53,7 +54,7 @@ module.exports = {
       directoryIndex: 'null' // TODO test if this actually did anything
     },
     name: 'Produpedia.org',
-    themeColor: '#ffecaf',
+    themeColor: process.env.VUE_APP_THEME_PRIMARY_COLOR,
     msTileColor: '#FFFFFF',
     manifestOptions: {
       // icons: []
