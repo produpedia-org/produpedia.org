@@ -105,8 +105,8 @@ export default
 			getters.attribute_names
 				.filter (attribute_name) =>
 					!state.showers.includes attribute_name
-		category_ref: (state, getters, rootState) ->
-			rootState.category.categories.find (c) =>
+		category_ref: (state, getters, rootState, rootGetters) ->
+			rootGetters['category/categories'].find (c) =>
 				c.name == state.category
 	mutations:
 		set_category: (state, category) -> state.category = category
