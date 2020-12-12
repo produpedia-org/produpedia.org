@@ -24,10 +24,11 @@ module.exports = {
 				.after('vue')
 				.test(/\.coffee$/)
 					// alternatively, maybe use coffee-loader transpile options? TODO. ...follow https://github.com/cxspxr/vue-cli-plugin-coffee/issues/4
-					// TODO: broken because https://github.com/vuejs/vue-cli/issues/6018 something. I got tired and just removed the babel loader temporarily until this is fixed
-					// .use('coffee/babel')
-					// 	.loader('babel-loader')
-					// 	.end()
+					// FIXME: This babel transpilation is NOT applied in app-legacy.js of uvue's `ssr:build --modern` build!
+					// --modern cannot be used because of this right now. How to solve this?
+					.use('coffee/babel')
+						.loader('babel-loader')
+						.end()
 					.use('coffee/loader')
 						.loader('coffee-loader')
 						.end()
