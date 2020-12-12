@@ -24,9 +24,10 @@ module.exports = {
 				.after('vue')
 				.test(/\.coffee$/)
 					// alternatively, maybe use coffee-loader transpile options? TODO. ...follow https://github.com/cxspxr/vue-cli-plugin-coffee/issues/4
-					.use('coffee/babel')
-						.loader('babel-loader')
-						.end()
+					// TODO: broken because https://github.com/vuejs/vue-cli/issues/6018 something. I got tired and just removed the babel loader temporarily until this is fixed
+					// .use('coffee/babel')
+					// 	.loader('babel-loader')
+					// 	.end()
 					.use('coffee/loader')
 						.loader('coffee-loader')
 						.end()
