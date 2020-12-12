@@ -4,7 +4,7 @@
 	// Also check process.env.VUE_APP_THEME_PRIMARY_COLOR
 	--color-background: #fff;
 	--color-secondary-background: #f1f1f1;
-	--color-clickable: #133d83;
+	--color-clickable: #0645ad;
 	--color-foreground: #444;
 	--color-hover: #c4c4c4;
 	--color-disabled: #a6a6a6;
@@ -30,8 +30,9 @@ input[type=checkbox] + label {
 }
 a[href], .fakelink
 	cursor: pointer
-	&, &:visited
-		color var(--color-clickable)
+	color var(--color-clickable)
+	&:visited
+		color #0b0080
 	&:hover
 		color var(--color-hover)
 	text-decoration none
@@ -183,10 +184,7 @@ body {
 
 // basic font family reset, based on browserstyles font modifications
 input:not([type=checkbox]), textarea, keygen, select, button, optgroup, option
-	font inherit
-	line-height 1em
 	height 2em
-	margin 0
 
 h1, h2, h3, h4, h5, h6 {
 	color var(--color-foreground)
