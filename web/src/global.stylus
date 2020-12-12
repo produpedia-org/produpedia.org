@@ -336,17 +336,14 @@ progress
 
 *:focus
 	// Overwrite the styling for focussed elements
-	// This can be removed once focus-visible works........
 	outline none
 	&:not([tabindex="-1"])
-		outline 1px dotted grey
-	// ........... until here
-	&::-moz-focus-inner
+		&:focus-visible
+			outline 1px dotted grey
+		&:-moz-focusring // doesnt work when joined together with focus-visible by comma??
+			outline 1px dotted grey
+	&::-moz-focus-inner // seems to be outdated (?)
 		border initial
-	// support for this is very patchy, chrome only with flag and firefox not at all
-	// there is a polyfill, but it's 4 KB, zipped 1 KB :-(
-	&:not(:focus-visible)
-		outline unset
 
 *
 	box-sizing border-box
