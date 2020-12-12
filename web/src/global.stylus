@@ -351,5 +351,10 @@ progress
 	&::-moz-focus-inner // seems to be outdated (?)
 		border initial
 
+// Chrome shows an outline around focussed inputs, even on mouse click,
+// FF doesnt.
+// input:focus
+//	but that's ok
+
 *
 	box-sizing border-box
