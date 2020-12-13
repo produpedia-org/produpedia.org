@@ -45,8 +45,10 @@ import AddProductDialog from '@/views/result-view/AddProductDialog'
 export default
 	components: { ResultTable, EditDatumDialog, AddProductDialog }
 	metaInfo: ->
-		title: @$store.state.search.category
+		title: @$store.state.search?.category
 	created: ->
+		if @$isServer
+			return
 		# Note that after hydration at this point, search state is already populated,
 		# but the store *module* does not yet exist, thus the check
 		if not @$store.hasModule('search')
@@ -55,12 +57,12 @@ export default
 			# solution to this besides reloading the site. vue#6518
 			# Also, removed destroyed:unregister because it introduces unnecessary bugs
 			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
-		await @$store.dispatch 'search/change_category', @$route.params.category
-	serverPrefetch: ->
 		if not @data_fetched
-			# This exists because the thrown error inside created() is only UnhandledPromiseRejectionWarning
-			# and the server would otherwise still return 200.
-			throw 'Server search data prefetching failed'
+			await @$store.dispatch 'search/change_category', @$route.params.category
+	fetch: ({ store, route }) ->
+		if not store.hasModule('search')
+			store.registerModule 'search', search_store_module
+		await store.dispatch 'search/change_category', route.params.category
 	mounted: ->
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
 		@$store.dispatch 'offer_focus'
@@ -90,11 +92,12 @@ export default
 	computed: {
 		data_fetched: -> !!@$store.state.search?.attributes
 		limit:
-			get: -> @$store.state.search.limit
+			get: -> @$store.state.search?.limit or 1
 			set: (v) -> @$store.dispatch 'search/set_limit', v
 		category: ->
 			@$store.state.search?.category
 		category_plural: ->
+			if not @category then return ''
 			if @category.match /y$/
 				@category.slice(0, -1) + 'ies'
 			else
