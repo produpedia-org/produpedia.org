@@ -1,7 +1,9 @@
 <template lang="slm">
 li
 	.label
-		a :href="!category.wrapper && '/product/'+category.name"
+		a v-if=category.wrapper
+			| $category.label
+		router-link v-else="" :to="'/product/'+category.name"
 			| $category.label
 	ul
 		category-tree-item v-for="child of category.children_ref" :category=child :key=child.name
