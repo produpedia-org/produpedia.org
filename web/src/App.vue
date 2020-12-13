@@ -1,5 +1,5 @@
 <template lang="slm">
-section#app.column.fill-h
+#app.column.fill-h
 	no-ssr
 		vue-progress-bar
 	confirm
@@ -125,8 +125,8 @@ export default
 				&.left
 					flex 1
 				&.middle
-					font-family monospace
 					font-size 12px
+					font-family monospace
 					text-align center
 				&.right
 					flex 1
@@ -152,7 +152,6 @@ export default
 				.hamburger
 					color white
 					background var(--color-highlighted)
-			background var(--color-secondary-background)
 	> main
 		background var(--color-background)
 		overflow auto

@@ -1,5 +1,5 @@
 <template lang="slm">
-article#result-view.flex-fill.column
+#result-view.flex-fill.column
 
 	/ A better semantic element might be `menu`, but it is supported nowhere
 	header.row.center
@@ -8,7 +8,7 @@ article#result-view.flex-fill.column
 				label.row.center
 					input type=checkbox v-model=readonly
 					div Readonly
-		h3
+		h1
 			span.list-of List of $category_plural
 		aside.right
 			.center
@@ -18,7 +18,7 @@ article#result-view.flex-fill.column
 						option v-for="l of selectable_limits" :value=l $l
 						option :value=-1 All
 	
-	div#result-table-container.flex-fill.box ref=result_table_container tabindex=-1 @scroll=on_table_scroll
+	article#result-table-container.flex-fill ref=result_table_container tabindex=-1 @scroll=on_table_scroll
 		result-table#result-table v-if=data_fetched @datum_clicked=editing=$event :readonly=readonly
 		#load-more.center v-if=data_fetched
 			promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
@@ -109,14 +109,14 @@ export default
 
 <style lang="stylus" scoped>
 #result-view
-	font-family monospace
 	font-size 14px
-	padding 1vh 1vw 0 1vw
+	padding 0.2vh 1vw 0 1vw
 header
-	margin-bottom 8px
 	justify-content space-between
 	word-break keep-all
 	color var(--color-clickable)
+	border-bottom 1px solid #a2a9b1
+	margin-bottom 8px
 	// font-size small
 	aside
 		overflow hidden

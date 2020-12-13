@@ -72,7 +72,7 @@ export default
 			padding 7px
 			margin-bottom 5px
 ul.category-tree
-	max-height 70vh
+	max-height clamp(30vh, 550px, 54vh)
 	overflow auto
 	user-select none // because v-dragscrollable
 	--line-height 1.4em

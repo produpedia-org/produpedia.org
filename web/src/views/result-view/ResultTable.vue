@@ -147,6 +147,8 @@ border-fix()
 table
 	--separator 1px solid #e3e3e3
 	border-collapse collapse
+	user-select none // because v-dragscrollable
+	color #202122
 tbody td, th
 	border-bottom-fix var(--separator)
 	&:not(:last-child)
@@ -157,51 +159,55 @@ table, td, th
 
 // 2. General table styling
 
+thead tr:last-child
+	background #eaecf0
+tbody tr
+	background #f8f9fa
 th, td, th > *
-	z-index 1
 	min-width 47px
-td, th
+td
 	position relative
+	z-index 1
+	background #f8f9fa
+	max-width 150px
+	padding 1vmin
+	word-wrap break-word
+	&:nth-child(1), &:nth-child(2)
+		z-index 2
 th
 	position sticky
-	background inherit
-thead th
-	z-index 3
 	top 0
-	&:first-child
-		z-index 4
-		left 0
+	z-index 3
 	height 2em
 	padding 0
-	// background linear-gradient(#fff, 93%, transparent) // weird grey color on firefox, so using this:
-	background linear-gradient(#fff, 93%, rgba(255,255,255,0.5))
+	// background linear-gradient(#eaecf0, 93%, transparent) // weird grey color on firefox, so using this:
+	background linear-gradient(#eaecf0, 93%, rgba(248 249 250 0.5))
 	> *
 		padding 6px 15px
 		// Very basic column resizing
+		// Looks shitty on Firefox, currently impossible to fix this css-only
 		resize horizontal
 		overflow hidden
-		height 100%
-tbody
-	td, th
-		max-width 150px
-		padding 1vmin
-		word-wrap break-word
-	th
-		z-index 2
+	&:nth-child(1), &:nth-child(2)
+		z-index 4
+// The first two cols should be sticky and on top of the other cols,
+// except on small screens, the only the first col
+td, th
+	&:nth-child(1), &:nth-child(2)
+		position sticky
+	&:nth-child(1)
+		padding 0
 		left 0
-	tr
-		td
-			background #fff
-		th
-			// same workaround as above, and now horizontally
-			background linear-gradient(to right, #fff, 93%, rgba(255,255,255,0.5))
-		&:nth-child(odd)
-			td
-				background var(--color-secondary-background)
-				&:last-child
-					background linear-gradient(to right, var(--color-secondary-background), 90%, #fff)
-			th
-				background linear-gradient(to right, #fff, 10%, var(--color-secondary-background), 93%, rgba(255,255,255,0.5))
+	&:nth-child(2)
+		left 190px
+		min-width 160px
+	@media (max-width: 950px)
+		&:nth-child(1)
+			position relative
+			z-index 0
+		&:nth-child(2)
+			min-width 100px
+			left 0
 
 // 3. Semantic styling
 
@@ -302,9 +308,7 @@ tr.product
 						display none
 				img
 					max-height 190px
-		&:nth-child(2)
-			font-weight bold
-			min-width 135px
+
 tr.actions
 	.load-more
 		max-width 100vw
