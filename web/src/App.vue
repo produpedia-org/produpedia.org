@@ -9,7 +9,7 @@ section#app.column.fill-h
 		.box.padding-l
 			| Loading... ($loading_counter)
 	header
-		read-more.hamburger noliststyle=""
+		read-more.hamburger noliststyle="" ref=header_details
 			template #summary=""
 				.navs.fill.center
 					nav.left
@@ -106,6 +106,9 @@ export default
 		...mapActions 'session',
 			-	'logout'
 	}
+	watch:
+		$route: ->
+			@$refs.header_details.$el.removeAttribute 'open'
 </script>
 
 <style lang="stylus" scoped>
