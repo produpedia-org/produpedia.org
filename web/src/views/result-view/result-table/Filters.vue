@@ -11,9 +11,9 @@ div
 			button.disabled.fade-in @click=show_form=true
 				| +
 	div.center.column
+		/ FIXME modal component needs to use vue3 portal once its out
 		popup v-if=show_form @close=show_form=false
-			h5 Add a filter:
-			h4 $attribute.name
+			h3 Filter for $attribute.label
 			/ TODO btn float right not working? even if this is prmose form directly	
 			product-value-form#form :action=add_filter button_float_right="" :attribute=attribute :novalue=!condition_needs_value
 				template #before=""
@@ -21,8 +21,7 @@ div
 					div.condition.padding
 						label.column
 							| Condition
-							select name=condition required="" v-model=condition_name
-								/ todo why html not | ?
+							select name=condition required="" v-model=condition_id
 								option v-for="condition in conditions" :value=condition.id v-html=condition.option_html
 				div.condition-value-case-sensitive.padding.row
 					label.center v-if=condition_can_be_case_sensitive
@@ -49,7 +48,7 @@ export default
 			default: false
 	data: ->
 		show_form: false
-		condition_id: 'eq'
+		condition_id: 'equals'
 		# todo: regex
 		conditions:
 			-	id: 'equals'
