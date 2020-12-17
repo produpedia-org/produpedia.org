@@ -161,8 +161,10 @@ export default
 				commit 'set_products', []
 				commit 'set_offset', 0
 			{ category, columns, limit, offset } = state
-			shower_names_param = state.shower_names
+			showers_param = state.shower_names
 				.join ','
+			if not showers_param
+				showers_param = columns
 			sorters_param = state.sorters
 				.map (sorter) => "#{sorter.attribute_name}:#{sorter.direction}"
 				.join ','
@@ -172,14 +174,12 @@ export default
 			response = await axios.get 'product',
 				params:
 					category: category,
-					showers: shower_names_param,
-					filters: filters_param,
-					sorters: sorters_param,
-					columns: columns
+					show: showers_param,
+					filter: filters_param,
+					sort: sorters_param,
 					limit: limit
 					offset: offset
-			shower_names = response.data.shower_names
-			commit 'set_shower_names', shower_names
+			commit 'set_shower_names', response.data.shower_names
 			commit 'add_products', response.data.products
 			if not response.data.products.length
 				commit 'end_reached'

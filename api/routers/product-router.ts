@@ -166,9 +166,15 @@ product_router.get('/', async (req, res) => {
     if (Number.isNaN(limit))
         limit = 25;
     const offset = Number(req.query.offset);
-    let shower_names: string[] = (req.query.showers as string)
-        .split(',').filter(Boolean);
-    const sorters_param: string = req.query.sorters as string;
+    const showers_param = req.query.show as string;
+    let columns_count = 0;
+    let shower_names: string[] = [];
+    if(!Number.isNaN(Number(showers_param))) {
+        columns_count = Number(showers_param);
+    } else {
+        shower_names = showers_param.split(',').filter(Boolean);
+    }
+    const sorters_param: string = req.query.sort as string;
     const sorters: Sorter[] = sorters_param
         .split(',').filter(Boolean)
         .map((s: string): Sorter => {
@@ -183,7 +189,7 @@ product_router.get('/', async (req, res) => {
             ...all,
             [`data.${sorter.attribute_name}.value`]: sorter.direction,
         }), {});
-    const filter_param: string = req.query.filters as string;
+    const filter_param: string = req.query.filter as string;
     const filters: Filter[] = (await Promise.all(
         filter_param
             .split(',').filter(Boolean)
@@ -240,7 +246,6 @@ product_router.get('/', async (req, res) => {
 
     /*********** determine showers if not given **********/
     if (!shower_names.length) {
-        const columns_count: number = Number(req.query.columns);
         shower_names = (await Attribute.find({
             select: ['name'],
             where: {
