@@ -159,8 +159,11 @@ table, td, th
 
 // 2. General table styling
 
-thead tr:last-child
-	background #eaecf0
+thead tr
+	td
+		z-index 4
+	&:last-child
+		background #eaecf0
 tbody tr
 	background #f8f9fa
 th, td, th > *
@@ -168,7 +171,6 @@ th, td, th > *
 td
 	position relative
 	z-index 1
-	background #f8f9fa
 	max-width 150px
 	padding 1vmin
 	word-wrap break-word
