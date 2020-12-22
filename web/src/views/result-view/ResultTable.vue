@@ -2,14 +2,11 @@
 / Setting border in case the user disabled CSS
 table border=1
 	thead
-		tr v-if=dragging_column
-			td.dropzone.remove v-drop=remove_shower colspan=9999
-				| ╳ Drop<br>to hide
 		tr
 			td.filters v-for="shower_name in shower_names"
 				filters :filters=filters_by_attribute_name[shower_name] :attribute_name=shower_name :readonly=readonly
 		tr.attributes :class.drop-target=dragging_column
-			th.dropzone.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop=move_shower_to(index)
+			th.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop=move_shower_to(index)
 				.attribute.column.center
 					div.actions.center v-if="!readonly && !can_drag"
 						button.moveto @click=move_shower_to(index-1)(shower_name) ←
@@ -32,6 +29,9 @@ table border=1
 								| ▼
 						div.sort.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_name[shower_name].index >= 0"
 							| $sorters_by_attribute_name[shower_name].index+1
+		tr.drop-target v-if=dragging_column
+			td.remove.center v-drop=remove_shower colspan=9999
+				div.padding-l Drop here<br>╳<br>to hide this attribute
 
 	tbody v-dragscrollable="{ scroll_target: scroll_container, on_dragscroll_start, on_dragscroll_end }"
 		tr.product v-for="product in products"
@@ -164,11 +164,11 @@ thead tr
 		z-index 4
 	&:last-child
 		background #eaecf0
-tbody tr
+tbody tr td
 	background #f8f9fa
 th, td, th > *
 	min-width 47px
-td
+tbody td
 	position relative
 	z-index 1
 	max-width 150px
@@ -216,19 +216,21 @@ td, th
 .filters
 	z-index 9 // so filter modal shows above other tds/ths with z-index above
 	user-select none
-.attributes.drop-target .dropzone
+	padding 7px 0
+	background var(--color-background)
+.drop-target
 	color #246
+.attributes.drop-target .move	
 	&.drop
-		&.move
-			border-left-fix 2px solid var(--color-highlighted)
-		&.remove
-			color var(--color-highlighted)
-	&.remove
-		text-transform uppercase
-		color var(--color-highlighted)
-		white-space nowrap
-		&.drop
-			background var(--color-hover)
+		border-left-fix 2px solid var(--color-highlighted)
+.drop-target .remove
+	font-weight bold
+	text-align center
+	color var(--color-highlighted)
+	text-transform uppercase
+	white-space nowrap
+	&.drop
+		background var(--color-clickable)
 .attribute
 	.row
 		position relative
