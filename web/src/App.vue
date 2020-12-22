@@ -25,7 +25,7 @@
 						/ | , 
 						/ router-link exact="" to=/p/Cheese Cheeses
 						/ | $categories
-						path-to-category
+						category-breadcrumbs
 					nav.right.row
 						router-link exact="" to=/ About
 			.column.padding-l
@@ -61,7 +61,7 @@
 import Authenticate from '@/views/Authenticate'
 import CategoryTree from '@/views/CategoryTree'
 import Confirm from '@/views/Confirm'
-import PathToCategory from '@/views/PathToCategory'
+import CategoryBreadcrumbs from '@/views/CategoryBreadcrumbs'
 # TODO: requiring a seperate package for this is annoying, solve it manually somehow.
 # v-if=!$isServer is not enough for vue-progress-bar
 # https://github.com/egoist/vue-client-only/blob/master/src/index.js
@@ -69,7 +69,7 @@ import NoSsr from 'vue-no-ssr'
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default
-	components: { NoSsr, Confirm, Authenticate, CategoryTree, PathToCategory }
+	components: { NoSsr, Confirm, Authenticate, CategoryTree, CategoryBreadcrumbs }
 	metaInfo:
 		titleTemplate: (title) =>
 			"#{if title then title+' – ' else ''}Produpedia.org"
