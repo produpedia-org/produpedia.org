@@ -60,7 +60,7 @@ export default
 		### static ###
 		#
 		### (optionally) user-defined ###
-		category: ''
+		category: null
 		filters: [
 		]
 		shower_names: []
@@ -140,10 +140,13 @@ export default
 			commit 'set_filters', []
 			commit 'set_sorters', []
 			commit 'set_shower_names', []
-			Promise.all
-				-	dispatch 'search'
-				-	dispatch 'get_attributes'
-				-	dispatch 'get_category_breadcrumbs'
+			if not category
+				commit 'set_category_breadcrumbs_ref', []
+			else
+				await Promise.all
+					-	dispatch 'search'
+					-	dispatch 'get_attributes'
+					-	dispatch 'get_category_breadcrumbs'
 		toggle_sort_direction: ({ commit, dispatch, state, getters }, { attribute_name, direction }) ->
 			sorter = getters.sorters_by_attribute_name[attribute_name]
 			if sorter
