@@ -6,7 +6,7 @@ export default base_crud_store { resource_name: 'category', unique: 'name' },
 		base_category: (state, getters) ->
 			getters.categories[getters.categories.length-1]
 		categories: (state) ->
-			categories = [...state.categories_raw]
+			categories = state.categories_raw.map (c) => {...c}
 			for c from categories
 				c.parents_ref = []
 				c.children_ref = []	
