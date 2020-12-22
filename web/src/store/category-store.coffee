@@ -1,4 +1,3 @@
-import axios from 'axios'
 import base_crud_store from './base-crud-store'
 
 export default base_crud_store { resource_name: 'category', unique: 'name' },

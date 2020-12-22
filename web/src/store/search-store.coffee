@@ -1,5 +1,4 @@
 import storage_service from '@/services/storage-service'
-import axios from 'axios'
 import Vue from 'vue'
 
 ###
@@ -171,7 +170,7 @@ export default
 			filters_param = state.filters
 				.map (filter) => "#{filter.attribute_name}:#{filter.condition}:#{filter.value}:#{if not filter.case_sensitive then 'i' else ''}"
 				.join ','
-			response = await axios.get 'product',
+			response = await @$http.get 'product',
 				params:
 					category: category,
 					show: showers_param,
@@ -211,13 +210,13 @@ export default
 				dispatch 'search'
 		add_product: ({ commit, state }, { form_data }) ->
 			form_data.append 'category', state.category
-			response = await axios.post 'product', form_data
+			response = await @$http.post 'product', form_data
 			commit 'add_product', response.data
 		save_datum: ({ commit, state }, { product, attribute_name, form_data }) ->
-			response = await axios.post "product/#{product.name}/data/#{attribute_name}", form_data
+			response = await @$http.post "product/#{product.name}/data/#{attribute_name}", form_data
 			commit 'add_product_datum', { product, attribute_name, datum: response.data }
 		get_attributes: ({ commit, state }) ->
-			response = await axios.get 'attribute', { params: { category: state.category } }
+			response = await @$http.get 'attribute', { params: { category: state.category } }
 			attributes = response.data
 			attributes.unshift
 				category: 'Thing'

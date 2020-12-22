@@ -11,7 +11,8 @@ export default {
 		],
 		'@uvue/core/plugins/errorHandler',
 		'@uvue/core/plugins/middlewares',
-		'@/plugins/nav-loader'
+		'@/plugins/nav-loader',
+		'@/plugins/http-client'
 	],
 	css: {
 		// Produpedia is built with accessibility in mind, which is why the page
