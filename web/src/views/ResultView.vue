@@ -9,7 +9,7 @@
 					input type=checkbox v-model=readonly
 					div Readonly
 		h1
-			span.list-of List of $category_plural
+			span.list-of $title
 		aside.right
 			.center
 				label.row.center
@@ -44,7 +44,7 @@ import AddProductDialog from '@/views/result-view/AddProductDialog'
 export default
 	components: { ResultTable, EditDatumDialog, AddProductDialog }
 	metaInfo: ->
-		title: @$store.state.search?.category
+		title: @title
 	created: ->
 		# Note that after hydration at this point, search state is already populated,
 		# but the store *module* does not yet exist, thus the check
@@ -89,10 +89,18 @@ export default
 			@$store.state.search?.category
 		category_plural: ->
 			if not @category then return ''
-			if @category.match /y$/
-				@category.slice(0, -1) + 'ies'
+			category_label = @$store.getters['search/category_ref']?.label
+			if not category_label
+				# Category names are typically in TODO ?
+				category_label = @category.charAt(0).toUpperCase() + @category.slice(1)
+			if category_label.match /s$/
+				category_label
+			else if category_label.match /y$/
+				category_label.slice(0, -1) + 'ies'
 			else
-				@category + 's'
+				category_label + 's'
+		title: ->
+			"List of #{@category_plural}"
 	}
 	destroyed: ->
 		@$store.dispatch 'set_default_focus_target', null
