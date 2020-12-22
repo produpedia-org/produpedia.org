@@ -47,7 +47,10 @@
 				category-tree
 	main.flex-fill.column
 		div.error v-if=$errorHandler.error
-			pre 500 | Internal Server Error :-( [{{$errorHandler.error.message}}]
+			pre v-if="$errorHandler.statusCode===500"
+				| 500 | Unexpected internal Server Error :-( [{{$errorHandler.error.message}}]
+			pre v-else=""
+				| Error {{$errorHandler.statusCode}} | {{$errorHandler.error.message}}
 		div.error.fade-in.column v-if=global_error_message
 			pre $global_error_message
 			div.center
@@ -85,7 +88,7 @@ export default
 				# Needs extra handling because the error-plugin only catches
 				# *unexpected ssr renderer errors* outside fetch(). Here, we
 				# consider errors that still allow a full page to be rendered
-				# (500 status but no 500.html)
+				# (500 status but no 500.html), probably from inside fetch()
 				{ ssr_build_error_report } = await import('@/server/error-plugin')
 				await ssr_build_error_report @$errorHandler.error
 	computed: {
