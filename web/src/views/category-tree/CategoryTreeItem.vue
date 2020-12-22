@@ -23,6 +23,7 @@ export default
 <style lang="stylus" scoped>
 .label > a
 	display inline-block
+	white-space nowrap
 	&:first-letter
 		text-transform uppercase
 </style>

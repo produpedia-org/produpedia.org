@@ -6,14 +6,14 @@ div
 			strong.value v-if=filter.value :class.case_sensitive=filter.case_sensitive
 				| $filter.value&nbsp;
 			button @click=remove_filter(filter) v-if=!readonly ╳
-		label.add-filter.justify-center v-if="!show_form && !readonly"
-			span.disabled v-if=!filters.length Add filter 
-			button.disabled.fade-in @click=show_form=true
+		label.add-filter.justify-center.disabled v-if="!show_form && !readonly"
+			span v-if=!filters.length Add filter 
+			button.fade-in @click=show_form=true
 				| +
 	div.center.column
 		/ FIXME modal component needs to use vue3 portal once its out
 		popup v-if=show_form @close=show_form=false
-			h3 Filter for $attribute.label
+			h3 Filter by $attribute.label
 			/ TODO btn float right not working? even if this is prmose form directly	
 			product-value-form#form :action=add_filter button_float_right="" :attribute=attribute :novalue=!condition_needs_value
 				template #before=""
@@ -115,8 +115,7 @@ export default
 <style lang="stylus" scoped>
 .filters
 	flex-wrap wrap
-	> *
-		margin 3px // TODO: only distance to each other, none to outside
+	gap 3px
 	.filter
 		padding 2px 4px
 		// background: lightgrey
@@ -128,7 +127,12 @@ export default
 			&.case_sensitive:first-letter
 				text-decoration underline var(--color-foreground)
 	.add-filter
+		font-family monospace
 		white-space pre
+		line-height 1
+		font-size 80%
+		button
+			height unset
 #form
 	max-width 750px
 	.attribute-select, .condition-value

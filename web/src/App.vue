@@ -19,7 +19,7 @@
 						/ | , 
 						/ router-link exact="" to=/p/Cheese Cheeses
 						/ / | . 
-					nav.middle
+					nav.middle.row.center
 						/ / em.fakelink Click for more...
 						/ router-link exact="" to=/p/Smartphone Smartphones
 						/ | , 
@@ -123,17 +123,19 @@ export default
 			justify-content space-between
 			padding 2px 5px
 			box-sizing border-box
+			gap 1vw
 			nav
 				overflow hidden
 				text-overflow ellipsis
-				&.left
-					flex 1
+				&.left, &.right
+					flex 0 0 auto
+					width fit-content
 				&.middle
+					flex 1 1 0 // = 1
 					font-size 12px
 					font-family monospace
 					text-align center
 				&.right
-					flex 1
 					text-align right
 					justify-content flex-end
 					align-items center
@@ -148,7 +150,6 @@ export default
 				.hamburger
 					font-size 19pt
 					line-height 29px
-					margin 0 1vw
 					padding 0 1vw
 					color var(--color-clickable)
 					display inline-block

@@ -1,7 +1,7 @@
 <template lang="slm">
-nav.box
+nav.tree.box
 	.preview v-if=!all_categories_loaded @click=start_get_categories
-		ul.category-tree
+		ul.category-tree.padding-l
 			li
 				div Thing
 				ul
@@ -22,7 +22,7 @@ nav.box
 		.click-to-expand
 			promise-button.prompt :action="()=>get_categories_raw()" ref=get_categories_btn
 				| ↓ Click to expand ↓
-	ul.category-tree v-else="" v-dragscrollable=""
+	ul.category-tree.padding-l v-else="" v-dragscrollable=""
 		category-tree-item v-if=base_category :category=base_category
 </template>
 
@@ -48,6 +48,8 @@ export default
 </script>
 
 <style lang="stylus" scoped>
+.tree
+	overflow auto
 .preview
 	position relative
 	overflow auto
@@ -73,11 +75,12 @@ export default
 			margin-bottom 5px
 ul.category-tree
 	max-height clamp(30vh, 550px, 54vh)
-	overflow auto
 	user-select none // because v-dragscrollable
 	--line-height 1.4em
 	line-height var(--line-height)
-	background var(--color-background)
+	background white
+	width fit-content
+	margin 0
 	>>>
 		li, ul, .label
 			background inherit
