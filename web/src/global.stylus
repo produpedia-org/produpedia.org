@@ -344,9 +344,9 @@ progress
 	outline none
 	&:not([tabindex="-1"])
 		&:focus-visible
-			outline 1px dotted grey
+			outline 1px solid var(--color-highlighted)
 		&:-moz-focusring // doesnt work when joined together with focus-visible by comma??
-			outline 1px dotted grey
+			outline 1px solid var(--color-highlighted)
 	&::-moz-focus-inner // seems to be outdated (?)
 		border initial
 
