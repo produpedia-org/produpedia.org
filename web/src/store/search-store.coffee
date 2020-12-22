@@ -74,6 +74,7 @@ export default
 		products: null
 		### other ###
 		reached_the_end: false
+		category_breadcrumbs_ref: []
 	getters:
 		attribute_names: (state) ->
 			state.attributes.map (a) => a.name # todo add map('str') prototype
@@ -131,6 +132,7 @@ export default
 		set_offset: (state, offset) -> state.offset = offset
 		end_reached: (state) -> state.reached_the_end = true
 		end_not_yet_reached: (state) -> state.reached_the_end = false
+		set_category_breadcrumbs_ref: (state, breadcrumbs) -> state.category_breadcrumbs_ref = breadcrumbs
 	actions:
 		change_category: ({ commit, dispatch }, category) ->
 			commit 'set_attributes', null
@@ -141,6 +143,7 @@ export default
 			Promise.all
 				-	dispatch 'search'
 				-	dispatch 'get_attributes'
+				-	dispatch 'get_category_breadcrumbs'
 		toggle_sort_direction: ({ commit, dispatch, state, getters }, { attribute_name, direction }) ->
 			sorter = getters.sorters_by_attribute_name[attribute_name]
 			if sorter
@@ -245,3 +248,22 @@ export default
 			dispatch 'search', { append: true }
 		# add_column: ({ commit, state }) ->
 		# 	commit 'set_column', state.column + 1
+		get_category_breadcrumbs: ({ state, getters, dispatch, commit }) ->
+			category_i = getters.category_ref
+			if category_i
+				# At least some categories are loaded
+				path = [category_i]
+				while category_i.parents.length
+					if category_i.parents.length != category_i.parents_ref.length
+						# Only partially loaded; not enough info for full breadcrumbs
+						# TODO: test if this happens at all
+						path = null
+						break
+					path.unshift category_i.parents_ref[0]
+					category_i = category_i.parents_ref[0]
+			if not path
+				path = await dispatch 'category/get_categories_raw', {
+					options: add: true
+					params: breadcrumbs: state.category
+				}, root: true
+			commit 'set_category_breadcrumbs_ref', path
