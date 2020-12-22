@@ -19,10 +19,9 @@
 						option :value=-1 All
 	
 	article#result-table-container.flex-fill ref=result_table_container tabindex=-1 @scroll=on_table_scroll
-		result-table#result-table v-if=data_fetched @datum_clicked=editing=$event :readonly=readonly
-		#load-more.center v-if=data_fetched
+		result-table#result-table @datum_clicked=editing=$event :readonly=readonly
+		#load-more.center
 			promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
-		p.disabled.center v-else="" Loading...
 	
 	/ maybe use linus borgs portal instead?
 	popup v-if=editing @close=editing=null
@@ -47,8 +46,6 @@ export default
 	metaInfo: ->
 		title: @$store.state.search?.category
 	created: ->
-		if @$isServer
-			return
 		# Note that after hydration at this point, search state is already populated,
 		# but the store *module* does not yet exist, thus the check
 		if not @$store.hasModule('search')
@@ -56,9 +53,7 @@ export default
 			# hook, resulting in errors. Doesnt look like there is an easy
 			# solution to this besides reloading the site. vue#6518
 			# Also, removed destroyed:unregister because it introduces unnecessary bugs
-			@$store.registerModule 'search', search_store_module, { preserveState: !!@$store.state.search }
-		if not @data_fetched
-			await @$store.dispatch 'search/change_category', @$route.params.category
+			@$store.registerModule 'search', search_store_module, preserveState: true
 	fetch: ({ store, route }) ->
 		if not store.hasModule('search')
 			store.registerModule 'search', search_store_module
@@ -66,9 +61,6 @@ export default
 	mounted: ->
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
 		@$store.dispatch 'offer_focus'
-	beforeRouteUpdate: (to, from, next) ->
-		await @$store.dispatch 'search/change_category', to.params.category
-		next()
 	data: ->
 		show_add_product_dialog: false
 		editing: null
@@ -90,7 +82,6 @@ export default
 			-	'fetch_next_page'
 	}
 	computed: {
-		data_fetched: -> !!@$store.state.search?.attributes
 		limit:
 			get: -> @$store.state.search?.limit or 1
 			set: (v) -> @$store.dispatch 'search/set_limit', v
