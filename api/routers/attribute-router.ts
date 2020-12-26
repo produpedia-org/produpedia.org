@@ -1,6 +1,9 @@
 import { ObjectID } from 'bson';
 import express from 'express';
+import { UNPROCESSABLE_ENTITY } from 'http-status-codes';
 import Attribute from '../models/Attribute';
+import Category from '../models/Category';
+import { get_category_anchestors } from './category-router';
 
 const attribute_router = express.Router();
 
@@ -21,11 +24,16 @@ attribute_router.post('/', async (req, res) => {
 });
 
 attribute_router.get('/', async (req, res) => {
-    const category = req.query.category as string;
+    const category = await Category.findOne({ name: req.query.category as string });
+    if(!category)
+        return res.status(UNPROCESSABLE_ENTITY).send('Param category missing or not found');
     const attributes = await Attribute.find({
-        category,
+        category: { $in: [
+            category.name,
+            ...(await get_category_anchestors(category)).map(c => c.name),
+        ]}
     });
-    res.send(attributes);
+    return res.send(attributes);
 });
 
 export default attribute_router;

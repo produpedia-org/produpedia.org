@@ -5,11 +5,13 @@ import { ObjectID } from 'mongodb';
 import { FindOptionsOrder } from 'typeorm';
 import admin_secured from '../admin-secured';
 import Attribute, { AttributeType } from '../models/Attribute';
+import Category from '../models/Category';
 import PrimaryProductDatum from '../models/PrimaryProductDatum';
 import Product from '../models/Product';
 import { ProductDatumValue } from '../models/ProductDatum';
 import ProductDatumProposal from '../models/ProductDatumProposal';
 import { regexp_escape } from '../utils';
+import { get_category_anchestors } from './category-router';
 
 // tslint:disable no-string-throw
 /**
@@ -159,7 +161,9 @@ type MongoFilter = {[key: string]: any};
 // todo add checks for code 422 etc
 product_router.get('/', async (req, res) => {
     /*********** parse  *********/
-    const category: string = req.query.category as string;
+    const category = await Category.findOne({ name: req.query.category as string });
+    if(!category)
+        return res.status(UNPROCESSABLE_ENTITY).send('Param category missing or not found');
     let limit: number|undefined = Number(req.query.limit);
     if (limit < 0)
         limit = undefined;
@@ -246,17 +250,28 @@ product_router.get('/', async (req, res) => {
 
     /*********** determine showers if not given **********/
     if (!shower_names.length) {
-        shower_names = (await Attribute.find({
-            select: ['name'],
+        const category_names = [
+            category.name,
+            ...(await get_category_anchestors(category)).map(c => c.name),
+        ];
+        const shower_attributes = await Attribute.find({
+            select: ['name', 'category'],
             where: {
-                category,
+                category: { $in: category_names },
             },
             take: columns_count,
             order: {
                 interest: 'DESC',
             },
-        }))
-        .map((attribute: Attribute) => attribute.name);
+        });
+        // Primarily sort by category: The target category's attributes first,
+        // then the parents' ones, then parents' parents' and so on.
+        // ^ TODO should interest be even more important?
+        // This could also be done as part of the query via aggregation
+        shower_attributes.sort((a, b) =>
+            category_names.indexOf(a.category) - category_names.indexOf(b.category));
+        shower_names = shower_attributes
+            .map((attribute: Attribute) => attribute.name);
 
         shower_names.unshift('thumbnail', 'label');
     }
@@ -270,7 +285,7 @@ product_router.get('/', async (req, res) => {
     const products = await Product.find({
         where: {
             $and: [
-                { categories: category },
+                { categories: category.name },
                 ...filters_formatted,
             ],
         } as any,

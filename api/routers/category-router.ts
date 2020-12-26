@@ -4,6 +4,19 @@ import { NOT_FOUND } from 'http-status-codes';
 
 const category_router = express.Router();
 
+export const get_category_anchestors = async (target_category: Category) => {
+    const anchestors: Category[] = [];
+    const add_anchestors = async (category: Category) => {
+        for(const parent_name of category.parents) {
+            const parent = await Category.findOneOrFail({ name: parent_name });
+            anchestors.push(parent);
+            await add_anchestors(parent);
+        }
+    };
+    await add_anchestors(target_category);
+    return anchestors;
+}
+
 category_router.get('/', async (req, res) => {
     let categories: Category[];
     const breadcrumbs_category_name = req.query.breadcrumbs as string;
