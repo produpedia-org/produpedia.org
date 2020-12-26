@@ -66,7 +66,7 @@ export default
 		shower_names: []
 		sorters: [
 		]
-		columns: 1000
+		columns: 25
 		limit: 20
 		offset: 0
 		### server response; readonly ###
