@@ -61,8 +61,9 @@ export default
 	mounted: ->
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
 		@$store.dispatch 'offer_focus'
-	beforeDestroy: ->
+	beforeRouteLeave: (to, from, next) ->
 		@$store.dispatch 'search/change_category', null
+		next()
 	data: ->
 		show_add_product_dialog: false
 		editing: null
