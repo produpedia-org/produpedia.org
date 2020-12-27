@@ -117,7 +117,6 @@ const attribute_props_by_range = (range?: string): Partial<Attribute> => {
     // console.log(attributes);
 
     console.info('Deleting all attributes');
-    // @ts-ignore
     await getMongoRepository(Attribute).deleteMany({});
 
     // console.log([...new Set(attributes.map(a => a.range).filter((r): r is string => !!r).filter(range => !range.match(/^dbo:/)))]);

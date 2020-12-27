@@ -28,6 +28,7 @@ let lineno = 0;
     const rl = readLine.createInterface({
         input: fs.createReadStream('/b/ls/dbpedia_import/products.txt'),
     });
+    // See explanation below
     const lines_batch_size = 10;
     let lines_batch = [];
     for await (const line of rl) {
