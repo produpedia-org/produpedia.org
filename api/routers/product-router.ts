@@ -259,7 +259,7 @@ product_router.get('/', async (req, res) => {
             where: {
                 category: { $in: category_names },
             },
-            take: columns_count,
+            // take: columns_count, // Because manual filtering below
             order: {
                 interest: 'DESC',
             },
@@ -271,6 +271,7 @@ product_router.get('/', async (req, res) => {
         shower_attributes.sort((a, b) =>
             category_names.indexOf(a.category) - category_names.indexOf(b.category));
         shower_names = shower_attributes
+            .slice(0, columns_count) // s.a.
             .map((attribute: Attribute) => attribute.name);
 
         shower_names.unshift('thumbnail', 'label');
