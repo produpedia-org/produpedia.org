@@ -4,7 +4,7 @@ export default base_crud_store { resource_name: 'category', unique: 'name' },
 	getters:
 		# Thing
 		base_category: (state, getters) ->
-			getters.categories[getters.categories.length-1]
+			getters.categories.find (c) => c.name == "Thing"
 		categories: (state) ->
 			categories = state.categories_raw.map (c) => {...c}
 			for c from categories
