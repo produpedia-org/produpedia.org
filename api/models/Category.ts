@@ -20,10 +20,6 @@ class Category extends BaseEntity {
     @Column()
     @IsBoolean()
     @IsOptional()
-    public unique?: boolean;
-    @Column()
-    @IsBoolean()
-    @IsOptional()
     public ontology_only?: boolean;
     @Column()
     @IsArray()
