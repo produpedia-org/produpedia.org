@@ -46,7 +46,7 @@ table border=1
 					/ 			| ✎
 					/ 	div v-else=""
 					div
-						div.thumbnail.loading v-if=shower_index===0
+						div.thumbnail.loading.center v-if=shower_index===0
 							/ TODO: Find a way to show img loading placeholders without JS: https://stackoverflow.com/q/14748750/3779853
 							img alt=Thumbnail :src="datum.value.replace('width=300','width=190')" loading=lazy onload="parentElement.classList.remove('loading')" onerror="parentElement.classList.remove('loading')"
 							div.loading-placeholder.center.disabled
