@@ -16,7 +16,7 @@ table border=1
 						div.row.center v-drag="!readonly && can_drag && shower_name" @dragstart=dragging_column=true @dragend=dragging_column=false
 							div.center
 								span.grip v-if="!readonly && can_drag" ⠿
-							div
+							.row
 								div.label $attributes_by_name[shower_name].label
 								div.unit v-if=attributes_by_name[shower_name].unit
 									| $attributes_by_name[shower_name].unit
@@ -243,6 +243,8 @@ td, th
 			text-transform capitalize
 	.unit
 		color var(--color-disabled)
+		white-space nowrap
+		margin-left 3px
 		font-size small
 		&::before
 			content '['
