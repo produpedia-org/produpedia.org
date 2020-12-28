@@ -16,6 +16,20 @@ export const get_category_anchestors = async (target_category: Category) => {
     await add_anchestors(target_category);
     return anchestors;
 }
+export const get_category_children = async (target_category: Category) => {
+    const family: Category[] = [];
+    const add_children = async (category: Category) => {
+        const children = await Category.find({
+            parents: category.name
+        });
+        for(const child of children) {
+            family.push(child);
+            await add_children(child);
+        }
+    };
+    await add_children(target_category);
+    return family;
+}
 
 category_router.get('/', async (req, res) => {
     let categories: Category[];

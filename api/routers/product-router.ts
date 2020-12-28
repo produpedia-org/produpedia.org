@@ -11,7 +11,7 @@ import Product from '../models/Product';
 import { ProductDatumValue } from '../models/ProductDatum';
 import ProductDatumProposal from '../models/ProductDatumProposal';
 import { regexp_escape } from '../utils';
-import { get_category_anchestors } from './category-router';
+import { get_category_anchestors, get_category_children } from './category-router';
 
 // tslint:disable no-string-throw
 /**
@@ -248,16 +248,24 @@ product_router.get('/', async (req, res) => {
         .filter(sorter => sorter.direction === 1)
         .map(sorter => ({ [`data.${sorter.attribute_name}.value`]: { $exists: true } })));
 
+    /** The specified category plus all of its recursive parents */
+    const category_anchestor_names = [
+        category.name,
+        ...(await get_category_anchestors(category)).map(c => c.name),
+    ];
+    /** The specified category plus all of its recursive children */
+    const category_family_names = [
+        category.name,
+        ...(await get_category_children(category)).map(c => c.name),
+    ];
+
+
     /*********** determine showers if not given **********/
     if (!shower_names.length) {
-        const category_names = [
-            category.name,
-            ...(await get_category_anchestors(category)).map(c => c.name),
-        ];
         const shower_attributes = await Attribute.find({
             select: ['name', 'category'],
             where: {
-                category: { $in: category_names },
+                category: { $in: category_anchestor_names },
             },
             // take: columns_count, // Because manual filtering below
             order: {
@@ -269,7 +277,7 @@ product_router.get('/', async (req, res) => {
         // ^ TODO should interest be even more important?
         // This could also be done as part of the query via aggregation
         shower_attributes.sort((a, b) =>
-            category_names.indexOf(a.category) - category_names.indexOf(b.category));
+            category_anchestor_names.indexOf(a.category) - category_anchestor_names.indexOf(b.category));
         shower_names = shower_attributes
             .slice(0, columns_count) // s.a.
             .map((attribute: Attribute) => attribute.name);
@@ -286,7 +294,7 @@ product_router.get('/', async (req, res) => {
     const products = await Product.find({
         where: {
             $and: [
-                { categories: category.name },
+                { categories: { $in: category_family_names } },
                 ...filters_formatted,
             ],
         } as any,
