@@ -200,6 +200,8 @@ td, th
 	&:nth-child(1)
 		padding 0
 		left 0
+		> *
+			width 190px
 	&:nth-child(2)
 		left 190px
 		min-width 160px
