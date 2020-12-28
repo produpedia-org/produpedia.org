@@ -7,19 +7,14 @@ const strip_langtag = (label: string) =>
     label.replace(/@[a-z]+/, '');
 
 interface CategoryTreeNode extends Category {
-    count: number;
     children?: CategoryTreeNode[];
+    additional_parents?: string[];
 }
 
-const tree: CategoryTreeNode = JSON.parse(readFileSync('/b/ls/dbpedia_import/categories_4.json', 'utf-8'));
-tree.parents = [];
+const base_categories: CategoryTreeNode[] = JSON.parse(readFileSync('/b/ls/data/categories.json', 'utf-8'));
 
 (async () => {
     await createConnection();
-
-    console.info('Deleting all categories');
-    // @ts-ignore
-    await getMongoRepository(Category).deleteMany({});
 
     const categories: Category[] = [];
     const flatten = (cat: CategoryTreeNode) => {
@@ -30,13 +25,20 @@ tree.parents = [];
             flatten(child);
         }
         cat.label = strip_langtag(cat.label || cat.name);
+        cat.parents.push(...cat.additional_parents||[]);
         delete cat.children;
-        delete cat.count;
+        delete cat.additional_parents;
         categories.push(new Category(cat));
     };
-    flatten(tree);
+    for(const base_category of base_categories) {
+        base_category.parents = [];
+        flatten(base_category);
+    }
 
-    // console.log([...new Set(attributes.map(a => a.range).filter((r): r is string => !!r).filter(range => !range.match(/^dbo:/)))]);
+    // console.log(JSON.stringify(categories, null, 4));
+
+    console.info('Deleting all categories');
+    await getMongoRepository(Category).deleteMany({});
 
     console.info('Adding categories');
     // console.debug(categories);
