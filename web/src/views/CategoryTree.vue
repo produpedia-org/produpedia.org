@@ -108,4 +108,22 @@ ul.category-tree
 		> li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
 			top calc(var(--min-row-height) * 5)
 			z-index 994
+		> li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+			top calc(var(--min-row-height) * 6)
+			z-index 993
+		> li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+			top calc(var(--min-row-height) * 7)
+			z-index 992
+		> li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+			top calc(var(--min-row-height) * 8)
+			z-index 991
+		> li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+			top calc(var(--min-row-height) * 9)
+			z-index 990
+		> li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+			top calc(var(--min-row-height) * 10)
+			z-index 989
+		> li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+			top calc(var(--min-row-height) * 11)
+			z-index 988
 </style>
