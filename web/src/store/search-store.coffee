@@ -143,10 +143,17 @@ export default
 			if not category
 				commit 'set_category_breadcrumbs_ref', []
 			else
-				await Promise.all
-					-	dispatch 'search'
-					-	dispatch 'get_attributes'
+				# Fire all requests simultaneously, but handle breadcrumbs errors
+				# before others. Reason: Possible Category404
+				responses = await Promise.allSettled
 					-	dispatch 'get_category_breadcrumbs'
+					-	Promise.all
+							-	dispatch 'search'
+							-	dispatch 'get_attributes'
+				if responses[0].reason
+					throw responses[0].reason
+				if responses[1].reason
+					throw responses[1].reason
 		toggle_sort_direction: ({ commit, dispatch, state, getters }, { attribute_name, direction }) ->
 			sorter = getters.sorters_by_attribute_name[attribute_name]
 			if sorter

@@ -1,5 +1,6 @@
 <template lang="slm">
 nav.tree.box
+	/ router-link to=/product/dummy Nonexisting category (for testing purposes)
 	.preview v-if=!all_categories_loaded @click=start_get_categories
 		ul.category-tree.padding-l
 			li
