@@ -18,7 +18,7 @@
 						option v-for="l of selectable_limits" :value=l $l
 						option :value=-1 All
 	
-	article#result-table-container.flex-fill ref=result_table_container tabindex=-1 @scroll=on_table_scroll
+	article#result-table-container.flex-fill v-if=category ref=result_table_container tabindex=-1 @scroll=on_table_scroll
 		result-table#result-table @datum_clicked=editing=$event :readonly=readonly
 		#load-more.center
 			promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
@@ -54,10 +54,13 @@ export default
 			# solution to this besides reloading the site. vue#6518
 			# Also, removed destroyed:unregister because it introduces unnecessary bugs
 			@$store.registerModule 'search', search_store_module, preserveState: true
-	fetch: ({ store, route }) ->
+	fetch: ({ store, route, redirect }) ->
+		category = route.params.category
+		# if category[0] != category[0].toLowerCase()
+			# return redirect { to: "/product/#{category[0].toLowerCase()}#{category.slice(1)}" }, 301 # FIXME broken, see uvue#58
 		if not store.hasModule('search')
 			store.registerModule 'search', search_store_module
-		await store.dispatch 'search/change_category', route.params.category
+		await store.dispatch 'search/change_category', category
 	mounted: ->
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
 		@$store.dispatch 'offer_focus'

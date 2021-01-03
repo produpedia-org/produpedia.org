@@ -11,7 +11,7 @@ import Product from '../models/Product';
 import { ProductDatumValue } from '../models/ProductDatum';
 import ProductDatumProposal from '../models/ProductDatumProposal';
 import { regexp_escape } from '../utils';
-import { get_category_anchestors, get_category_children } from './category-router';
+import { get_category_anchestors, get_category_children, get_category_by_name_case_insensitive } from './category-router';
 
 // tslint:disable no-string-throw
 /**
@@ -161,7 +161,7 @@ type MongoFilter = {[key: string]: any};
 // todo add checks for code 422 etc
 product_router.get('/', async (req, res) => {
     /*********** parse  *********/
-    const category = await Category.findOne({ name: req.query.category as string });
+    const category = await get_category_by_name_case_insensitive(req.query.category as string);
     if(!category)
         return res.status(UNPROCESSABLE_ENTITY).send('Param category missing or not found');
     let limit: number|undefined = Number(req.query.limit);

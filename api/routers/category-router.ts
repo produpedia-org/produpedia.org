@@ -1,8 +1,15 @@
 import express from 'express';
 import Category from '../models/Category';
 import { NOT_FOUND } from 'http-status-codes';
+import { FindOptions } from 'typeorm';
 
 const category_router = express.Router();
+
+export const get_category_by_name_case_insensitive = async (category_name: string) => {
+    return await Category.findOne({
+        name: new RegExp(`^${category_name}$`, 'i')
+    } as FindOptions<Category>);
+};
 
 export const get_category_anchestors = async (target_category: Category) => {
     const anchestors: Category[] = [];
@@ -35,7 +42,7 @@ category_router.get('/', async (req, res) => {
     let categories: Category[];
     const breadcrumbs_category_name = req.query.breadcrumbs as string;
     if (breadcrumbs_category_name) {
-        const breadcrumbs_category = await Category.findOne({ name: breadcrumbs_category_name });
+        const breadcrumbs_category = await get_category_by_name_case_insensitive(breadcrumbs_category_name);
         if (!breadcrumbs_category)
             return res.status(NOT_FOUND).send('Category not found');
         let i: Category = breadcrumbs_category;
