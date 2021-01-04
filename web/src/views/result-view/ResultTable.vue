@@ -113,9 +113,9 @@ export default
 
 <style lang="stylus" scoped>
 
-//////// 1. Borders
+//////// 1. Setup
 
-// Bug: sticky + border-collapse + border: border not shown. SO#41882616. todo: remove and change to plain border once fixed everywhere (lol).
+// See usage below
 border-base-fix()
 	&::after
 		content ''
@@ -144,59 +144,59 @@ border-fix()
 	border-right-fix(arguments)
 	border-left-fix(arguments)
 	border-bottom-fix(arguments)
+
+// 2. General table styling
+
 table
 	--separator 1px solid #e3e3e3
 	border-collapse collapse
 	user-select none // because v-dragscrollable
 	color #202122
-tbody td, th
-	border-bottom-fix var(--separator)
-	&:not(:last-child)
-		border-right-fix var(--separator)
+	
 table, td, th
 	// table html attribute border=1 needs to be reverted again
 	border none
 
-// 2. General table styling
-
 thead tr
-	td
-		z-index 4
 	&:last-child
 		background #eaecf0
-tbody tr td
-	background #f8f9fa
 th, td, th > *
 	min-width 47px
 tbody td
-	position relative
-	z-index 1
+	border-bottom var(--separator)
+	&:not(:last-child)
+		border-right var(--separator)
 	max-width 150px
 	padding 1vmin
 	word-wrap break-word
-	&:nth-child(1), &:nth-child(2)
-		z-index 2
 th
 	position sticky
 	top 0
-	z-index 3
 	height 2em
+	// tbody should flow under thead
+	z-index 1
 	padding 0
-	// background linear-gradient(#eaecf0, 93%, transparent) // weird grey color on firefox, so using this:
-	background linear-gradient(#eaecf0, 93%, rgba(248 249 250 0.5))
+	// rgba() because transparent leads to weird grey color on FF
+	background linear-gradient(#eaecf0, 93%, rgba(248 249 250 0.8))
 	> *
 		padding 6px 15px
 		// Very basic column resizing
-		// Looks shitty on Firefox, currently impossible to fix this css-only
+		// Looks shitty on FF, currently impossible to fix this css-only
 		resize horizontal
 		overflow hidden
-	&:nth-child(1), &:nth-child(2)
-		z-index 4
 // The first two cols should be sticky and on top of the other cols,
-// except on small screens, the only the first col
-td, th
+// except on small screens, there only the first col
+td
 	&:nth-child(1), &:nth-child(2)
 		position sticky
+		background var(--color-background)
+		// Bug: sticky + border-collapse + border + on top of other content: border not shown. SO#41882616
+		// Remove these two four once fixed everywhere
+		border-right unset !important
+		border-right-fix var(--separator)
+		border-bottom unset !important
+		border-bottom-fix var(--separator)
+td, th
 	&:nth-child(1)
 		padding 0
 		left 0
@@ -208,7 +208,6 @@ td, th
 	@media (max-width: 950px)
 		&:nth-child(1)
 			position relative
-			z-index 0
 		&:nth-child(2)
 			min-width 100px
 			left 0
@@ -216,10 +215,8 @@ td, th
 // 3. Semantic styling
 
 .filters
-	z-index 9 // so filter modal shows above other tds/ths with z-index above
 	user-select none
 	padding 7px 0
-	background var(--color-background)
 .drop-target
 	color #246
 .attributes.drop-target .move	
@@ -309,7 +306,6 @@ tr.product
 					left 0
 					right 0
 					font-size 27px
-					border 1px solid var(--color-border)
 					z-index -1
 				&:not(.loading)
 					.loading-placeholder
@@ -320,4 +316,28 @@ tr.product
 tr.actions
 	.load-more
 		max-width 100vw
+</style>
+
+<style scoped>
+/* Possible way to use @-moz-document in stylus? */
+
+/* FF-only selector */
+@-moz-document url-prefix() {
+	/**** Hacks for FF mobile ****/
+	@media (pointer:coarse) {
+		/* Must *not* set z-index on sticky th or thead because it
+		introduce insane lags on weak Firefox mobile devices.
+		With this, the left sticky column(s) thumbnail/name will overflow
+		the table header row which is a bit ugly. */
+		th {
+			z-index: unset !important;
+		}
+		/* Those lags also occur for the left sticky column(s) even though these
+		dont have a z-index assigned. Maybe because of the `left` property?
+		Either way, it is better to not have sticky columns than laggy ones: */
+		td:nth-child(1), td:nth-child(2) {
+			position: unset !important;
+		}
+	}
+}
 </style>
