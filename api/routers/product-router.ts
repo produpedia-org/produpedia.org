@@ -299,7 +299,7 @@ product_router.get('/', async (req, res) => {
             ],
         } as any,
         select: [
-            'name', 'verified', 'categories', 'aliases', 'source',
+            'name', 'verified',
             ...shower_names_formatted,
         ],
         order: {
@@ -314,6 +314,8 @@ product_router.get('/', async (req, res) => {
         if (!p.data) {
             p.data = {};
         }
+        // doesnt seem to be doable by class decorator yet, see typeorm#3781
+        delete p._id;
     });
 
     /********** return **********/
