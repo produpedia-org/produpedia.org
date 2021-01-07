@@ -105,6 +105,7 @@ let lineno = 0;
 
             const data: PrimaryProductData = product_results
                 .filter(r => r.predicate.match(/^dbo:/))
+                .filter(r => ! r.predicate.match(/\./)) // dbo:drugs.com. only very few present so simply ignoring these for now
                 .reduce((all: PrimaryProductData, r) => {
                     const attribute_name = r.predicate.replace(/^dbo:/, '');
                     const attribute = attribute_by_name[attribute_name];
