@@ -121,7 +121,7 @@ header
 	color var(--color-clickable)
 	border-bottom 1px solid #a2a9b1
 	margin-bottom 8px
-	// font-size small
+	gap 6px
 	aside
 		overflow hidden
 		flex 1

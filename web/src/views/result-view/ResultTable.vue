@@ -167,7 +167,7 @@ tbody td
 	&:not(:last-child)
 		border-right var(--separator)
 	max-width 150px
-	padding 1vmin
+	padding 0.5vmin
 	word-wrap break-word
 th
 	position sticky
@@ -179,7 +179,7 @@ th
 	// rgba() because transparent leads to weird grey color on FF
 	background linear-gradient(#eaecf0, 93%, rgba(248 249 250 0.8))
 	> *
-		padding 6px 15px
+		padding 2px 0.5vw
 		// Very basic column resizing
 		// Looks shitty on FF, currently impossible to fix this css-only
 		resize horizontal
@@ -204,12 +204,13 @@ td, th
 			width 190px
 	&:nth-child(2)
 		left 190px
-		min-width 160px
+		max-width unset
+		> *
+			width "min(16vw, 160px)" % null
 	@media (max-width: 950px)
 		&:nth-child(1)
 			position relative
 		&:nth-child(2)
-			min-width 100px
 			left 0
 
 // 3. Semantic styling
@@ -326,8 +327,8 @@ tr.actions
 	/**** Hacks for FF mobile ****/
 	@media (pointer:coarse) {
 		/* Must *not* set z-index on sticky th or thead because it
-		introduce insane lags on weak Firefox mobile devices.
-		With this, the left sticky column(s) thumbnail/name will overflow
+		introduces insane lags on weak Firefox mobile devices.
+		With this fix, the left sticky column(s) thumbnail/name will overflow
 		the table header row which is a bit ugly. */
 		th {
 			z-index: unset !important;

@@ -123,7 +123,7 @@ export default
 			justify-content space-between
 			padding 2px 5px
 			box-sizing border-box
-			gap 1vw
+			gap 1.5vw
 			nav
 				overflow hidden
 				text-overflow ellipsis
