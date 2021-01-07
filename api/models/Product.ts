@@ -7,11 +7,15 @@ export interface PrimaryProductData {
     [attribute_name: string]: PrimaryProductDatum;
 }
 
+/* TODO: index:
+db.product.createIndex({ categories: 1 })
+*/
+
 @Entity()
 class Product extends BaseEntity {
     @ObjectIdColumn()
     @IsOptional()
-    public _id!: ObjectID;
+    public _id?: ObjectID;
     @Column()
     @IsArray()
     @Length(1, 255, { each: true }) // todo test, and other files
