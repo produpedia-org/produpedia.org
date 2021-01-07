@@ -58,10 +58,12 @@ const attribute_props_by_range = (range?: string): Partial<Attribute> => {
     const attributes = results
         .map((result) => {
             result.subject = result.subject.replace(/\//g, '_').replace(/^dbo:(.+)/, '$1');
-            if (result.category)
+            if (result.category) {
                 result.category = result.category.replace(/^dbo:(.+)/, '$1');
-            else
-                result.category = 'Thing';
+                result.category = result.category[0].toLowerCase() + result.category.slice(1);
+            } else {
+                result.category = 'thing';
+            }
             // if (!result.subject.match(/^[dbo:a-zA-Z0-9]+$/) || !result.category.match(/^dbo:[a-zA-Z0-9]+$/))
             //     throw new Error('unexpected character in result ' + result.subject + ', ' + result.category);
             if (result.label)
@@ -93,21 +95,21 @@ const attribute_props_by_range = (range?: string): Partial<Attribute> => {
         });
 
     attributes.push(new Attribute({
-        category: 'Thing',
+        category: 'thing',
         name: 'label',
         label: 'Name',
         type: 'string',
         verified: true,
     }));
     attributes.push(new Attribute({
-        category: 'Thing',
+        category: 'thing',
         name: 'thumbnail',
         label: 'Thumbnail',
         type: 'resource',
         verified: true,
     }));
     attributes.push(new Attribute({
-        category: 'Thing',
+        category: 'thing',
         name: 'depiction',
         label: 'Picture',
         type: 'resource',

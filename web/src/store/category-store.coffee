@@ -2,9 +2,9 @@ import base_crud_store from './base-crud-store'
 
 export default base_crud_store { resource_name: 'category', unique: 'name' },
 	getters:
-		# Thing
+		# thing
 		base_category: (state, getters) ->
-			getters.categories.find (c) => c.name == "Thing"
+			getters.categories.find (c) => c.name == "thing"
 		categories: (state) ->
 			categories = state.categories_raw.map (c) => {...c}
 			for c from categories

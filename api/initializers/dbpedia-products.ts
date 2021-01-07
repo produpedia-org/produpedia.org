@@ -157,7 +157,7 @@ let lineno = 0;
             }
 
             return new Product({
-                categories,
+                categories: categories.map((c: string) => c[0].toLowerCase() + c.slice(1)),
                 name: resource.replace(/^dbr:/, ''),
                 aliases,
                 source: 'dbpedia',

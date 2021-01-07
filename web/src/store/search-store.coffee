@@ -77,7 +77,7 @@ export default
 		category_breadcrumbs_ref: []
 	getters:
 		attribute_names: (state) ->
-			state.attributes.map (a) => a.name # todo add map('str') prototype
+			(state.attributes or []).map (a) => a.name
 		attributes_by_name: (state) ->
 			state.attributes.reduce((all, attribute) =>
 				all[attribute.name] = attribute
@@ -209,6 +209,7 @@ export default
 			search = false
 			attribute_filters = getters.filters_by_attribute_name[shower_name]
 			if attribute_filters.length
+				# todo this never fires (?)
 				if not await dispatch 'confirm_ask', "There are #{attribute_filters.length} filter(s) configured for '#{getters.attributes_by_name[shower_name].name}' that will be removed. Continue?", root: true
 					return
 				for filter from attribute_filters
@@ -232,13 +233,13 @@ export default
 			response = await @$http.get 'attribute', { params: { category: state.category } }
 			attributes = response.data
 			attributes.unshift
-				category: 'Thing'
+				category: 'thing'
 				verified: true
 				name: 'thumbnail'
 				label: 'Thumbnail'
 				type: 'resource'
 			,
-				category: 'Thing'
+				category: 'thing'
 				verified: true
 				name: 'label'
 				label: 'Name'

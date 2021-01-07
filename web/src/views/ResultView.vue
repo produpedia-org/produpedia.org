@@ -56,8 +56,8 @@ export default
 			@$store.registerModule 'search', search_store_module, preserveState: true
 	fetch: ({ store, route, redirect }) ->
 		category = route.params.category
-		# if category[0] != category[0].toLowerCase()
-			# return redirect { to: "/product/#{category[0].toLowerCase()}#{category.slice(1)}" }, 301 # FIXME broken, see uvue#58
+		if category[0] != category[0].toLowerCase()
+			return redirect { path: "/product/#{category[0].toLowerCase()}#{category.slice(1)}" }, 301
 		if not store.hasModule('search')
 			store.registerModule 'search', search_store_module
 		await store.dispatch 'search/change_category', category
@@ -97,8 +97,7 @@ export default
 			if not @category then return ''
 			category_label = @$store.getters['search/category_ref']?.label
 			if not category_label
-				# Category names are typically in TODO ?
-				category_label = @category.charAt(0).toUpperCase() + @category.slice(1)
+				category_label = @category
 			if category_label.match /s$/
 				category_label
 			else if category_label.match /y$/
