@@ -13,7 +13,6 @@ let lineno = 0;
     await createConnection();
 
     console.info('Deleting all products');
-    // @ts-ignore
     await getMongoRepository(Product).deleteMany({});
 
     console.info('Lookup all attributes');
@@ -26,7 +25,7 @@ let lineno = 0;
     console.info('Saving new products and getting and saving their data');
 
     const rl = readLine.createInterface({
-        input: fs.createReadStream('/b/ls/dbpedia_import/products.txt'),
+        input: fs.createReadStream('/b/ls/dbpedia_import/products2.txt'),
     });
     // See explanation below
     const lines_batch_size = 10;
@@ -36,8 +35,8 @@ let lineno = 0;
         // if (i > 100)
         //     process.exit(0);
 
-        // if (lineno < 99501)
-        //     continue;
+        if (lineno < 4018874)
+            continue;
 
         // sparql interaction happens in batches, because that speeds up the whole
         // process significantly (virtuoso computation is the bottleneck here):
@@ -55,12 +54,12 @@ let lineno = 0;
         // So querying for about 10 resources at the same time seems to be most
         // performant. Total time is about 3.5 hours.
 
+        if (lineno % 500 === 0)
+            console.log(Math.round(lineno / 4107547 * 1000) / 10 + '% ' + line);
+
         lines_batch.push(line);
         if (lines_batch.length < lines_batch_size)
             continue;
-
-        if (lineno % 500 === 0)
-            console.log(Math.round(lineno / 4107547 * 1000) / 10 + '% ' + line);
 
         // const resource_sanitized = sparql_uri_escape(resource);
 
@@ -75,6 +74,13 @@ let lineno = 0;
 
         lines_batch = [];
 
+        // Tests showed that it is generally not necessary to also query for the ?p/?o's of
+        // each product's aliases (redirects). These may contain values too but only very
+        // rarely, mostly data errors.
+        // select ?p, count(?s) as ?count { ?s dbo:wikiPageRedirects ?r; ?p ?o } group by ?p order by ?count
+        // Especially when only taking the dbo props into consideration, as
+        // dbp:props are not queried anyway (filter predicate match dbo: below).
+        // Also see get_products.coffee: Colline
         const sql_conditions = product_infos.map(info => `
         { select "${info[0]}" as ?subject ?predicate ?object {
             <http://dbpedia.org/resource/${encodeURI(info[0])}> ?predicate ?object
@@ -90,7 +96,7 @@ let lineno = 0;
 
             const label = product_results.find(r => r.predicate === 'rdfs:label')?.object.replace(/^(.+)@[a-z]+/, '$1');
             if (!label) {
-                console.log('label missing', resource);
+                // console.log('label missing', resource); // ??? TODO happens but why
                 return null;
             }
 
