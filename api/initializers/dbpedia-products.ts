@@ -70,7 +70,10 @@ let lineno = 0;
                 console.log('could not parse json', batch_line);
                 return null;
             }
-        }).filter(Boolean);
+        }).filter(Boolean)
+        // remove after next get_products generation when categories:[] will be
+        // no more in products*.txt
+        .filter(info => info[1].categories.length);
 
         lines_batch = [];
 
