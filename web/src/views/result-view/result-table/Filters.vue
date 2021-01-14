@@ -3,7 +3,7 @@ div
 	div.filters.justify-center
 		div.filter.box v-for="filter in filters"
 			span $condition_by_id[filter.condition].long&nbsp;
-			strong.value v-if=filter.value :class.case_sensitive=filter.case_sensitive
+			strong.value v-if=filter.value :class.case_sensitive=!filter.case_insensitive
 				| $filter.value&nbsp;
 			button @click=remove_filter(filter) v-if=!readonly ╳
 		label.add-filter.justify-center.disabled v-if="!show_form && !readonly"

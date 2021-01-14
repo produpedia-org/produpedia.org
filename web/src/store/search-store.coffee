@@ -181,7 +181,7 @@ export default
 				.map (sorter) => "#{sorter.attribute_name}:#{sorter.direction}"
 				.join ','
 			filters_param = state.filters
-				.map (filter) => "#{filter.attribute_name}:#{filter.condition}:#{filter.value}:#{if not filter.case_sensitive then 'i' else ''}"
+				.map (filter) => "#{filter.attribute_name}:#{filter.condition}:#{filter.value}:#{if filter.case_insensitive then 'i' else ''}"
 				.join ','
 			response = await @$http.get "product/#{category}",
 				params:
@@ -245,6 +245,7 @@ export default
 				type: 'string'
 			commit 'set_attributes', attributes
 		add_filter: ({ commit, dispatch, getters }, { values }) -> # todo formdata?
+			values.case_insensitive = ! values.case_sensitive
 			commit 'add_filter', values
 			dispatch 'search'
 		remove_filter: ({ commit, dispatch }, filter) ->
