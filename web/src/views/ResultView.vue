@@ -99,9 +99,8 @@ export default
 		else
 			store.commit 'search/set_shower_names', []
 		
-		if Object.keys(route.query).length == 0
-			return redirect { path: "#{route.fullPath}?show=#{store.state.search.columns}&limit=#{store.state.search.limit}" }
-		await store.dispatch 'search/change_category', category
+		if store.state.search.category != category
+			await store.dispatch 'search/change_category', category
 		await store.dispatch 'search/search',
 			query: route.query
 	mounted: ->
