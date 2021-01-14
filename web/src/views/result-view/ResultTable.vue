@@ -160,20 +160,17 @@ thead tr
 	&:last-child
 		background #eaecf0
 th, td, th > *
-	min-width 47px
+	min-width 95px
 tbody td
-	border-bottom var(--separator)
-	&:not(:last-child)
-		border-right var(--separator)
 	max-width 150px
 	padding 0.5vmin
 	word-wrap break-word
+	position relative
 th
-	position sticky
 	top 0
 	height 2em
 	// tbody should flow under thead
-	z-index 1
+	z-index 2
 	padding 0
 	// rgba() because transparent leads to weird grey color on FF
 	background linear-gradient(#eaecf0, 93%, rgba(248 249 250 0.8))
@@ -183,19 +180,26 @@ th
 		// Looks shitty on FF, currently impossible to fix this css-only
 		resize horizontal
 		overflow hidden
-// The first two cols should be sticky and on top of the other cols,
-// except on small screens, there only the first col
-td
-	&:nth-child(1), &:nth-child(2)
+th:nth-child(1), th:nth-child(2)
+	z-index 3
+td:nth-child(1), td:nth-child(2)
+	background var(--color-background)
+	z-index 1
+	&, /th
 		position sticky
-		background var(--color-background)
 		// Bug: sticky + border-collapse + border + on top of other content: border not shown. SO#41882616
-		// Remove these two four once fixed everywhere
+		// Remove these four lines once fixed everywhere
 		border-right unset !important
 		border-right-fix var(--separator)
 		border-bottom unset !important
 		border-bottom-fix var(--separator)
 td, th
+	border-bottom var(--separator)
+	&:not(:last-child)
+		border-right var(--separator)
+
+	// The first two cols should be sticky and on top of the other cols,
+	// except on small screens, there only the first col
 	&:nth-child(1)
 		padding 0
 		left 0
@@ -234,7 +238,7 @@ td, th
 	.row
 		position relative
 	.label
-		white-space nowrap
+		word-break keep-all
 		user-select text
 		&:first-letter
 			text-transform capitalize
@@ -324,7 +328,17 @@ tr.actions
 /* FF-only selector */
 @-moz-document url-prefix() {
 	/**** Hacks for FF mobile ****/
-	@media (pointer:coarse) {
+	/* This media query is officially supported on FF Android since v83.
+	Seems to corretcly apply on very-latest tested 85.0.0-beta.4 S4mini Android11.
+	But on some other moto touch Android7, with FF 84.1.4 (the current official playstore version),
+	the media query was competely broken, applying (hover:hover) (????).
+	The success of below hacks was also not consistent accross these two tested browsers.
+	th, td:1,:2, z-index, position:sticky-or-fixed all somehow interfere with each other in
+	regards to this performance bug. For example, with both rules removed but with
+	td:1,:2{z-index:unset!important}, everything works great (except that the z-index is wrongly
+	set of course), but only for the first few rows. After 54 th/tds or so, the rows immediately
+	start lagging again. This is all a huge mess and driving me insane */
+	@media (hover: none) {
 		/* Must *not* set z-index on sticky th or thead because it
 		introduces insane lags on weak Firefox mobile devices.
 		With this fix, the left sticky column(s) thumbnail/name will overflow
