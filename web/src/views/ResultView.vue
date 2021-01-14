@@ -8,8 +8,7 @@
 				label.row.center
 					input type=checkbox v-model=readonly
 					div Readonly
-		h1
-			span.list-of $title
+		h1 $title
 		aside.right
 			.center
 				label.row.center
@@ -26,6 +25,11 @@
 				result-table#result-table @datum_clicked=editing=$event :readonly=readonly
 				#load-more.center
 					promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
+			#has-more-attributes.padding.margin-l v-if=has_more_attributes
+				| There are 
+				span.highlighted $has_more_attributes more attributes
+				br
+				|  that are currently hidden.
 	
 	/ maybe use linus borgs portal instead?
 	popup v-if=editing @close=editing=null
@@ -134,6 +138,8 @@ export default
 			@$store.state.search?.category
 		attributes: ->
 			@$store.state.search?.attributes
+		has_more_attributes: ->
+			@$store.getters['search/has_more_attributes']
 		category_plural: ->
 			if not @category then return ''
 			category_label = @$store.getters['search/category_ref']?.label
@@ -183,12 +189,6 @@ header
 		text-align-last right
 		> option
 			direction rtl
-	h3
-		text-align center
-		margin 0 7px
-		.list-of
-			@media (max-width: 600px)
-				display none
 #result-table-container
 	overflow auto
 #result-table

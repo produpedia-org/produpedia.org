@@ -115,6 +115,8 @@ export default
 		category_ref: (state, getters, rootState, rootGetters) ->
 			rootGetters['category/categories'].find (c) =>
 				c.name == state.category
+		has_more_attributes: (state) ->
+			state.attributes.length - state.shower_names.length
 	mutations:
 		set_category: (state, category) -> state.category = category
 		remove_sorter_at: (state, index) -> Vue.delete state.sorters, index
