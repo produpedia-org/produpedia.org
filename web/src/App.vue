@@ -164,7 +164,11 @@ export default
 		word-break break-word
 		.error
 			max-width 100vw
+			max-height 61vh
 			overflow auto
+			button
+				font-weight bold
+				color var(--color-error)
 a.router-link-active
 	font-weight bold
 </style>
