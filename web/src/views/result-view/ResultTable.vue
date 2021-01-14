@@ -151,7 +151,6 @@ table
 	--separator 1px solid #e3e3e3
 	border-collapse collapse
 	user-select none // because v-dragscrollable
-	color #202122
 	
 table, td, th
 	// table html attribute border=1 needs to be reverted again

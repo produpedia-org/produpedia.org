@@ -115,6 +115,7 @@ export default
 #result-view
 	font-size 14px
 	padding 0.2vh 1vw 0 1vw
+	color #202122
 header
 	justify-content space-between
 	word-break keep-all
