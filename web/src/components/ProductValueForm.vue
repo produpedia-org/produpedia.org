@@ -4,7 +4,7 @@ promise-form v-bind="$attrs" v-on="$listeners"
 	div.value v-if=!novalue
 		label.column v-if="attribute.type==='string'"
 			| Value
-			input name=value placeholder=Value required=""
+			input name=value placeholder=Value required="" pattern="[^:,]+" title="Please insert any value. The value cannot contain comma (,) or colon (:)."
 		label.column v-else-if="attribute.type==='number'"
 			div Amount 
 			small.disabled
