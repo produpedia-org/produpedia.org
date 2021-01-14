@@ -1,5 +1,6 @@
 import storage_service from '@/services/storage-service'
 import Vue from 'vue'
+import { router } from '../vue-app'
 
 ###
 # Search request
@@ -64,6 +65,12 @@ export default
 		filters: [
 		]
 		shower_names: []
+		### The API returns a shower_names array, even if you only queried for
+		a column count (show=number), so need to keep track of whether the user modified
+		the showers manually (or whether some were given via query params). Without this
+		property, shower names would always pop up after an update_query, even if they were
+		unmodified, cramming the url unnecessarily ####
+		shower_names_modified: false
 		sorters: [
 		]
 		columns: 25
@@ -79,7 +86,7 @@ export default
 		attribute_names: (state) ->
 			(state.attributes or []).map (a) => a.name
 		attributes_by_name: (state) ->
-			state.attributes.reduce((all, attribute) =>
+			(state.attributes or []).reduce((all, attribute) =>
 				all[attribute.name] = attribute
 				all
 			, {})
@@ -133,13 +140,11 @@ export default
 		end_reached: (state) -> state.reached_the_end = true
 		end_not_yet_reached: (state) -> state.reached_the_end = false
 		set_category_breadcrumbs_ref: (state, breadcrumbs) -> state.category_breadcrumbs_ref = breadcrumbs
+		set_shower_names_modified: (state, flag) -> state.shower_names_modified = flag
 	actions:
-		change_category: ({ commit, dispatch }, category) ->
+		change_category: ({ commit, dispatch, rootState }, category) ->
 			commit 'set_attributes', null
 			commit 'set_category', category
-			commit 'set_filters', []
-			commit 'set_sorters', []
-			commit 'set_shower_names', []
 			if not category
 				commit 'set_category_breadcrumbs_ref', []
 			else
@@ -148,7 +153,6 @@ export default
 				responses = await Promise.allSettled
 					-	dispatch 'get_category_breadcrumbs'
 					-	Promise.all
-							-	dispatch 'search'
 							-	dispatch 'get_attributes'
 				if responses[0].reason
 					throw responses[0].reason
@@ -159,11 +163,11 @@ export default
 			if sorter
 				commit 'remove_sorter_at', sorter.index
 				if sorter.direction == direction
-					return dispatch 'search'
+					return dispatch 'update_query'
 			commit 'add_sorter', { attribute_name, direction }
-			dispatch 'search'
+			dispatch 'update_query'
 		### aka get_products ### # todo rename
-		search: ({ commit, state }, { append = false } = {}) ->
+		search: ({ commit, state }, { append = false, query } = {}) ->
 			if append and state.reached_the_end
 				# To prevent unnecessary requests when the last appending request
 				# already returned an empty set
@@ -171,25 +175,12 @@ export default
 			commit 'end_not_yet_reached' #  todo rename has_more and set_has_more true
 			if not append
 				commit 'set_products', []
-				commit 'set_offset', 0
-			{ category, columns, limit, offset } = state
-			showers_param = state.shower_names
-				.join ','
-			if not showers_param
-				showers_param = columns
-			sorters_param = state.sorters
-				.map (sorter) => "#{sorter.attribute_name}:#{sorter.direction}"
-				.join ','
-			filters_param = state.filters
-				.map (filter) => "#{filter.attribute_name}:#{filter.condition}:#{filter.value}:#{if filter.case_insensitive then 'i' else ''}"
-				.join ','
-			response = await @$http.get "product/#{category}",
-				params:
-					show: showers_param,
-					filter: filters_param,
-					sort: sorters_param,
-					limit: limit
-					offset: offset
+			response = await @$http.get "product/#{state.category}", params: {
+				...(query or router.currentRoute.query)
+				# Offset is used in API calls but when included in query, effectively ignored:
+				# The current offset in view is not synced with the URL. Maybe some day
+				offset: state.offset or undefined
+			}
 			commit 'set_shower_names', response.data.shower_names
 			commit 'add_products', response.data.products
 			if not response.data.products.length
@@ -203,7 +194,8 @@ export default
 					new_pos -= 1
 			commit 'add_shower_name_at', { index: new_pos, shower_name }
 			if new_pos != current_pos
-				dispatch 'search'
+				commit 'set_shower_names_modified', true
+				dispatch 'update_query'
 		remove_shower: ({ commit, getters, dispatch }, shower_name ) ->
 			search = false
 			attribute_filters = getters.filters_by_attribute_name[shower_name]
@@ -219,8 +211,11 @@ export default
 				commit 'remove_sorter_at', attribute_sorter.index
 				search = true
 			commit 'remove_shower_name', shower_name
-			if search
-				dispatch 'search'
+			commit 'set_shower_names_modified', true
+			# if not search
+			# 	prevent search from happening with the next update_query somehow,
+			# 	because the data is already there, just needs restructure. TODO (minor)
+			dispatch 'update_query'
 		add_product: ({ commit, state }, { form_data }) ->
 			form_data.append 'category', state.category
 			response = await @$http.post 'product', form_data
@@ -247,13 +242,13 @@ export default
 		add_filter: ({ commit, dispatch, getters }, { values }) -> # todo formdata?
 			values.case_insensitive = ! values.case_sensitive
 			commit 'add_filter', values
-			dispatch 'search'
+			dispatch 'update_query'
 		remove_filter: ({ commit, dispatch }, filter) ->
 			commit 'remove_filter', filter
-			dispatch 'search'
+			dispatch 'update_query'
 		set_limit: ({ commit, dispatch }, limit) ->
 			commit 'set_limit', limit
-			dispatch 'search'
+			dispatch 'update_query'
 		fetch_next_page: ({ commit, dispatch, state }) ->
 			commit 'set_offset', state.offset + state.limit
 			dispatch 'search', { append: true }
@@ -278,3 +273,30 @@ export default
 					params: breadcrumbs: state.category
 				}, root: true
 			commit 'set_category_breadcrumbs_ref', path
+		### Search params serialization. Parser see ResultView:fetch ###
+		update_query: ({ state }) ->
+			{ columns, limit, offset } = state
+			if state.shower_names_modified
+				showers_param = state.shower_names
+					.join ','
+			else
+				showers_param = columns
+			sorters_param = state.sorters
+				.map (sorter) => "#{sorter.attribute_name}:#{sorter.direction}"
+				.join ','
+			filters_param = state.filters
+				.map (filter) =>
+					param = "#{filter.attribute_name}:#{filter.condition}"
+					if filter.value
+						param += ":#{filter.value}"
+					if filter.case_insensitive
+						param += ":i"
+					param
+				.join ','
+			router.push query: {
+				# ...router.currentRoute.query # todo unsure
+				show: showers_param
+				filter: filters_param or undefined
+				sort: sorters_param  or undefined
+				limit: limit
+			}

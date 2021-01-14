@@ -18,10 +18,14 @@
 						option v-for="l of selectable_limits" :value=l $l
 						option :value=-1 All
 	
-	article#result-table-container.flex-fill v-if=category ref=result_table_container tabindex=-1 @scroll=on_table_scroll
-		result-table#result-table @datum_clicked=editing=$event :readonly=readonly
-		#load-more.center
-			promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
+	/ i Explanation of what this category is..?
+	
+	article#result-table-container.flex-fill v-if=category&&attributes ref=result_table_container tabindex=-1 @scroll=on_table_scroll
+		.row
+			.flex-fill
+				result-table#result-table @datum_clicked=editing=$event :readonly=readonly
+				#load-more.center
+					promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
 	
 	/ maybe use linus borgs portal instead?
 	popup v-if=editing @close=editing=null
@@ -54,13 +58,48 @@ export default
 			# solution to this besides reloading the site. vue#6518
 			# Also, removed destroyed:unregister because it introduces unnecessary bugs
 			@$store.registerModule 'search', search_store_module, preserveState: true
+	### Search params parsing. For serialization, see search/update_query ###
 	fetch: ({ store, route, redirect }) ->
 		category = route.params.category
 		if category[0] != category[0].toLowerCase()
 			return redirect { path: "/product/#{category[0].toLowerCase()}#{category.slice(1)}" }, 301
 		if not store.hasModule('search')
 			store.registerModule 'search', search_store_module
+		
+		{ limit, filter = "", sort = "", show, offset } = route.query
+		if limit?
+			store.commit 'search/set_limit', limit * 1
+		store.commit 'search/set_filters', (filter
+			.split(',').filter(Boolean).map((s)=>s.split(':'))
+			.map (s) => {
+				attribute_name: s[0]
+				condition: s[1]
+				value: s[2]
+				case_insensitive: s[3] == 'i'
+			}) or []
+		store.commit 'search/set_sorters', (sort
+			.split(',').filter(Boolean).map((s)=>s.split(':'))
+			.map (s) => {
+				attribute_name: s[0]
+				direction: s[1] * 1
+			}) or []
+		if show?
+			if Number.isNaN(Number(show))
+				store.commit 'search/set_shower_names', (show
+					.split(',').filter(Boolean))
+				store.commit 'search/set_shower_names_modified', true
+			else
+				store.commit 'search/set_columns', Number(show)
+				store.commit 'search/set_shower_names', []
+				store.commit 'search/set_shower_names_modified', false
+		else
+			store.commit 'search/set_shower_names', []
+		
+		if Object.keys(route.query).length == 0
+			return redirect { path: "#{route.fullPath}?show=#{store.state.search.columns}&limit=#{store.state.search.limit}" }
 		await store.dispatch 'search/change_category', category
+		await store.dispatch 'search/search',
+			query: route.query
 	mounted: ->
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
 		@$store.dispatch 'offer_focus'
@@ -93,6 +132,8 @@ export default
 			set: (v) -> @$store.dispatch 'search/set_limit', v
 		category: ->
 			@$store.state.search?.category
+		attributes: ->
+			@$store.state.search?.attributes
 		category_plural: ->
 			if not @category then return ''
 			category_label = @$store.getters['search/category_ref']?.label
@@ -155,4 +196,8 @@ header
 	max-width 100%
 #load-more
 	position sticky
+#has-more-attributes
+	position sticky
+	top 0
+	white-space nowrap
 </style>
