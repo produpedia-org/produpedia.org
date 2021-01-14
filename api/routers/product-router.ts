@@ -173,12 +173,14 @@ product_router.get('/:category', async (req, res) => {
     const showers_param = req.query.show as string;
     let columns_count = 0;
     let shower_names: string[] = [];
-    if(!Number.isNaN(Number(showers_param))) {
-        columns_count = Number(showers_param);
-    } else {
-        shower_names = showers_param.split(',').filter(Boolean);
+    if(showers_param) {
+        if(!Number.isNaN(Number(showers_param))) {
+            columns_count = Number(showers_param);
+        } else {
+            shower_names = showers_param.split(',').filter(Boolean);
+        }
     }
-    const sorters_param: string = req.query.sort as string;
+    const sorters_param: string = req.query.sort as string || '';
     const sorters: Sorter[] = sorters_param
         .split(',').filter(Boolean)
         .map((s: string): Sorter => {
@@ -193,13 +195,13 @@ product_router.get('/:category', async (req, res) => {
             ...all,
             [`data.${sorter.attribute_name}.value`]: sorter.direction,
         }), {});
-    const filter_param: string = req.query.filter as string;
+    const filter_param: string = req.query.filter as string || '';
     const filters: Filter[] = (await Promise.all(
         filter_param
             .split(',').filter(Boolean)
             .map(async (s: string): Promise<Filter | null> => {
                 const [attribute_name, condition, value, case_str] = s.split(':');
-                const case_sensitive = !case_str || case_str !== 'i';
+                const case_sensitive = case_str !== 'i';
                 // TODO: is this cached or same request for same attribute multiple times?
                 const attribute = await Attribute.findOne({
                     name: attribute_name,
