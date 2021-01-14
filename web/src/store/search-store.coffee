@@ -183,9 +183,8 @@ export default
 			filters_param = state.filters
 				.map (filter) => "#{filter.attribute_name}:#{filter.condition}:#{filter.value}:#{if not filter.case_sensitive then 'i' else ''}"
 				.join ','
-			response = await @$http.get 'product',
+			response = await @$http.get "product/#{category}",
 				params:
-					category: category,
 					show: showers_param,
 					filter: filters_param,
 					sort: sorters_param,

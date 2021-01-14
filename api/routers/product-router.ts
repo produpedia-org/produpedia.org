@@ -159,9 +159,9 @@ type MongoFilter = {[key: string]: any};
 // todo types missing everywhere
 // todo probably should be using graphql
 // todo add checks for code 422 etc
-product_router.get('/', async (req, res) => {
+product_router.get('/:category', async (req, res) => {
     /*********** parse  *********/
-    const category = await get_category_by_name_case_insensitive(req.query.category as string);
+    const category = await get_category_by_name_case_insensitive(req.params.category as string);
     if(!category)
         return res.status(UNPROCESSABLE_ENTITY).send('Param category missing or not found');
     let limit: number|undefined = Number(req.query.limit);
