@@ -39,6 +39,9 @@ Vue.component 'promise-form', PromiseForm
 Vue.component 'product-value-form', ProductValueForm
 Vue.component 'read-more', ReadMore
 
+store = null
+router = null
+
 export default ->
 	store = create_store()
 	router = create_router(store)
@@ -65,3 +68,5 @@ export default ->
 				@$store.dispatch 'session/login_with_token', token
 				@$store.dispatch 'session/refresh_token' # make sure the token is still valid by asking the server for a new one # this should probably be never-expiring and the email ones be shortlived instead TODO (or one-time?)
 	}
+
+export { store, router }
