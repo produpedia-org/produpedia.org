@@ -111,8 +111,13 @@ let lineno = 0;
                     const attribute = attribute_by_name[attribute_name];
                     if (!attribute)
                         throw new Error(`could not find attribute ${r.predicate} in attributes for resource ${resource}`);
-                    // if (!categories.includes(attribute.category))
-                    //     throw new Error(`attribute ${r.predicate} from resource ${resource} belongs to category ${attribute.category} but that category wasnt found in the resources categories ${JSON.stringify(categories)}`);
+                    // Then and again, a product has a value for an attribute that is an unknown attribute
+                    // to this category or its recursive parents, ex. ?s dbo:director ?o ; a dbo:VideoGame.
+                    // These seem to be *mostly* data errors, as I found with a couple demo categories
+                    // and queries like this one select max(?d) as ?domain ?p as ?bad_predicates ?t as ?type count(distinct ?s) as ?bad_predicates_count { ?s a dbo:City . ?s ?p ?o . ?s a ?t . { ?p a owl:DatatypeProperty } UNION { ?p a owl:ObjectProperty } . ?p rdfs:domain ?d . filter (?d != dbo:City && ?d != dbo:Settlement && ?d != dbo:PopulatedPlace && ?d != dbo:Place) } group by ?p ?t having(count(distinct ?s) > 25) order by ?p ?t 
+                    // so should probably ignored here (they would never be shown anyway)
+                    // if (!categories.includes(attribute.category)) <- but this doesnt cut it,
+                    // needs to check for parent categories as well: TODO but not urgent.
                     let value;
                     switch (attribute.type) {
                     case 'boolean':
