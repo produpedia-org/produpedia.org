@@ -215,19 +215,20 @@ product_router.get('/:category', async (req, res) => {
         .filter((f): f is Filter => !!f);
     const filter_to_formatted_filter_condition = (filter: Filter) => {
         switch (filter.condition) {
-        case 'lt': case 'lessthan':
+        case 'lt':
             return { $lt: parse_value_or_throw(filter.value, filter.attribute) };
-        case 'gt': case 'greaterthan':
+        case 'gt':
             return { $gt: parse_value_or_throw(filter.value, filter.attribute) };
-        case 'nu': case 'null': case 'nexists': case 'notexists': case 'notexist': case 'nexist':
+        case 'null':
             return { $exists: false };
-        case 'nn': case 'notnull': case 'exists': case 'exist':
+        case 'not_null':
             return { $exists: true };
-        case 'con': case 'contains': case 'contain': case 'include': case 'includes':
+        case 'contains':
             return new RegExp(regexp_escape(String(filter.value)), filter.case_sensitive ? undefined : 'i');
-        case 'ne': case 'notequal': case 'notequals': case 'isnot': case 'not':
+        case 'ne':
             return { $ne: parse_value_or_throw(filter.value, filter.attribute) };
-        case 'eq': case 'equal': case 'equals': case 'is': default:
+        case 'eq':
+        default:
             if (filter.attribute.type !== 'string' || filter.case_sensitive)
                 return parse_value_or_throw(filter.value, filter.attribute);
             return new RegExp(`^${regexp_escape(String(filter.value))}$`, 'i');
