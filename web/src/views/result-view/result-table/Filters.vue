@@ -112,7 +112,10 @@ export default
 	methods: {
 		...mapActions 'search',
 			-	'remove_filter'
-			-	'add_filter'
+		add_filter: ({ values }) ->
+			if @condition_can_be_case_sensitive
+				values.case_insensitive = ! values.case_sensitive
+			@$store.dispatch 'search/add_filter', values
 	}
 	computed: {
 		...mapGetters 'search',

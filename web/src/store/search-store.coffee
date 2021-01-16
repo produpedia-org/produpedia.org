@@ -245,8 +245,7 @@ export default
 				label: 'Name'
 				type: 'string'
 			commit 'set_attributes', attributes
-		add_filter: ({ commit, dispatch, getters }, { values }) -> # todo formdata?
-			values.case_insensitive = ! values.case_sensitive
+		add_filter: ({ commit, dispatch, getters }, values) ->
 			commit 'add_filter', values
 			dispatch 'update_query'
 		remove_filter: ({ commit, dispatch }, filter) ->
