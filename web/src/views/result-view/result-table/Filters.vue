@@ -48,35 +48,54 @@ export default
 			default: false
 	data: ->
 		show_form: false
-		condition_id: 'equals'
+		condition_id: 'eq'
 		# todo: regex
+		# todo: http://ux.stackexchange.com/q/75704
 		conditions:
-			-	id: 'equals'
+			-	id: 'eq'
 				abbr: ' ='
 				needs_value: true
-			-	id: 'notequals'
+			-	id: 'ne'
 				abbr: '!='
 				long: 'not'
 				needs_value: true
-			-	id: 'lessthan'
+			-	id: 'lt'
 				abbr: ' &lt;'
 				long: 'less than'
 				needs_value: true
-			-	id: 'greaterthan'
+			-	id: 'le'
+				abbr: '&lt;='
+				long: 'less than or equal to'
+				needs_value: true
+			-	id: 'gt'
 				abbr: ' &gt;'
 				long: 'more than'
+				needs_value: true
+			-	id: 'ge'
+				abbr: '&gt;='
+				long: 'more than or equal to'
 				needs_value: true
 			-	id: 'contains'
 				abbr: ' ∋'
 				needs_value: true
 				long: 'contains'
 				description: 'contains'
+			-	id: 'not_contains'
+				abbr: ' ∌'
+				needs_value: true
+				long: 'not contains'
+				description: 'does not contain'
 			-	id: 'null'
-				abbr: ' ∅'
+				abbr: ' ∅' # or ∄ ?
 				long: 'empty'
-			-	id: 'notnull'
-				abbr: '!∅'
+			-	id: 'not_null'
+				abbr: '!∅' # or ∃ ?
 				long: 'not empty'
+			-	id: 'begins_with'
+				abbr: ' ^'
+				needs_value: true
+				long: 'begins with'
+				description: 'begins with'
 			.map (condition) =>
 				option_html = condition.abbr.replace(/ /g, '&nbsp;')
 				option_html += "&nbsp;&nbsp;&nbsp;("

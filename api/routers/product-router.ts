@@ -217,14 +217,22 @@ product_router.get('/:category', async (req, res) => {
         switch (filter.condition) {
         case 'lt':
             return { $lt: parse_value_or_throw(filter.value, filter.attribute) };
+        case 'le':
+            return { $lte: parse_value_or_throw(filter.value, filter.attribute) };
         case 'gt':
             return { $gt: parse_value_or_throw(filter.value, filter.attribute) };
+        case 'ge':
+            return { $gte: parse_value_or_throw(filter.value, filter.attribute) };
         case 'null':
             return { $exists: false };
         case 'not_null':
             return { $exists: true };
         case 'contains':
             return new RegExp(regexp_escape(String(filter.value)), filter.case_sensitive ? undefined : 'i');
+        case 'not_contains':
+            return { $not: new RegExp(regexp_escape(String(filter.value)), filter.case_sensitive ? undefined : 'i') };
+        case 'begins_with':
+            return new RegExp("^"+regexp_escape(String(filter.value)), filter.case_sensitive ? undefined : 'i');
         case 'ne':
             return { $ne: parse_value_or_throw(filter.value, filter.attribute) };
         case 'eq':
