@@ -298,7 +298,7 @@ export default
 					param
 				.join ','
 			router.push query: {
-				show: showers_param
+				attributes: showers_param
 				filter: filters_param or undefined
 				sort: sorters_param  or undefined
 				limit: limit

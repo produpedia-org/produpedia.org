@@ -70,7 +70,7 @@ export default
 		if not store.hasModule('search')
 			store.registerModule 'search', search_store_module
 		
-		{ limit, filter = "", sort = "", show, offset } = route.query
+		{ limit, filter = "", sort = "", attributes: show, offset } = route.query
 		if limit?
 			store.commit 'search/set_limit', limit * 1
 		store.commit 'search/set_filters', (filter
@@ -100,7 +100,7 @@ export default
 			store.commit 'search/set_shower_names', []
 		
 		if Object.values(route.query).filter(Boolean).length == 0
-			return redirect { path: "#{route.path}?show=#{store.state.search.columns}&limit=#{store.state.search.limit}" }
+			return redirect { path: "#{route.path}?attributes=#{store.state.search.columns}&limit=#{store.state.search.limit}" }
 		if store.state.search.category != category
 			await store.dispatch 'search/change_category', category
 		await store.dispatch 'search/search',

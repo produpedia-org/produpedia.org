@@ -170,7 +170,7 @@ product_router.get('/:category', async (req, res) => {
     if (Number.isNaN(limit))
         limit = 25;
     const offset = Number(req.query.offset);
-    const showers_param = req.query.show as string;
+    const showers_param = req.query.attributes as string;
     let columns_count = 0;
     let shower_names: string[] = [];
     if(showers_param) {
