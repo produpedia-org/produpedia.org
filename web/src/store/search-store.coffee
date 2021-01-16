@@ -216,7 +216,8 @@ export default
 				commit 'remove_sorter_at', attribute_sorter.index
 				search = true
 			commit 'remove_shower_name', shower_name
-			commit 'set_shower_names_modified', true
+			# Modified after removing a shower, but when there are none, fall back to default
+			commit 'set_shower_names_modified', !! state.shower_names.length
 			# if not search
 			# 	prevent search from happening with the next update_query somehow,
 			# 	because the data is already there, just needs restructure. TODO (minor)
