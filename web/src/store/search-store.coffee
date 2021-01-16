@@ -298,7 +298,6 @@ export default
 					param
 				.join ','
 			router.push query: {
-				# ...router.currentRoute.query # todo unsure
 				show: showers_param
 				filter: filters_param or undefined
 				sort: sorters_param  or undefined
