@@ -170,13 +170,16 @@ export default
 			dispatch 'update_query'
 		### aka get_products ### # todo rename
 		search: ({ commit, state }, { append = false, query } = {}) ->
-			if append and state.reached_the_end
-				# To prevent unnecessary requests when the last appending request
-				# already returned an empty set
-				return
-			commit 'end_not_yet_reached' #  todo rename has_more and set_has_more true
-			if not append
+			if append
+				if state.reached_the_end
+					# To prevent unnecessary requests when the last appending request
+					# already returned an empty set
+					return
+				commit 'set_offset', state.offset + state.limit
+			else
+				commit 'set_offset', 0
 				commit 'set_products', []
+			commit 'end_not_yet_reached' #  todo rename has_more and set_has_more true
 			response = await @$http.get "product/#{state.category}", params: {
 				...(query or router.currentRoute.query)
 				# Offset is used in API calls but when included in query, effectively ignored:
@@ -252,7 +255,6 @@ export default
 			commit 'set_limit', limit
 			dispatch 'update_query'
 		fetch_next_page: ({ commit, dispatch, state }) ->
-			commit 'set_offset', state.offset + state.limit
 			dispatch 'search', { append: true }
 		# add_column: ({ commit, state }) ->
 		# 	commit 'set_column', state.column + 1
