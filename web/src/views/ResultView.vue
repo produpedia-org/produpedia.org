@@ -197,6 +197,8 @@ header
 	max-width 100%
 #load-more
 	position sticky
+	width 100vw
+	left 0
 #has-more-attributes
 	position sticky
 	top 0
