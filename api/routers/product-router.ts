@@ -243,10 +243,11 @@ product_router.get('/:category', async (req, res) => {
         case 'ne':
             return { $ne: parse_value_or_throw(filter.value, filter.attribute) };
         case 'eq':
-        default:
             if (filter.attribute.type !== 'string' || filter.case_sensitive)
                 return parse_value_or_throw(filter.value, filter.attribute);
             return new RegExp(`^${regexp_escape(String(filter.value))}$`, 'i');
+        default:
+            throw `Filter condition "${filter.condition}" not recognized`;
         }
     };
     let filters_formatted: MongoFilter[];
