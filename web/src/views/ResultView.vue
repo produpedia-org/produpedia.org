@@ -124,6 +124,9 @@ export default
 			if @fetching_next_page or not @can_fetch_next_page
 				return
 			ref = event.target
+			if ref.scrollHeight == ref.clientHeight
+				# There is no vertical scrollbar, this is a horizontal scroll
+				return
 			# Cannot use == 0 here because on some mobile devices there is always 1 pixel left for some reason
 			if ref.scrollHeight - ref.scrollTop - ref.clientHeight <= 1
 				@fetching_next_page = true
