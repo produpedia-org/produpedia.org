@@ -18,11 +18,11 @@ export default {
 			const resp = axios_error.response;
 			if (resp) {
 				let data = resp.data || resp.statusText || 'unknown error message';
-				const http_query_url = `${axios_error.config.baseURL}/${axios_error.config.url}`;
+				const http_query_url = axios_error.config.url;
 				if(typeof data == 'object')
 					data.http_query_url = http_query_url;
 				else
-					data += ` --- http_query_url: ${http_query_url}`
+					data += ` for ${http_query_url}`
 				return error(data, resp.status)
 			} else {
 				return error({ status: 0 }, 0)
