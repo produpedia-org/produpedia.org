@@ -121,7 +121,7 @@ export default
 		fetching_next_page: false
 	methods: {
 		on_table_scroll: (event) ->
-			if @fetching_next_page
+			if @fetching_next_page or not @can_fetch_next_page
 				return
 			ref = event.target
 			# Cannot use == 0 here because on some mobile devices there is always 1 pixel left for some reason
