@@ -16,15 +16,17 @@ table border=1
 						div.row.center v-drag="!readonly && can_drag && shower_name" @dragstart=dragging_column=true @dragend=dragging_column=false
 							div.center
 								span.grip v-if="!readonly && can_drag" ⠿
-							.row
+							.row v-if=attributes_by_name[shower_name]
 								div.label $attributes_by_name[shower_name].label
 								div.unit v-if=attributes_by_name[shower_name].unit
 									| $attributes_by_name[shower_name].unit
+							.danger v-else=""
+								| $shower_name (unknown attribute)
 						div.sort.column
-							button.sort-up.disabled :disabled=readonly @click="toggle_sort_direction(shower_name, 1)" :class.highlighted=sorters_by_attribute_name[shower_name].direction===1
+							button.sort-up.disabled :disabled=readonly @click="toggle_sort_direction(shower_name, 1)" :class.highlighted="sorters_by_attribute_name[shower_name]&&sorters_by_attribute_name[shower_name].direction===1"
 								/ ˄ todo png
 								| ▲
-							button.sort-down.disabled :disabled=readonly @click="toggle_sort_direction(shower_name, -1)" :class.highlighted=sorters_by_attribute_name[shower_name].direction===-1
+							button.sort-down.disabled :disabled=readonly @click="toggle_sort_direction(shower_name, -1)" :class.highlighted="sorters_by_attribute_name[shower_name]&&sorters_by_attribute_name[shower_name].direction===-1"
 								/ ˅
 								| ▼
 						div.sort.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_name[shower_name].index >= 0"
@@ -151,6 +153,7 @@ table
 	--separator 1px solid #e3e3e3
 	border-collapse collapse
 	user-select none // because v-dragscrollable
+	--col-min-width 95px
 	
 table, td, th
 	// table html attribute border=1 needs to be reverted again
@@ -160,7 +163,7 @@ thead tr
 	&:last-child
 		background #eaecf0
 th, td, th > *
-	min-width 95px
+	min-width var(--col-min-width)
 tbody td
 	max-width 150px
 	padding 0.5vmin
@@ -209,7 +212,7 @@ td, th
 		left 190px
 		max-width unset
 		> *
-			width "min(16vw, 160px)" % null
+			width "clamp(var(--col-min-width), 16vw, 160px)" % null
 	@media (max-width: 950px)
 		&:nth-child(1)
 			position relative

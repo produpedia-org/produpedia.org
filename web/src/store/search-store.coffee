@@ -90,22 +90,21 @@ export default
 				all[attribute.name] = attribute
 				all
 			, {})
+		# todo rename to sorter_by_attribute_name
 		sorters_by_attribute_name: (state, getters) ->
-			getters.attribute_names.reduce((all, attribute_name) =>
-				sorter_index = state.sorters.findIndex((sorter) => sorter.attribute_name == attribute_name)
-				if sorter_index > -1
-					all[attribute_name] =
-						index: sorter_index
-						direction: state.sorters[sorter_index].direction
-				else
-					all[attribute_name] = {}
+			state.sorters.reduce (all, sorter, sorter_index) =>
+				all[sorter.attribute_name] =
+					index: sorter_index
+					direction: sorter.direction
 				all
-			, {})
+			, {}
 		filters_by_attribute_name: (state, getters) ->
-			getters.attribute_names.reduce((all, attribute_name) =>
-				all[attribute_name] = state.filters.filter (filter) => filter.attribute_name == attribute_name
+			state.filters.reduce (all, filter) =>
+				if not all[filter.attribute_name]
+					all[filter.attribute_name] = []
+				all[filter.attribute_name].push filter
 				all
-			, {})
+			, {}
 		sorters_amount: (state) -> state.sorters.length
 		# todo docs belong here not top
 		hidden_attribute_names: (state, getters) ->
@@ -117,6 +116,10 @@ export default
 				c.name == state.category
 		has_more_attributes: (state) ->
 			state.attributes.length - state.shower_names.length
+		# To prevent unnecessary requests when the last appending request
+		# already returned an empty set
+		can_fetch_next_page: (state) ->
+			not state.reached_the_end and !!state.products.length
 	mutations:
 		set_category: (state, category) -> state.category = category
 		remove_sorter_at: (state, index) -> Vue.delete state.sorters, index
@@ -171,10 +174,6 @@ export default
 		### aka get_products ### # todo rename
 		search: ({ commit, state }, { append = false, query } = {}) ->
 			if append
-				if state.reached_the_end
-					# To prevent unnecessary requests when the last appending request
-					# already returned an empty set
-					return
 				commit 'set_offset', state.offset + state.limit
 			else
 				commit 'set_offset', 0
@@ -201,10 +200,10 @@ export default
 			if new_pos != current_pos
 				commit 'set_shower_names_modified', true
 				dispatch 'update_query'
-		remove_shower: ({ commit, getters, dispatch }, shower_name ) ->
+		remove_shower: ({ state, commit, getters, dispatch }, shower_name ) ->
 			search = false
 			attribute_filters = getters.filters_by_attribute_name[shower_name]
-			if attribute_filters.length
+			if attribute_filters?.length
 				# todo this never fires (?)
 				if not await dispatch 'confirm_ask', "There are #{attribute_filters.length} filter(s) configured for '#{getters.attributes_by_name[shower_name].name}' that will be removed. Continue?", root: true
 					return
@@ -212,7 +211,7 @@ export default
 					commit 'remove_filter', filter
 				search = true
 			attribute_sorter = getters.sorters_by_attribute_name[shower_name]
-			if attribute_sorter.direction
+			if attribute_sorter?.direction
 				commit 'remove_sorter_at', attribute_sorter.index
 				search = true
 			commit 'remove_shower_name', shower_name

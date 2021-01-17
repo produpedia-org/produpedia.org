@@ -6,7 +6,7 @@ div
 			strong.value v-if=filter.value :class.case_sensitive=!filter.case_insensitive
 				| $filter.value&nbsp;
 			button @click=remove_filter(filter) v-if=!readonly ╳
-		label.add-filter.justify-center.disabled v-if="!show_form && !readonly"
+		label.add-filter.justify-center.disabled v-if="!show_form && !readonly && attribute"
 			span v-if=!filters.length Add filter 
 			button.fade-in @click=show_form=true
 				| +
@@ -40,7 +40,7 @@ export default
 	props:
 		filters:
 			type: Array
-			required: true
+			default: => []
 		attribute_name:
 			type: String
 			default: ''

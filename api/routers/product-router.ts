@@ -146,7 +146,7 @@ product_router.post('/:product_name/data/:attribute_name', async (req, res) => {
 
 interface Sorter {
     attribute_name: string;
-    direction: number;
+    direction: 1|-1;
 }
 interface Filter {
     attribute: Attribute;
@@ -181,15 +181,22 @@ product_router.get('/:category', async (req, res) => {
         }
     }
     const sorters_param: string = req.query.sort as string || '';
+    // @ts-ignore
     const sorters: Sorter[] = sorters_param
         .split(',').filter(Boolean)
-        .map((s: string): Sorter => {
+        .map((s: string): Sorter|null => {
             const split = s.split(':');
+            const direction = Number(split[1]);
+            if(direction!==1 && direction !==-1)
+                return null;
             return {
                 attribute_name: split[0],
-                direction: Number(split[1]),
+                direction,
             };
         });
+    if(sorters.some(sorter => ! sorter)) {
+        return res.status(UNPROCESSABLE_ENTITY).send('Sorter param invalid: Sort order needs to be 1 or -1');
+    }
     const sorters_formatted: FindOptionsOrder<Product> = sorters
         .reduce((all: object, sorter) => ({
             ...all,

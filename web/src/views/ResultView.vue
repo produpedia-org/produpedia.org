@@ -22,8 +22,10 @@
 	article#result-table-container.flex-fill v-if=category&&attributes ref=result_table_container tabindex=-1 @scroll=on_table_scroll
 		.row
 			.flex-fill
+				.center v-if="$errorHandler.statusCode===422"
+					a.box.padding-l.margin-xl :href="'/product/'+category" Go back to $title
 				result-table#result-table @datum_clicked=editing=$event :readonly=readonly
-				#load-more.center
+				#load-more.center v-if=can_fetch_next_page
 					promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
 			#has-more-attributes.padding.margin-l v-if=has_more_attributes
 				| There are 
@@ -44,7 +46,7 @@
 
 <script lang="coffee">
 import search_store_module from '@/store/search-store'
-import { mapActions, mapState } from 'vuex'
+import { mapActions, mapState, mapGetters } from 'vuex'
 import ResultTable from '@/views/result-view/ResultTable'
 import EditDatumDialog from '@/views/result-view/EditDatumDialog'
 import AddProductDialog from '@/views/result-view/AddProductDialog'
@@ -153,6 +155,8 @@ export default
 				category_label + 's'
 		title: ->
 			"List of #{@category_plural}"
+		...mapGetters 'search',
+			-	'can_fetch_next_page'
 	}
 	destroyed: ->
 		@$store.dispatch 'set_default_focus_target', null
