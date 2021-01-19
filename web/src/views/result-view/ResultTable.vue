@@ -5,8 +5,8 @@ table border=1
 		tr
 			td.filters v-for="shower_name in shower_names"
 				filters :filters=filters_by_attribute_name[shower_name] :attribute_name=shower_name :readonly=readonly
-		tr.attributes :class.drop-target=dragging_column
-			th.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop=move_shower_to(index)
+		tr.attributes
+			th.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop="dragging_column&&move_shower_to(index)"
 				.attribute.column.center
 					div.actions.center v-if="!readonly && !can_drag"
 						button.moveto @click=move_shower_to(index-1)(shower_name) ←
@@ -226,8 +226,8 @@ td, th
 	padding 7px 0
 .drop-target
 	color #246
-.attributes.drop-target .move	
-	&.drop
+.drop-target.move	
+	&.dragenter
 		border-left-fix 2px solid var(--color-highlighted)
 .drop-target .remove
 	font-weight bold
