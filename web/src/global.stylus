@@ -182,7 +182,7 @@ body {
 
 
 // basic font family reset, based on browserstyles font modifications
-input:not([type=checkbox]), textarea, keygen, select, button, optgroup, option
+input:not([type=checkbox]):not([type=submit]), textarea, keygen, select, optgroup, option
 	height 2em
 
 h1, h2, h3, h4, h5, h6, th
