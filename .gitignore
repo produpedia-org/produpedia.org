@@ -22,6 +22,10 @@ privacy.html
 .env.local
 .env.*.local
 
+# local env files
+.env.local
+.env.*.local
+
 .idea
 .vscode
 *.suo
