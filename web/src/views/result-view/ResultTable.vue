@@ -4,18 +4,18 @@ table border=1
 	thead
 		tr
 			td.filters v-for="shower_name in shower_names"
-				filters :filters=filters_by_attribute_name[shower_name] :attribute_name=shower_name :readonly=readonly
+				filters :filters=filters_by_attribute_name[shower_name] :attribute_name=shower_name :edit=edit
 		tr.attributes
 			th.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop="dragging_column&&move_shower_to(index)"
 				.attribute.column.center
-					div.actions.center v-if="!readonly && !can_drag"
+					div.actions.center v-if="edit && !can_drag"
 						button.moveto @click=move_shower_to(index-1)(shower_name) ←
 						button.remove @click=remove_shower(shower_name) ╳
 						button.moveto @click=move_shower_to(index+2)(shower_name) →
 					div.row.center
-						div.row.center v-drag="!readonly && can_drag && shower_name" @dragstart=dragging_column=true @dragend=dragging_column=false
+						div.row.center v-drag="can_drag && shower_name" @dragstart=dragging_column=true @dragend=dragging_column=false
 							div.center
-								span.grip v-if="!readonly && can_drag" ⠿
+								span.grip v-if=can_drag ⠿
 							.row v-if=attributes_by_name[shower_name]
 								div.label $attributes_by_name[shower_name].label
 								div.unit v-if=attributes_by_name[shower_name].unit
@@ -23,10 +23,10 @@ table border=1
 							.danger v-else=""
 								| $shower_name (unknown attribute)
 						div.sort.column
-							button.sort-up.disabled :disabled=readonly @click="toggle_sort_direction(shower_name, 1)" :class.highlighted="sorters_by_attribute_name[shower_name]&&sorters_by_attribute_name[shower_name].direction===1"
+							button.sort-up.disabled @click="toggle_sort_direction(shower_name, 1)" :class.highlighted="sorters_by_attribute_name[shower_name]&&sorters_by_attribute_name[shower_name].direction===1"
 								/ ˄ todo png
 								| ▲
-							button.sort-down.disabled :disabled=readonly @click="toggle_sort_direction(shower_name, -1)" :class.highlighted="sorters_by_attribute_name[shower_name]&&sorters_by_attribute_name[shower_name].direction===-1"
+							button.sort-down.disabled @click="toggle_sort_direction(shower_name, -1)" :class.highlighted="sorters_by_attribute_name[shower_name]&&sorters_by_attribute_name[shower_name].direction===-1"
 								/ ˅
 								| ▼
 						div.sort.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_name[shower_name].index >= 0"
@@ -55,14 +55,14 @@ table border=1
 								| 🖻<br>loading<br>image
 						/ .disabled TODO
 						span v-else="" $datum.value
-						button.edit v-if=!readonly
+						button.edit v-if=edit
 							| ✎
 				div v-else=""
 					span.small
 						/ ? &#63;
 						/ | &nbsp; <- doesnt work?
 						|
-					button.edit.create v-if=!readonly
+					button.edit.create v-if=edit
 						/ 🖉
 						| +
 </template>
@@ -74,7 +74,7 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 export default
 	components: { Filters }
 	props:
-		readonly:
+		edit:
 			default: false
 	data: =>
 		can_drag: true
@@ -85,7 +85,7 @@ export default
 		toggle_sort_direction: (attribute_name, direction) ->
 			@$store.dispatch 'search/toggle_sort_direction', { attribute_name, direction }
 		datum_clicked: (product, attribute_name) ->
-			if @readonly or @is_scrolling_container then return
+			if @is_scrolling_container then return
 			@$emit 'datum_clicked', { product, attribute_name }
 		move_shower_to: (index) -> (shower_name) =>
 			@$store.dispatch 'search/move_shower_to', { shower_name, index }

@@ -6,8 +6,8 @@
 		aside.left
 			.center
 				label.row.center
-					input type=checkbox v-model=readonly
-					div Readonly
+					input type=checkbox v-model=edit
+					div Edit mode
 		h1 $title
 		aside.right
 			.center
@@ -24,7 +24,7 @@
 			.flex-fill
 				.center v-if="$errorHandler.statusCode===422"
 					a.box.padding-l.margin-xl :href="'/product/'+category" Go back to $title
-				result-table#result-table @datum_clicked=editing=$event :readonly=readonly
+				result-table#result-table @datum_clicked=editing=$event :edit=edit
 				#load-more.center v-if=can_fetch_next_page
 					promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
 			#has-more-attributes.padding.margin-l v-if=has_more_attributes
@@ -37,7 +37,7 @@
 	popup v-if=editing @close=editing=null
 		edit-datum-dialog :product=editing.product :attribute_name=editing.attribute_name
 
-	div.center.margin-l v-if=!readonly
+	div.center.margin-l v-if=edit
 		/ todo add toggle component
 		button.btn @click=show_add_product_dialog=true
 			| + Add
@@ -116,7 +116,7 @@ export default
 	data: ->
 		show_add_product_dialog: false
 		editing: null
-		readonly: false
+		edit: false
 		selectable_limits: [ 5, 10, 20, 50, 100 ]
 		fetching_next_page: false
 	methods: {
