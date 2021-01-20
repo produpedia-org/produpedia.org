@@ -18,7 +18,8 @@ import MultiSelect from '@/components/MultiSelect'
 import Popup from '@/components/Popup'
 import PromiseButton from '@/components/PromiseButton'
 import PromiseForm from '@/components/PromiseForm'
-import ProductValueForm from '@/components/ProductValueForm'
+import ProductValueFormField from '@/components/ProductValueFormField'
+import FormField from '@/components/FormField'
 import ReadMore from '@/components/ReadMore'
 import './register-service-worker'
 
@@ -36,7 +37,8 @@ Vue.component 'multi-select', MultiSelect
 Vue.component 'popup', Popup
 Vue.component 'promise-button', PromiseButton
 Vue.component 'promise-form', PromiseForm
-Vue.component 'product-value-form', ProductValueForm
+Vue.component 'product-value-form-field', ProductValueFormField
+Vue.component 'form-field', FormField
 Vue.component 'read-more', ReadMore
 
 store = null

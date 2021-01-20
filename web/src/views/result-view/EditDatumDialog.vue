@@ -54,10 +54,10 @@ div.edit-datum
 		p This is only for demonstration purposes; You can submit values here and they will be saved, but the database will be reset soon.
 		p Currently, you can <em>not</em> lastingly edit the values on Produpedia.org. But this will be changed, as the primary goal of this site is to be an open and collaborative effort.
 		p Right now, the only way is to participate in the development of the site or edit values in Wikipedia directly. They will then find their way into Produpedia.org eventually.
-	product-value-form :action=save_datum :attribute=attribute
-		label.column
-			| Source
-			input type=url name=source placeholder=Source required=""
+	/ product-value-form :action=save_datum :attribute=attribute
+	/ 	label.column
+	/ 		| Source
+	/ 		input type=url name=source placeholder=Source required=""
 </template>
 
 <script lang="coffee">
