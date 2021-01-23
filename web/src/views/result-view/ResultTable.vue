@@ -235,7 +235,7 @@ td, th
 	color var(--color-highlighted)
 	text-transform uppercase
 	white-space nowrap
-	&.drop
+	&.dragenter
 		background var(--color-clickable)
 .attribute
 	.row
