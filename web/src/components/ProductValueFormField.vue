@@ -14,7 +14,7 @@ export default
 				when 'string'
 					label: 'Value'
 					required: true
-					pattern: '[^:,]'
+					pattern: '[^:,]+'
 					title: 'Please insert any value. The value cannot contain comma (,) or colon (:).'
 					name: 'value'
 				when 'number'
