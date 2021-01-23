@@ -327,8 +327,6 @@ progress
 		background var(--color-disabled)
 
 *[title]
-	&:not(button):not(a)
-		cursor help
 	&::first-letter
 		text-decoration underline
 		text-decoration-style dotted
