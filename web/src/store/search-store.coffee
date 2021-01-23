@@ -134,10 +134,16 @@ export default
 		remove_shower_name_at: (state, index) -> Vue.delete state.shower_names, index
 		remove_shower_name: (state, shower_name) -> Vue.delete state.shower_names, state.shower_names.indexOf(shower_name) # todo add prototy .remove method
 		add_shower_name_at: (state, { index, shower_name }) -> state.shower_names.splice index, 0, shower_name # todo ^
-		set_attributes: (state, attributes) ->
-			state.attributes = attributes
+		set_attributes: (state, attributes) -> state.attributes = attributes
 		add_filter: (state, filter) -> state.filters.push filter
 		remove_filter: (state, filter) -> Vue.delete state.filters, state.filters.indexOf(filter)
+		replace_filter: (state, { filter, model }) ->
+			Vue.set filter, 'value', model.value
+			Vue.set filter, 'condition', model.condition
+			Vue.set filter, 'case_insensitive', model.case_insensitive
+			# This alternative way also leads to the destroy hook problem described in
+			# filterr/meta. must not lose object reference.
+			# state.filters.splice state.filters.indexOf(filter), 1, JSON.parse(JSON.stringify(model))
 		set_filters: (state, filters) -> state.filters = filters
 		set_columns: (state, columns) -> state.columns = columns
 		set_limit: (state, limit) -> state.limit = limit
@@ -247,8 +253,14 @@ export default
 		add_filter: ({ commit, dispatch, getters }, values) ->
 			commit 'add_filter', values
 			dispatch 'update_query'
-		remove_filter: ({ commit, dispatch }, filter) ->
+		remove_filter: ({ commit, dispatch, state }, filter) ->
 			commit 'remove_filter', filter
+			dispatch 'update_query'
+		### The params for this action are somewhat weird because filters dont have
+		any unique key (they shouldnt; there can be duplicate filters).
+		Because of that, need to work with obj refs and array indices ###
+		replace_filter: ({ state, commit, dispatch }, { filter, model }) ->
+			commit 'replace_filter', { filter, model }
 			dispatch 'update_query'
 		set_limit: ({ commit, dispatch }, limit) ->
 			commit 'set_limit', limit
@@ -303,7 +315,6 @@ export default
 					sort: sorters_param  or undefined
 					limit: limit
 				}
-
 			catch e
 				if e.name != 'NavigationDuplicated' and (not e.message.includes("Navigation cancelled from ") and not e.message.includes(" with a new navigation."))
 					throw e

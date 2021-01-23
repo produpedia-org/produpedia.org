@@ -19,7 +19,7 @@
 	
 	/ i Explanation of what this category is..?
 	
-	article#result-table-container.flex-fill v-if=category&&attributes ref=result_table_container tabindex=-1 @scroll=on_table_scroll
+	article#result-table-container.flex-fill.fade-in v-if=category&&attributes ref=result_table_container tabindex=-1 @scroll=on_table_scroll
 		.row
 			.flex-fill
 				.center v-if="$errorHandler.statusCode===422"
@@ -75,7 +75,7 @@ export default
 		{ limit, filter = "", sort = "", attributes: show, offset } = route.query
 		if limit?
 			store.commit 'search/set_limit', limit * 1
-		store.commit 'search/set_filters', (filter
+		query_filters = (filter
 			.split(',').filter(Boolean).map((s)=>s.split(':'))
 			.map (s) => {
 				attribute_name: s[0]
@@ -83,6 +83,8 @@ export default
 				value: s[2]
 				case_insensitive: s[3] == 'i'
 			}) or []
+		if JSON.stringify(query_filters) != JSON.stringify(store.state.search.filters)
+			store.commit 'search/set_filters', query_filters
 		store.commit 'search/set_sorters', (sort
 			.split(',').filter(Boolean).map((s)=>s.split(':'))
 			.map (s) => {
@@ -96,10 +98,14 @@ export default
 				store.commit 'search/set_shower_names_modified', true
 			else
 				store.commit 'search/set_columns', Number(show)
-				store.commit 'search/set_shower_names', []
+				# Not necessary (?) because they get repopulated in search/store.
+				# If set to [] here, this means that the table completely disappers for the duration of
+				# the search because there are no more columns.
+				# store.commit 'search/set_shower_names', []
 				store.commit 'search/set_shower_names_modified', false
-		else
-			store.commit 'search/set_shower_names', []
+		# Same thing. TODO remove these comments later
+		# else
+		# 	store.commit 'search/set_shower_names', []
 		
 		if Object.values(route.query).filter(Boolean).length == 0
 			return redirect { path: "#{route.path}?attributes=#{store.state.search.columns}&limit=#{store.state.search.limit}" }

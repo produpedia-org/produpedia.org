@@ -221,9 +221,9 @@ td, th
 
 // 3. Semantic styling
 
-.filters
+td.filters
 	user-select none
-	padding 7px 0
+	padding 4px 0
 .drop-target
 	color #246
 .drop-target.move	
