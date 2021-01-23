@@ -296,9 +296,14 @@ export default
 						param += ":i"
 					param
 				.join ','
-			router.push query: {
-				attributes: showers_param
-				filter: filters_param or undefined
-				sort: sorters_param  or undefined
-				limit: limit
-			}
+			try
+				await router.push query: {
+					attributes: showers_param
+					filter: filters_param or undefined
+					sort: sorters_param  or undefined
+					limit: limit
+				}
+
+			catch e
+				if e.name != 'NavigationDuplicated' and (not e.message.includes("Navigation cancelled from ") and not e.message.includes(" with a new navigation."))
+					throw e
