@@ -18,7 +18,7 @@ export default
 					title: 'Please insert any value. The value cannot contain comma (,) or colon (:).'
 					name: 'value'
 				when 'number'
-					label: "Amount [#{attribute.unit}]" # todo .disabled for unit
+					label: "Amount#{if @attribute.unit then ' ['+@attribute.unit+']' else ''}" # todo .disabled for unit
 					required: true
 					type: 'number'
 					step: if @attribute.float then 'any' else 1
