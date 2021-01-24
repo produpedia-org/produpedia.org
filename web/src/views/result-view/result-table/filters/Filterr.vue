@@ -13,7 +13,7 @@
 					em.value v-if=filter.value :class.case_sensitive=!filter.case_insensitive
 						strong $filter.value
 				.summary-expanded
-					button @click=remove_filter(filter) ×
+					button.remove @click=remove_filter(filter) ×
 			div v-else=""
 		.edit
 			select.condition v-model=filter_model.condition
@@ -237,6 +237,9 @@ export default
 				background var(--color-secondary-background)
 				&.case_sensitive:first-letter
 					text-decoration underline var(--color-foreground)
+		.remove
+			&:hover
+				color var(--color-error)
 		.summary-expanded
 			display none
 	>>> details[open] .summary-expanded
