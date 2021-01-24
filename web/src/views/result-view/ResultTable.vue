@@ -17,7 +17,8 @@ table border=1
 							div.center
 								span.grip v-if=can_drag ⠿
 							.row v-if=attributes_by_name[shower_name]
-								div.label $attributes_by_name[shower_name].label
+								div.label @click=toggle_sort(shower_name)
+									| $attributes_by_name[shower_name].label
 								div.unit v-if=attributes_by_name[shower_name].unit
 									| $attributes_by_name[shower_name].unit
 							.danger v-else=""
