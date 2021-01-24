@@ -11,12 +11,6 @@ export default
 	computed:
 		form_field: ->
 			switch @attribute.type
-				when 'string'
-					label: 'Value'
-					required: true
-					pattern: '[^:,]+'
-					title: 'Please insert any value. The value cannot contain comma (,) or colon (:).'
-					name: 'value'
 				when 'number'
 					label: "Amount#{if @attribute.unit then ' ['+@attribute.unit+']' else ''}" # todo .disabled for unit
 					required: true
@@ -27,6 +21,12 @@ export default
 					name: 'value'
 				when 'boolean'
 					type: 'checkbox' # todo make radio yes/no instead
+					name: 'value'
+				else
+					label: 'Value'
+					required: true
+					pattern: '[^:,]+'
+					title: 'Please insert any value. The value cannot contain comma (,) or colon (:).'
 					name: 'value'
 </script>
 
