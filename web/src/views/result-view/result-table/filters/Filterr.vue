@@ -46,6 +46,8 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 ###
 meta_by_filter = new Map
 
+value_debouncer = null
+
 export default
 	props:
 		filter:
@@ -185,34 +187,37 @@ export default
 		filter_model:
 			deep: true
 			handler: (new_model, old_model) ->
-				if @model_valid
-					new_model = { ...new_model }
-					if @filter_model_condition.needs_value
-						if @can_be_case_sensitive
-							new_model.case_insensitive = ! new_model.case_sensitive
-					else
-						delete new_model.value
-						delete new_model.case_insensitive
-						delete new_model.case_sensitive
-					@$store.dispatch 'search/replace_filter',
-						filter: @filter
-						model: new_model
-				else if new_model.value == ""
-					# At start, .value is undefined. Only when set to "", this filter was *updated*
-					# to an empty value. It was in the query params but should now be removed
-					# from there.
-					# This could be achieved by simply dispatching remove_filter, but the current
-					# edit window should stay, so we need to add it again afterwards immediately
-					# like in filters/add_filter, preserving object reference.
-					# This does not seem optimal and should be revised at some point. At least it
-					# works great right now. The main challenge with this component is that the
-					# queryfilters and searchfilters reflect two different states, yet depend on
-					# each other.
-					@$store.commit 'search/replace_filter',
-						filter: @filter
-						model: @filter_model
-					@$store.dispatch 'search/remove_filter', @filter
-					@$store.commit 'search/add_filter', @filter
+				clearTimeout(value_debouncer)
+				value_debouncer = setTimeout (=>
+					if @model_valid
+						new_model = { ...new_model }
+						if @filter_model_condition.needs_value
+							if @can_be_case_sensitive
+								new_model.case_insensitive = ! new_model.case_sensitive
+						else
+							delete new_model.value
+							delete new_model.case_insensitive
+							delete new_model.case_sensitive
+						@$store.dispatch 'search/replace_filter',
+							filter: @filter
+							model: new_model
+					else if new_model.value == ""
+						# At start, .value is undefined. Only when set to "", this filter was *updated*
+						# to an empty value. It was in the query params but should now be removed
+						# from there.
+						# This could be achieved by simply dispatching remove_filter, but the current
+						# edit window should stay, so we need to add it again afterwards immediately
+						# like in filters/add_filter, preserving object reference.
+						# This does not seem optimal and should be revised at some point. At least it
+						# works great right now. The main challenge with this component is that the
+						# queryfilters and searchfilters reflect two different states, yet depend on
+						# each other.
+						@$store.commit 'search/replace_filter',
+							filter: @filter
+							model: @filter_model
+						@$store.dispatch 'search/remove_filter', @filter
+						@$store.commit 'search/add_filter', @filter
+				), 400
 		meta:
 			deep: true
 			handler: (meta) ->
