@@ -18,6 +18,25 @@
 						option :value=-1 All
 	
 	/ i Explanation of what this category is..?
+
+	/ This is obviously only a temporary solution. Later on, columns need to be editable,
+	/ and this section would have "add this column" buttons etc
+	.center
+		.box.padding.margin v-for="filter in invisible_filters"
+			.error The following filter is hidden:
+			span v-if=attributes_by_name[filter.attribute_name]
+				| $attributes_by_name[filter.attribute_name].label
+			span v-else=""
+				| $filter.attribute_name
+			b  $filter.condition 
+			span $filter.value
+		.box.padding.margin v-for="sorter in invisible_sorters"
+			.error The following sorting condition is hidden:
+			span v-if=attributes_by_name[sorter.attribute_name]
+				| $attributes_by_name[sorter.attribute_name].label
+			span v-else=""
+				| $sorter.attribute_name
+			b  $sorter.direction
 	
 	article#result-table-container.flex-fill.fade-in v-if=category&&attributes ref=result_table_container tabindex=-1 @scroll=on_table_scroll
 		.row
@@ -166,6 +185,9 @@ export default
 			"List of #{@category_plural}"
 		...mapGetters 'search',
 			-	'can_fetch_next_page'
+			-	'invisible_filters'
+			-	'invisible_sorters'
+			-	'attributes_by_name'
 	}
 	destroyed: ->
 		@$store.dispatch 'set_default_focus_target', null

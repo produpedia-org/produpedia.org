@@ -91,20 +91,26 @@ export default
 				all
 			, {})
 		# todo rename to sorter_by_attribute_name
-		sorters_by_attribute_name: (state, getters) ->
+		sorters_by_attribute_name: (state) ->
 			state.sorters.reduce (all, sorter, sorter_index) =>
 				all[sorter.attribute_name] =
 					index: sorter_index
 					direction: sorter.direction
 				all
 			, {}
-		filters_by_attribute_name: (state, getters) ->
+		filters_by_attribute_name: (state) ->
 			state.filters.reduce (all, filter) =>
 				if not all[filter.attribute_name]
 					all[filter.attribute_name] = []
 				all[filter.attribute_name].push filter
 				all
 			, {}
+		invisible_filters: (state) ->
+			state.filters.filter (filter) =>
+				not state.shower_names.includes filter.attribute_name
+		invisible_sorters: (state) ->
+			state.sorters.filter (sorter) =>
+				not state.shower_names.includes sorter.attribute_name
 		sorters_amount: (state) -> state.sorters.length
 		# todo docs belong here not top
 		hidden_attribute_names: (state, getters) ->
