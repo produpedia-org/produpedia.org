@@ -18,7 +18,7 @@
 		.edit
 			select.condition v-model=filter_model.condition
 				option v-for="condition in conditions" :value=condition.id v-html=condition.option_html
-			div v-if=filter_model_condition.needs_value
+			div v-if="filter_condition&&filter_model_condition.needs_value"
 				product-value-form-field.value :attribute=attribute nolabel="" v-model=filter_model.value ref=product_value_form_field
 				.case.row v-if=can_be_case_sensitive
 					label.center title="Check if uppercase/lowercase matters"
@@ -177,9 +177,9 @@ export default
 		filter_model_condition: ->
 			@conditions.find (c) => c.id == @filter_model.condition
 		filter_valid: ->
-			not @filter_condition.needs_value or @filter.value # todo [:,]+ stuff, check where when, escape?
+			@filter_condition and (not @filter_condition.needs_value or @filter.value) # todo [:,]+ stuff, check where when, escape?
 		model_valid: ->
-			not @filter_model_condition.needs_value or @filter_model.value # todo [:,]+ stuff, check where when, escape?
+			@filter_model_condition and (not @filter_model_condition.needs_value or @filter_model.value) # todo [:,]+ stuff, check where when, escape?
 	}
 	watch:
 		filter_model:
