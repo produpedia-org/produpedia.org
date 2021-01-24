@@ -29,7 +29,7 @@ table border=1
 							button.sort-down.disabled @click="toggle_sort_direction(shower_name, -1)" :class.highlighted="sorters_by_attribute_name[shower_name]&&sorters_by_attribute_name[shower_name].direction===-1"
 								/ ˅
 								| ▼
-						div.sort.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_name[shower_name].index >= 0"
+						div.sort.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_name[shower_name]&&sorters_by_attribute_name[shower_name].index >= 0"
 							| $sorters_by_attribute_name[shower_name].index+1
 		tr.drop-target v-if=dragging_column
 			td.remove.center v-drop=remove_shower colspan=9999
