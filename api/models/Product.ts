@@ -10,6 +10,7 @@ export interface PrimaryProductData {
 /* TODO: index:
 db.product.createIndex({ categories: 1 })
 db.product.createIndex({ name: 1 })
+db.product.createIndex({ 'data.label.value': 1 })
 */
 
 @Entity()
