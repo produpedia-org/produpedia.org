@@ -208,7 +208,6 @@ export default
 					# works great right now. The main challenge with this component is that the
 					# queryfilters and searchfilters reflect two different states, yet depend on
 					# each other.
-					debugger
 					@$store.commit 'search/replace_filter',
 						filter: @filter
 						model: @filter_model

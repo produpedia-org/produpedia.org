@@ -22,13 +22,15 @@ table border=1
 									| $attributes_by_name[shower_name].unit
 							.danger v-else=""
 								| $shower_name (unknown attribute)
-						div.sort.column
-							button.sort-up.disabled @click="toggle_sort_direction(shower_name, 1)" :class.highlighted="sorters_by_attribute_name[shower_name]&&sorters_by_attribute_name[shower_name].direction===1"
-								/ ˄ todo png
-								| ▲
-							button.sort-down.disabled @click="toggle_sort_direction(shower_name, -1)" :class.highlighted="sorters_by_attribute_name[shower_name]&&sorters_by_attribute_name[shower_name].direction===-1"
-								/ ˅
-								| ▼
+						button.sort.disabled @click=toggle_sort(shower_name)
+							/ ▲▼♦♢
+							span.highlighted v-if=sorters_by_attribute_name[shower_name]
+								span v-if=sorters_by_attribute_name[shower_name].direction===1
+									| ▼
+								span v-else=""
+									| ▲
+							span v-else=""
+								| ♢
 						div.sort.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_name[shower_name]&&sorters_by_attribute_name[shower_name].index >= 0"
 							| $sorters_by_attribute_name[shower_name].index+1
 		tr.drop-target v-if=dragging_column
@@ -82,8 +84,8 @@ export default
 		scroll_container: null
 		is_scrolling_container: false
 	methods: {
-		toggle_sort_direction: (attribute_name, direction) ->
-			@$store.dispatch 'search/toggle_sort_direction', { attribute_name, direction }
+		toggle_sort: (attribute_name) ->
+			@$store.dispatch 'search/toggle_sort', attribute_name
 		datum_clicked: (product, attribute_name) ->
 			if @is_scrolling_container then return
 			@$emit 'datum_clicked', { product, attribute_name }
@@ -266,17 +268,10 @@ td.filters
 					color var(--color-clickable)
 					text-shadow 2px 2px 2px var(--color-clickable)
 	.sort
-		padding-left 3px
+		margin-left 1px
 		user-select none
-		.sort-up, .sort-down
-			&:hover
-				background var(--color-hover)
-		.sort-up
-			position relative
-			top -5px
-		.sort-down
-			position absolute
-			bottom -4px
+		&:hover
+			background var(--color-hover)
 	.actions
 		height 8px
 		.remove

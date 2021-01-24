@@ -175,13 +175,14 @@ export default
 					throw responses[0].reason
 				if responses[1].reason
 					throw responses[1].reason
-		toggle_sort_direction: ({ commit, dispatch, state, getters }, { attribute_name, direction }) ->
+		toggle_sort: ({ commit, dispatch, getters }, attribute_name) ->
 			sorter = getters.sorters_by_attribute_name[attribute_name]
 			if sorter
 				commit 'remove_sorter_at', sorter.index
-				if sorter.direction == direction
-					return dispatch 'update_query'
-			commit 'add_sorter', { attribute_name, direction }
+				if sorter.direction == 1
+					commit 'add_sorter', { attribute_name, direction: -1 }
+			else
+				commit 'add_sorter', { attribute_name, direction: 1 }
 			dispatch 'update_query'
 		### aka get_products ### # todo rename
 		search: ({ commit, state }, { append = false, query } = {}) ->
@@ -243,18 +244,18 @@ export default
 		get_attributes: ({ commit, state }) ->
 			response = await @$http.get 'attribute', { params: { category: state.category } }
 			attributes = response.data
-			attributes.unshift
-				category: 'thing'
-				verified: true
-				name: 'thumbnail'
-				label: 'Thumbnail'
-				type: 'resource'
-			,
-				category: 'thing'
-				verified: true
-				name: 'label'
-				label: 'Name'
-				type: 'string'
+			# attributes.unshift
+			# 	category: 'thing'
+			# 	verified: true
+			# 	name: 'thumbnail'
+			# 	label: 'Thumbnail'
+			# 	type: 'resource'
+			# ,
+			# 	category: 'thing'
+			# 	verified: true
+			# 	name: 'label'
+			# 	label: 'Name'
+			# 	type: 'string'
 			commit 'set_attributes', attributes
 		add_filter: ({ commit, dispatch, getters }, values) ->
 			commit 'add_filter', values
