@@ -80,6 +80,7 @@ export default
 		attributes: null
 		products: null
 		### other ###
+		fetching_data: false
 		reached_the_end: false
 		category_breadcrumbs_ref: []
 	getters:
@@ -156,6 +157,7 @@ export default
 		set_offset: (state, offset) -> state.offset = offset
 		end_reached: (state) -> state.reached_the_end = true
 		end_not_yet_reached: (state) -> state.reached_the_end = false
+		set_fetching_data: (state, fetching_data) -> state.fetching_data = fetching_data
 		set_category_breadcrumbs_ref: (state, breadcrumbs) -> state.category_breadcrumbs_ref = breadcrumbs
 		set_shower_names_modified: (state, flag) -> state.shower_names_modified = flag
 	actions:
@@ -190,7 +192,7 @@ export default
 				commit 'set_offset', state.offset + state.limit
 			else
 				commit 'set_offset', 0
-				commit 'set_products', []
+			commit 'set_fetching_data', true
 			commit 'end_not_yet_reached' #  todo rename has_more and set_has_more true
 			response = await @$http.get "product/#{state.category}", params: {
 				...(query or router.currentRoute.query)
@@ -198,10 +200,14 @@ export default
 				# The current offset in view is not synced with the URL. Maybe some day
 				offset: state.offset or undefined
 			}
+			if append
+				commit 'add_products', response.data.products
+			else
+				commit 'set_products', response.data.products
 			commit 'set_shower_names', response.data.shower_names
-			commit 'add_products', response.data.products
 			if not response.data.products.length
 				commit 'end_reached'
+			commit 'set_fetching_data', false
 		move_shower_to: ({ dispatch, commit, state }, { index, shower_name }) ->
 			current_pos = state.shower_names.findIndex (e) => e == shower_name
 			new_pos = index

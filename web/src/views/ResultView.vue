@@ -37,8 +37,8 @@
 			span v-else=""
 				| $sorter.attribute_name
 			b  $sorter.direction
-	
-	article#result-table-container.flex-fill.fade-in v-if=category&&attributes ref=result_table_container tabindex=-1 @scroll=on_table_scroll
+
+	article#result-table-container.flex-fill.fade-in v-if=category&&attributes ref=result_table_container tabindex=-1 @scroll=on_table_scroll :disabled=fetching_data
 		.row
 			.flex-fill
 				.center v-if="$errorHandler.statusCode===422"
@@ -188,6 +188,8 @@ export default
 			-	'invisible_filters'
 			-	'invisible_sorters'
 			-	'attributes_by_name'
+		...mapState 'search',
+			-	'fetching_data'
 	}
 	destroyed: ->
 		@$store.dispatch 'set_default_focus_target', null
