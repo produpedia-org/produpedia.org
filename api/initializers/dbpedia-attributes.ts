@@ -104,7 +104,7 @@ const attribute_props_by_range = (range?: string): Partial<Attribute> => {
     attributes.push(new Attribute({
         category: 'thing',
         name: 'thumbnail',
-        label: 'Thumbnail',
+        label: 'Image',
         type: 'resource',
         verified: true,
     }));
