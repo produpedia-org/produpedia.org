@@ -32,11 +32,12 @@ let lineno = 0;
     let lines_batch = [];
     for await (const line of rl) {
         lineno++;
+        // console.log(lineno)
         // if (i > 100)
         //     process.exit(0);
 
-        if (lineno < 4018874)
-            continue;
+        // if (lineno < 4018874)
+        //     continue;
 
         // sparql interaction happens in batches, because that speeds up the whole
         // process significantly (virtuoso computation is the bottleneck here):
@@ -86,8 +87,10 @@ let lineno = 0;
         // Also see get_products.coffee: Colline
         const sql_conditions = product_infos.map(info => `
         { select "${info[0]}" as ?subject ?predicate ?object {
-            <http://dbpedia.org/resource/${encodeURI(info[0])}> ?predicate ?object
+            <http://dbpedia.org/resource/${info[0]}> ?predicate ?object
         } }`).join(' UNION ');
+        // ^ regarding escaping: & " ' must not be escaped above or nothing will be returned.
+        // Could be because it is already escaped somewhere else
         const sql = `select ?subject ?predicate ?object { ${sql_conditions} }`;
 
         const results = await query(sql, undefined, true);
@@ -99,7 +102,8 @@ let lineno = 0;
 
             const label = product_results.find(r => r.predicate === 'rdfs:label')?.object.replace(/^(.+)@[a-z]+/, '$1');
             if (!label) {
-                // console.log('label missing', resource); // ??? TODO happens but why
+                // Happens sometimes, e.g. https://dbpedia.org/page/Diamond_Crush. No idea why but probably
+                // related to some other dataset not included in the dump. Skip
                 return null;
             }
 
