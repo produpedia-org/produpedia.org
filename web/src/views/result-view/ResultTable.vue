@@ -39,7 +39,7 @@ table border=1
 				div.padding-l Drop here<br>╳<br>to hide this attribute
 
 	tbody v-dragscrollable="{ scroll_target: scroll_container, on_dragscroll_start, on_dragscroll_end }"
-		tr.product v-for="product in products"
+		tr.product v-for="product in products" :key=product.name
 			td.datum v-for="shower_name, shower_index in shower_names" @click=datum_clicked(product,shower_name) :set="datum=product.data[shower_name]"
 				div v-if=datum
 					/ 	TODO
