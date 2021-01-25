@@ -22,7 +22,6 @@ class Attribute extends BaseEntity {
     @Column()
     @IsInt()
     @Min(0)
-    @Max(100)
     public interest: number = 0;
     @Column()
     @Length(1, 50)
