@@ -268,6 +268,7 @@ product_router.get('/:category', async (req, res) => {
         .map(sorter => ({ [`data.${sorter.attribute_name}.value`]: { $exists: true } })));
 
     /** The specified category plus all of its recursive parents */
+    // TODO rm djplicates
     const category_anchestor_names = [
         category.name,
         ...(await get_category_anchestors(category)).map(c => c.name),
@@ -281,26 +282,35 @@ product_router.get('/:category', async (req, res) => {
 
     /*********** determine showers if not given **********/
     if (!shower_names.length) {
-        const shower_attributes = await Attribute.find({
+        const category_anchestor_attributes = await Attribute.find({
             select: ['name', 'category'],
             where: {
                 category: { $in: category_anchestor_names },
             },
-            // take: columns_count, // Because manual filtering below
             order: {
                 interest: 'DESC',
             },
         });
-        // Primarily sort by category: The target category's attributes first,
-        // then the parents' ones, then parents' parents' and so on.
-        // ^ TODO should interest be even more important?
-        // This could also be done as part of the query via aggregation
-        shower_attributes.sort((a, b) =>
-            category_anchestor_names.indexOf(a.category) - category_anchestor_names.indexOf(b.category));
-        shower_names = shower_attributes
-            .slice(0, columns_count) // s.a.
-            .map((attribute: Attribute) => attribute.name);
-
+        const category_anchestor_attribute_names = category_anchestor_attributes
+            .map(attribute => attribute.name)
+        // Use category showers by default: Ordered by value usage count of products
+        // in this very category
+        shower_names = (category.showers||[])
+            .filter(attribute_name => category_anchestor_attribute_names.includes(attribute_name))
+            .slice(0, columns_count)
+        const missing_columns_count = columns_count - shower_names.length;
+        if(missing_columns_count > 0) {
+            // Category showers werent enough, need to fill up with other columns of this category/parents,
+            // which however have no values, sorted 1. by category: The target category's attributes first,
+            // then the parents' ones, then parents' parents' and so on, and sorted 2. by interest, that is,
+            // by value usage count accross *all* categories
+            shower_names.push(...category_anchestor_attributes
+                .filter(attribute => ! shower_names.includes(attribute.name))
+                .sort((a,b) => category_anchestor_names.indexOf(a.category) - category_anchestor_names.indexOf(b.category))
+                .slice(0, missing_columns_count)
+                .map(attribute => attribute.name))
+            // Could still be not enough columns but there are no more applicable for this category
+        }
         shower_names.unshift('thumbnail', 'label');
     }
 
