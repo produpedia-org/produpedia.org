@@ -30,6 +30,11 @@ class Category extends BaseEntity {
     @IsArray()
     @Length(1, 100, { each: true })
     public aliases?: string[];
+    @Column()
+    @IsOptional()
+    @IsArray()
+    @Length(1, 255, { each: true })
+    public showers?: string[];
 
     public constructor(init: Partial<Category>) {
         super();
