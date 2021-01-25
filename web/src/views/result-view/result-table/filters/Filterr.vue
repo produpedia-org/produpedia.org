@@ -173,7 +173,7 @@ export default
 		document.removeEventListener 'click', @document_click_listener
 	computed: {
 		can_be_case_sensitive: ->
-			@attribute.type == 'string'
+			@attribute.type == 'string' || @attribute.type == 'resource'
 		filter_condition: ->
 			@conditions.find (c) => c.id == @filter.condition
 		filter_model_condition: ->
