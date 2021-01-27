@@ -30,7 +30,7 @@ app.use(bodyParser.json());
 app.use(expressFormData.parse());
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*'); // fixme
+    res.header('Access-Control-Allow-Origin', '*');
 
     res.header('Access-Control-Allow-Headers', 'Content-Type,Authorization');
     if (req.method === 'OPTIONS') {

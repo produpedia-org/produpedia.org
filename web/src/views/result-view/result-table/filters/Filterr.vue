@@ -58,7 +58,7 @@ export default
 			required: true
 	data: ->
 		# todo: regex
-		# todo: http://ux.stackexchange.com/q/75704
+		# fixme: http://ux.stackexchange.com/q/75704
 		conditions =
 			-	id: 'eq'
 				abbr: ' ='
@@ -179,9 +179,9 @@ export default
 		filter_model_condition: ->
 			@conditions.find (c) => c.id == @filter_model.condition
 		filter_valid: ->
-			@filter_condition and (not @filter_condition.needs_value or @filter.value) # todo [:,]+ stuff, check where when, escape?
+			@filter_condition and (not @filter_condition.needs_value or @filter.value) # fixme [:,]+ stuff, check where when, escape?
 		model_valid: ->
-			@filter_model_condition and (not @filter_model_condition.needs_value or @filter_model.value) # todo [:,]+ stuff, check where when, escape?
+			@filter_model_condition and (not @filter_model_condition.needs_value or @filter_model.value) # fixme [:,]+ stuff, check where when, escape?
 	}
 	watch:
 		filter_model:
