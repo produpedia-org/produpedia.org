@@ -9,7 +9,7 @@
 					/ what the × does: collapse or delete
 					| 🗕
 				.rendered
-					span $filter_condition.long&nbsp;
+					span $filter_condition.short&nbsp;
 					em.value v-if=filter.value :class.case_sensitive=!filter.case_insensitive
 						strong $filter.value
 				.summary-expanded
@@ -17,7 +17,7 @@
 			div v-else=""
 		.edit
 			select.condition v-model=filter_model.condition
-				option v-for="condition in conditions" :value=condition.id v-html=condition.option_html
+				option v-for="condition in conditions" :value=condition.id v-html=condition.long
 			div v-if="filter_condition&&filter_model_condition.needs_value"
 				product-value-form-field.value :attribute=attribute nolabel="" v-model=filter_model.value ref=product_value_form_field
 				.case.row v-if=can_be_case_sensitive
@@ -60,64 +60,56 @@ export default
 		# todo: regex
 		# fixme: http://ux.stackexchange.com/q/75704
 		conditions =
+			-	id: 'contains'
+				short: 'contains'
+				long: ' …Az…   contains...'
+				needs_value: true
+			-	id: 'not_contains'
+				short: 'not contains'
+				long: '…!Az…   does not contain...'
+				needs_value: true
+			-	id: 'begins_with'
+				short: 'begins with'
+				long: '  Az…   begins with...'
+				needs_value: true
+			-	id: 'null'
+				short: 'empty'
+				# Ø is a scandinavian letter and it should actually be ∅, but the spacing of ∅
+				# is messed up with monospace, looks like it occupies about 115% width of a
+				# normal character (which I thought was impossible with mono)
+				long: '   Ø    is empty'
+			-	id: 'not_null'
+				short: 'not empty'
+				long: '  !Ø    is not empty'
 			-	id: 'eq'
-				abbr: ' ='
+				short: ''
+				long: '    =   is...'
 				needs_value: true
 			-	id: 'ne'
-				abbr: '!='
-				long: 'not'
+				short: 'not'
+				long: '   !=   is not...'
 				needs_value: true
 			-	id: 'lt'
-				abbr: ' &lt;'
-				long: 'less than'
+				short: 'less than'
+				long: '    &lt;   is less than...'
 				needs_value: true
 			-	id: 'le'
-				abbr: '&lt;='
-				long: 'less than or equal to'
+				short: 'less than or equal to'
+				long: '   &lt;=   is less than or equal to...'
 				needs_value: true
 			-	id: 'gt'
-				abbr: ' &gt;'
-				long: 'more than'
+				short: 'more than'
+				long: '    &gt;   is more than...'
 				needs_value: true
 			-	id: 'ge'
-				abbr: '&gt;='
-				long: 'more than or equal to'
+				short: 'more than or equal to'
+				long: '   &gt;=   is more than or equal to...'
 				needs_value: true
-			-	id: 'contains'
-				abbr: ' ∋'
-				needs_value: true
-				long: 'contains'
-				description: 'contains'
-			-	id: 'not_contains'
-				abbr: ' ∌'
-				needs_value: true
-				long: 'not contains'
-				description: 'does not contain'
-			-	id: 'null'
-				abbr: ' ∅' # or ∄ ?
-				long: 'empty'
-			-	id: 'not_null'
-				abbr: '!∅' # or ∃ ?
-				long: 'not empty'
-			-	id: 'begins_with'
-				abbr: ' ^'
-				needs_value: true
-				long: 'begins with'
-				description: 'begins with'
 		conditions = conditions
-			.map (condition) =>
-				option_html = condition.abbr.replace(/ /g, '&nbsp;')
-				option_html += "&nbsp;&nbsp;&nbsp;("
-				if condition.description
-					option_html += condition.description
-				else
-					option_html += 'is'
-					if condition.long
-						option_html += " #{condition.long}"
-				if condition.needs_value
-					option_html += '...'
-				option_html += ')'
-				{ ...condition, option_html }
+			.map (condition) => {
+				...condition
+				long: condition.long.replace(/ /g, '&nbsp;')
+			}
 		filter_model = JSON.parse(JSON.stringify(@filter))
 		if @can_be_case_sensitive
 			filter_model.case_sensitive = ! filter_model.case_insensitive
@@ -250,9 +242,12 @@ export default
 		display block
 .edit
 	white-space pre
-	select.condition
+	select.condition, select.condition option
+		// doesnt work on FF, https://bugzilla.mozilla.org/show_bug.cgi?id=1536148
 		font-family monospace
-	select.condition, .case
+		padding 0
+		height 20px
+	.case
 		padding 0
 		font-size 80%
 	select.condition, .value >>> input
