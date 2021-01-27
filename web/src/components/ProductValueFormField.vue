@@ -1,5 +1,5 @@
 <template lang="slm">
-form-field v-bind="$attrs" v-on="$listeners" :field=form_field
+form-field v-bind="$attrs" v-on="$listeners" :field=form_field @keypress=validate($event)
 </template>
 
 <script lang="coffee">
@@ -8,6 +8,10 @@ export default
 		attribute:
 			type: Object
 			required: true
+	methods:
+		validate: (event) ->
+			if String.fromCharCode(event.keyCode).match(/[:,]/)
+				event.preventDefault()
 	computed:
 		form_field: ->
 			switch @attribute.type
