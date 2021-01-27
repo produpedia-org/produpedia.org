@@ -2,7 +2,7 @@
 div.path-to-category
 	ol.breadcrumbs.row.center
 		li.segment v-for="category of category_breadcrumbs_ref"
-			router-link v-if=!category.wrapper :to="'/product/'+category.name" $category.label
+			router-link v-if=!category.wrapper :to="'/list/'+category.name" $category.label
 			div v-else="" $category.label
 </template>
 

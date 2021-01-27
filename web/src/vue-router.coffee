@@ -20,12 +20,12 @@ export create_router = (store) ->
 				component: => `import('@/views/secure/Settings')`
 				meta:
 					requires_auth: true
-			-	path: '/product/:category'
+			-	path: '/list/:category'
 				name: 'ResultView'
 				component: => `import('@/views/ResultView')`
 			-	path: '/p/:category'
 				# Backward compatibility with search engine indexing. Remove once not in any cache anymore
-				redirect: '/product/:category'
+				redirect: '/list/:category'
 			-	path: '*'
 				component: V404
 				meta:

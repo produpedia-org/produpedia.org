@@ -1,6 +1,6 @@
 <template lang="slm">
 nav.tree.box
-	/ router-link to=/product/dummy Nonexisting category (for testing purposes)
+	/ router-link to=/list/dummy Nonexisting category (for testing purposes)
 	.preview v-if=!all_categories_loaded @click=start_get_categories
 		ul.category-tree.padding-l
 			li
@@ -21,7 +21,7 @@ nav.tree.box
 						div.label: a href=. Family
 		.cloak
 		.click-to-expand
-			promise-button.prompt :action="()=>get_categories_raw()" ref=get_categories_btn
+			promise-button.prompt :action=get_categories_raw ref=get_categories_btn
 				| ↓ Click to expand ↓
 	ul.category-tree.padding-l v-else="" v-dragscrollable=""
 		category-tree-item v-if=base_category :category=base_category

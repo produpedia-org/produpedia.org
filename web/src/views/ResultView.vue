@@ -42,11 +42,11 @@
 		.row
 			.flex-fill
 				.center v-if="$errorHandler.statusCode===422"
-					a.box.padding-l.margin-xl :href="'/product/'+category" Go back to $title
+					a.box.padding-l.margin-xl :href="'/list/'+category" Go back to $title
 				result-table#result-table @datum_clicked=editing=$event :edit=edit
 				#load-more.center v-if=can_fetch_next_page
 					promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
-			#has-more-attributes.padding.margin-l v-if=has_more_attributes
+			/ #has-more-attributes.padding.margin-l v-if=has_more_attributes
 				| There are 
 				span.highlighted $has_more_attributes more attributes
 				br
@@ -87,7 +87,7 @@ export default
 	fetch: ({ store, route, redirect }) ->
 		category = route.params.category
 		if category[0] != category[0].toLowerCase()
-			return redirect { path: "/product/#{category[0].toLowerCase()}#{category.slice(1)}" }, 301
+			return redirect { path: "/list/#{category[0].toLowerCase()}#{category.slice(1)}" }, 301
 		if not store.hasModule('search')
 			store.registerModule 'search', search_store_module
 		

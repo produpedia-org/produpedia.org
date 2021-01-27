@@ -3,7 +3,7 @@ li
 	.label
 		a v-if=category.wrapper
 			| $category.label
-		router-link v-else="" :to="'/product/'+category.name"
+		router-link v-else="" :to="'/list/'+category.name"
 			| $category.label
 	ul
 		category-tree-item v-for="child of category.children_ref" :category=child :key=child.name
