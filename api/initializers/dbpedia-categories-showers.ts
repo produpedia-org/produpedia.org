@@ -51,6 +51,7 @@ let lineno = 0;
             .sort((a, b) => b[1] - a[1])
             .map(e => e[0]);
         category.showers = category_attributes_sorted;
+        category.products_count = category_products.length;
         console.log(Math.round(i/categories.length*100), "%", category.name, category_products.length, "products,", category_attributes_sorted.length, "showers");
         await category.save();
     }

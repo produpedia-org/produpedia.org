@@ -15,7 +15,8 @@
 					div Rows
 					select.limit v-model=limit
 						option v-for="l of selectable_limits" :value=l $l
-						option :value=-1 All
+						option :value=-1 v-if=max_rows>100 disabled=""
+							| $max_rows
 	
 	/ i Explanation of what this category is..?
 
@@ -166,6 +167,8 @@ export default
 			set: (v) -> @$store.dispatch 'search/set_limit', v
 		category: ->
 			@$store.state.search?.category
+		max_rows: ->
+			@$store.getters['search/category_ref']?.products_count
 		attributes: ->
 			@$store.state.search?.attributes
 		has_more_attributes: ->

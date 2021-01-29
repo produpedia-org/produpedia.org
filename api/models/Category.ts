@@ -1,4 +1,4 @@
-import { IsBoolean, Length, IsOptional, IsObject, IsUrl, IsArray } from 'class-validator';
+import { IsBoolean, Length, IsOptional, IsObject, IsUrl, IsArray, IsNumber } from 'class-validator';
 import { BaseEntity, Column, Entity, ObjectIdColumn } from 'typeorm';
 import { ObjectID } from 'mongodb';
 
@@ -35,6 +35,10 @@ class Category extends BaseEntity {
     @IsArray()
     @Length(1, 255, { each: true })
     public showers?: string[];
+    @Column()
+    @IsNumber()
+    /** not necessarily accurate, but after dbp import, only for visualization */
+    public products_count!: number;
 
     public constructor(init: Partial<Category>) {
         super();
