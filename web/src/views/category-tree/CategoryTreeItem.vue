@@ -26,4 +26,7 @@ export default
 	white-space nowrap
 	&:first-letter
 		text-transform uppercase
+	&.router-link-active
+		font-weight bold
+		color var(--color-highlighted)
 </style>
