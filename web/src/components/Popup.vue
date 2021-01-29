@@ -3,10 +3,10 @@ modal.popup @close=close
 	main.box.column ref=main
 		header
 			div.titlebar.center v-moveable="{move_target}"
-				| ⠿⠿⠿⠿⠿
+				span.grip.mouse-only
+					| ⠿⠿⠿⠿⠿
 			button.close @click=close type=button ╳
 		.popup-content
-			/ FIXME: Only on mobile, same as result table handles, via css
 			slot
 </template>
 
@@ -33,7 +33,7 @@ main
 	overflow auto
 	resize both
 .titlebar, .close
-	line-height 2em
+	height 2em
 	margin-top 1vmax
 .titlebar
 	color var(--color-border)
