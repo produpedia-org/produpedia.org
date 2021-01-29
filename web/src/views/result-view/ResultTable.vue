@@ -51,16 +51,16 @@ table border=1
 					/ 			| ✎
 					/ 	div v-else=""
 					div
-						div.thumbnail.loading.center v-if=shower_index===0
+						div.thumbnail.loading.center v-if="shower_name==='thumbnail'"
 							/ TODO: Find a way to show img loading placeholders without JS: https://stackoverflow.com/q/14748750/3779853
 							img alt=Thumbnail :src="datum.value.replace('width=300','width=190')" loading=lazy onload="parentElement.classList.remove('loading')" onerror="parentElement.classList.remove('loading')"
 							div.loading-placeholder.center.disabled
 								| 🖻<br>loading<br>image
 						/ .disabled TODO
-						div v-else-if="datum.resource&&!edit"
+						div.value.resource v-else-if="datum.resource&&!edit"
 							a :href="'https://en.wikipedia.org/wiki/'+datum.resource"
 								| $datum.value
-						div v-else=""
+						div.value v-else="" :class.label="shower_name==='label'"
 							| $datum.value
 						button.edit v-if=edit
 							| ✎
@@ -170,7 +170,6 @@ thead tr
 th, td, th > *
 	min-width var(--col-min-width)
 tbody td
-	max-width 150px
 	padding 0.5vmin
 	word-wrap break-word
 	position relative
@@ -215,9 +214,6 @@ td, th
 			width 190px
 	&:nth-child(2)
 		left 190px
-		max-width unset
-		> *
-			width "clamp(var(--col-min-width), 16vw, 160px)" % null
 	@media (max-width: 950px)
 		&:nth-child(1)
 			position relative
@@ -297,25 +293,28 @@ tr.product
 			display inline-block
 			margin 0
 		height 36px
-		&:first-child
-			max-width unset
-			.thumbnail
-				width 190px
-				height 190px
-				position relative
+		// max-width unset
+		.thumbnail
+			width 190px
+			height 190px
+			position relative
+			.loading-placeholder
+				position absolute
+				top 0
+				bottom 0
+				left 0
+				right 0
+				font-size 27px
+				z-index -1
+			&:not(.loading)
 				.loading-placeholder
-					position absolute
-					top 0
-					bottom 0
-					left 0
-					right 0
-					font-size 27px
-					z-index -1
-				&:not(.loading)
-					.loading-placeholder
-						display none
-				img
-					max-height 190px
+					display none
+			img
+				max-height 190px
+		.value
+			&.label
+				max-width unset
+				width "clamp(var(--col-min-width), 16vw, 160px)" % null
 
 tr.actions
 	.load-more
