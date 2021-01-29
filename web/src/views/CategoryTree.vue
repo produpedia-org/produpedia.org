@@ -15,13 +15,16 @@ nav.tree.box
 									li
 										div.label: a href=. Board game
 										div.label: a href=. Card game
-					li
-						div.label: a href=. Deity
-						div.label: a href=. Employer
-						div.label: a href=. Family
+										div.label: a href=. Video game
+							li
+								div.label: a href=. Sport
+								ul
+									li
+										div.label: a href=. Athletics
+										div.label: a href=. Team sports
 		.cloak
 		.click-to-expand
-			promise-button.prompt :action=get_categories_raw ref=get_categories_btn
+			promise-button.prompt :action=expand ref=get_categories_btn
 				| ↓ Click to expand ↓
 	ul.category-tree.padding-l v-else="" v-dragscrollable=""
 		category-tree-item v-if=base_category :category=base_category
@@ -38,8 +41,10 @@ export default
 	methods: {
 		start_get_categories: ->
 			@$refs.get_categories_btn.clicked()
-		...mapActions 'category',
-			-	'get_categories_raw'
+		expand: ->
+			await @$store.dispatch 'category/get_categories_raw'
+			if @$store.state.search?.category
+				document.querySelector("#tree-#{@$store.state.search.category}").scrollIntoView({block:'center',inline:'nearest'})
 	}
 	computed: {
 		...mapGetters 'category',

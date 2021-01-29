@@ -1,6 +1,6 @@
 <template lang="slm">
 li
-	.label
+	.label :id="'tree-'+category.name"
 		a v-if=category.wrapper
 			| $category.label
 		router-link v-else="" :to="'/list/'+category.name"
