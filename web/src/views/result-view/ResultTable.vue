@@ -8,14 +8,14 @@ table border=1
 		tr.attributes
 			th.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop="dragging_column&&move_shower_to(index)"
 				.attribute.fill-h.column.center
-					div.actions.center v-if="edit && !can_drag"
+					.actions.fill-w.align-center.touch-only v-if=edit
 						button.moveto @click=move_shower_to(index-1)(shower_name) ←
 						button.remove @click=remove_shower(shower_name) ╳
 						button.moveto @click=move_shower_to(index+2)(shower_name) →
 					div.fill-h.row.center
-						div.fill-h.row.center v-drag="can_drag && shower_name" @dragstart=dragging_column=true @dragend=dragging_column=false
+						div.fill-h.row.center v-drag=shower_name @dragstart=dragging_column=true @dragend=dragging_column=false
 							div.center
-								span.grip v-if=can_drag ⠿
+								span.grip.mouse-only ⠿
 							.row v-if=attributes_by_name[shower_name]
 								div.label @click=toggle_sort(shower_name)
 									| $attributes_by_name[shower_name].label
@@ -57,7 +57,11 @@ table border=1
 							div.loading-placeholder.center.disabled
 								| 🖻<br>loading<br>image
 						/ .disabled TODO
-						span v-else="" $datum.value
+						div v-else-if="datum.resource&&!edit"
+							a :href="'https://en.wikipedia.org/wiki/'+datum.resource"
+								| $datum.value
+						div v-else=""
+							| $datum.value
 						button.edit v-if=edit
 							| ✎
 				div v-else=""
@@ -80,7 +84,6 @@ export default
 		edit:
 			default: false
 	data: =>
-		can_drag: true
 		dragging_column: false
 		scroll_container: null
 		is_scrolling_container: false
@@ -112,7 +115,6 @@ export default
 			-	'attributes_by_name'
 	}
 	mounted: ->
-		@can_drag = !(`'ontouchstart' in window` || navigator.maxTouchPoints) # todo "in" in cs? / todo css solution? media query blah
 		@scroll_container = @$parent.$refs.result_table_container
 </script>
 
@@ -274,10 +276,9 @@ td.filters
 		&:hover
 			background var(--color-hover)
 	.actions
-		height 8px
+		justify-content space-evenly
 		.remove
 			font-size 50%
-			margin 0 13px
 tr.product
 	td.datum
 		text-align center
