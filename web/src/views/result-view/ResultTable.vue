@@ -7,13 +7,13 @@ table border=1
 				filters :filters=filters_by_attribute_name[shower_name] :attribute_name=shower_name :edit=edit
 		tr.attributes
 			th.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop="dragging_column&&move_shower_to(index)"
-				.attribute.column.center
+				.attribute.fill-h.column.center
 					div.actions.center v-if="edit && !can_drag"
 						button.moveto @click=move_shower_to(index-1)(shower_name) ←
 						button.remove @click=remove_shower(shower_name) ╳
 						button.moveto @click=move_shower_to(index+2)(shower_name) →
-					div.row.center
-						div.row.center v-drag="can_drag && shower_name" @dragstart=dragging_column=true @dragend=dragging_column=false
+					div.fill-h.row.center
+						div.fill-h.row.center v-drag="can_drag && shower_name" @dragstart=dragging_column=true @dragend=dragging_column=false
 							div.center
 								span.grip v-if=can_drag ⠿
 							.row v-if=attributes_by_name[shower_name]
