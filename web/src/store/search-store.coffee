@@ -127,6 +127,29 @@ export default
 		# already returned an empty set
 		can_fetch_next_page: (state) ->
 			not state.reached_the_end and !!state.products.length
+		query: (state) ->
+			{ columns, limit, offset } = state
+			if state.shower_names_modified
+				showers_param = state.shower_names
+					.join ','
+			else
+				showers_param = columns + ""
+			sorters_param = state.sorters
+				.map (sorter) => "#{sorter.attribute_name}:#{sorter.direction}"
+				.join ','
+			filters_param = state.filters
+				.map (filter) =>
+					param = "#{filter.attribute_name}:#{filter.condition}"
+					if filter.value
+						param += ":#{filter.value}"
+					if filter.case_insensitive
+						param += ":i"
+					param
+				.join ','
+			attributes: showers_param
+			filter: filters_param or undefined
+			sort: sorters_param  or undefined
+			limit: limit + ""
 	mutations:
 		set_category: (state, category) -> state.category = category
 		remove_sorter_at: (state, index) -> Vue.delete state.sorters, index
@@ -302,32 +325,10 @@ export default
 				}, root: true
 			commit 'set_category_breadcrumbs_ref', path
 		### Search params serialization. Parser see ResultView:fetch ###
-		update_query: ({ state }) ->
-			{ columns, limit, offset } = state
-			if state.shower_names_modified
-				showers_param = state.shower_names
-					.join ','
-			else
-				showers_param = columns
-			sorters_param = state.sorters
-				.map (sorter) => "#{sorter.attribute_name}:#{sorter.direction}"
-				.join ','
-			filters_param = state.filters
-				.map (filter) =>
-					param = "#{filter.attribute_name}:#{filter.condition}"
-					if filter.value
-						param += ":#{filter.value}"
-					if filter.case_insensitive
-						param += ":i"
-					param
-				.join ','
+		# todo rename
+		update_query: ({ getters }) ->
 			try
-				await router.push query: {
-					attributes: showers_param
-					filter: filters_param or undefined
-					sort: sorters_param  or undefined
-					limit: limit
-				}
+				await router.push query: getters.query
 			catch e
 				if e.name != 'NavigationDuplicated' and (not e.message.includes("Navigation cancelled from ") and not e.message.includes(" with a new navigation."))
 					throw e
