@@ -216,6 +216,8 @@ export default
 					throw responses[1].reason
 		toggle_sort: ({ commit, dispatch, getters }, attribute_name) ->
 			sorter = getters.sorters_by_attribute_name[attribute_name]
+			### Force one sorter per table only (this is because of bug #29) ###
+			commit 'set_sorters', []
 			if sorter
 				commit 'remove_sorter_at', sorter.index
 				if sorter.direction == 1
