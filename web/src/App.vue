@@ -12,22 +12,13 @@
 		read-more.hamburger noliststyle="" ref=header_details
 			template #summary=""
 				.navs.fill.center
-					nav.left
-						div.hamburger ☰
-						/ /| Lists of things: 
-						/ router-link exact="" to=/p/Smartphone Smartphones
-						/ | , 
-						/ router-link exact="" to=/p/Cheese Cheeses
-						/ / | . 
-					nav.middle.row.center
-						/ / em.fakelink Click for more...
-						/ router-link exact="" to=/p/Smartphone Smartphones
-						/ | , 
-						/ router-link exact="" to=/p/Cheese Cheeses
-						/ | $categories
+					nav.left.row
+						.column.center
+							div.hamburger ☰
+					nav.middle.center
 						category-breadcrumbs
 					nav.right.row
-						router-link exact="" to=/ About
+						router-link.about exact="" to=/ About
 			.column.padding-l
 				.navs.fill.center
 					nav
@@ -139,6 +130,8 @@ export default
 					text-align right
 					justify-content flex-end
 					align-items center
+					.about:visited
+						color var(--color-clickable)
 			.session-info
 				align-items flex-end
 		details
