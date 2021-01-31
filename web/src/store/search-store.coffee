@@ -124,8 +124,7 @@ export default
 				.filter (attribute_name) =>
 					!state.showers.includes attribute_name
 		category_ref: (state, getters, rootState, rootGetters) ->
-			rootGetters['category/categories'].find (c) =>
-				c.name == state.category
+			rootGetters['category/category_by_name'][state.category]
 		has_more_attributes: (state) ->
 			state.attributes.length - state.shower_names.length
 		# To prevent unnecessary requests when the last appending request

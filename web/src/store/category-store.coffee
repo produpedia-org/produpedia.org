@@ -18,3 +18,8 @@ export default base_crud_store { resource_name: 'category', unique: 'name' },
 			categories
 		all_categories_loaded: (state, getters) ->
 			state.categories_raw.length > 716 # todo :-/
+		category_by_name: (state, getters) ->
+			getters.categories.reduce((all, category) =>
+				all[category.name] = category
+				all
+			, {})
