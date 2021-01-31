@@ -233,12 +233,15 @@ export default
 				commit 'set_offset', 0
 			commit 'set_fetching_data', true
 			commit 'end_not_yet_reached' #  todo rename has_more and set_has_more true
-			response = await @$http.get "list/#{state.category}", params: {
-				...(query or router.currentRoute.query)
-				# Offset is used in API calls but when included in query, effectively ignored:
-				# The current offset in view is not synced with the URL. Maybe some day
-				offset: state.offset or undefined
-			}
+			try
+				response = await @$http.get "list/#{state.category}", params: {
+					...(query or router.currentRoute.query)
+					# Offset is used in API calls but when included in query, effectively ignored:
+					# The current offset in view is not synced with the URL. Maybe some day
+					offset: state.offset or undefined
+				}
+			finally
+				commit 'set_fetching_data', false
 			if append
 				commit 'add_products', response.data.products
 			else
@@ -247,7 +250,6 @@ export default
 			commit 'set_search_failure', response.data.failure
 			if not response.data.products.length
 				commit 'end_reached'
-			commit 'set_fetching_data', false
 		get_product: ({ commit }, product_name) ->
 			response = await @$http.get "product/#{product_name}"
 			product = response.data
