@@ -44,7 +44,10 @@ export default
 		expand: ->
 			await @$store.dispatch 'category/get_categories_raw'
 			if @$store.state.search?.category
-				document.querySelector("#tree-#{@$store.state.search.category}").scrollIntoView({block:'center',inline:'nearest'})
+				document.querySelector("#tree-#{@$store.state.search.category}").scrollIntoView
+					block: 'center'
+					inline: 'nearest'
+					behavior: 'smooth'
 	}
 	computed: {
 		...mapGetters 'category',

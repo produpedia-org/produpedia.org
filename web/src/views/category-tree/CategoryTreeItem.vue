@@ -1,9 +1,9 @@
 <template lang="slm">
 li
 	.label :id="'tree-'+category.name"
-		a v-if=category.wrapper
+		a.capitalize v-if=category.wrapper
 			| $category.label
-		router-link v-else="" :to="'/list/'+category.name"
+		router-link.capitalize v-else="" :to="'/list/'+category.name"
 			| $category.label
 	ul
 		category-tree-item v-for="child of category.children_ref" :category=child :key=child.name
@@ -24,8 +24,6 @@ export default
 .label > a
 	display inline-block
 	white-space nowrap
-	&:first-letter
-		text-transform uppercase
 	&.router-link-active
 		font-weight bold
 		color var(--color-highlighted)
