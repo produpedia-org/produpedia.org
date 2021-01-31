@@ -25,6 +25,8 @@ table border=1
 								| $shower_name (unknown attribute)
 						button.sort.disabled @click=toggle_sort(shower_name)
 							/ ▲▼♦♢
+							/ TODO: use css background images from https://stackoverflow.com/a/22156412/3779853
+							/ but lazily loaded to reduce initial page load
 							span.highlighted v-if=sorters_by_attribute_name[shower_name]
 								span v-if=sorters_by_attribute_name[shower_name].direction===1
 									| ▼
