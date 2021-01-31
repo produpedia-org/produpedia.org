@@ -77,10 +77,10 @@ export default
 				# Ø is a scandinavian letter and it should actually be ∅, but the spacing of ∅
 				# is messed up with monospace, looks like it occupies about 115% width of a
 				# normal character (which I thought was impossible with mono)
-				long: '   Ø    is empty'
+				long: '    Ø    is empty'
 			-	id: 'not_null'
 				short: 'not empty'
-				long: '  !Ø    is not empty'
+				long: '   !Ø    is not empty'
 			-	id: 'eq'
 				short: ''
 				long: '    =   is...'
