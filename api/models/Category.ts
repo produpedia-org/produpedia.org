@@ -37,6 +37,7 @@ class Category extends BaseEntity {
     public showers?: string[];
     @Column()
     @IsNumber()
+    @IsOptional()
     /** not necessarily accurate, but after dbp import, only for visualization */
     public products_count!: number;
 
