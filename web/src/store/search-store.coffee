@@ -83,6 +83,7 @@ export default
 		fetching_data: false
 		reached_the_end: false
 		category_breadcrumbs_ref: []
+		search_failure: null
 	getters:
 		attribute_names: (state) ->
 			(state.attributes or []).map (a) => a.name
@@ -195,6 +196,7 @@ export default
 		set_fetching_data: (state, fetching_data) -> state.fetching_data = fetching_data
 		set_category_breadcrumbs_ref: (state, breadcrumbs) -> state.category_breadcrumbs_ref = breadcrumbs
 		set_shower_names_modified: (state, flag) -> state.shower_names_modified = flag
+		set_search_failure: (state, failure) -> state.search_failure = failure
 	actions:
 		change_category: ({ commit, dispatch, rootState }, category) ->
 			commit 'set_attributes', null
@@ -240,6 +242,7 @@ export default
 			else
 				commit 'set_products', response.data.products
 			commit 'set_shower_names', response.data.shower_names
+			commit 'set_search_failure', response.data.failure
 			if not response.data.products.length
 				commit 'end_reached'
 			commit 'set_fetching_data', false

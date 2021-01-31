@@ -39,10 +39,15 @@
 			b  $sorter.direction
 
 	article#result-table-container.flex-fill.fade-in v-if=category&&attributes ref=result_table_container tabindex=-1 @scroll=on_table_scroll :disabled=fetching_data
+		.center v-if="search_failure||$errorHandler.statusCode===422"
+			.box.padding-l.margin-xl
+				p v-if=search_failure
+					strong.highlighted Search failed!<br>
+					span v-if="search_failure==='parallel_arrays'"
+						| You tried to sort by multiple attributes that contain products that contain multiple values for that attribute. This is <em>currently not possible</em>. Sorry! We'll try to fix this soon. Please try adjusting your sorters, remove them, or go back one page.
+				a :href="'/list/'+category" Go back to $title
 		.row
 			.flex-fill
-				.center v-if="$errorHandler.statusCode===422"
-					a.box.padding-l.margin-xl :href="'/list/'+category" Go back to $title
 				result-table#result-table :edit=edit
 				#load-more.center v-if=can_fetch_next_page
 					promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
@@ -210,6 +215,7 @@ export default
 			-	'attributes_by_name'
 		...mapState 'search',
 			-	'fetching_data'
+			-	'search_failure'
 	}
 	destroyed: ->
 		@$store.dispatch 'set_default_focus_target', null

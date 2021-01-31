@@ -317,27 +317,38 @@ product_router.get('/list/:category', async (req, res) => {
     const shower_names_formatted = shower_names.map(name => `data.${name}`) as (keyof Product)[];
 
     /********** Search ***********/
+    let products: Product[];
+    let failure = null;
     // TODO: Maybe add a cache table (SQL) that is faster than querying the
     // nested structure
-    const products = await Product.find({
-        where: {
-            $and: [
-                { categories: { $in: category_family_names } },
-                ...filters_formatted,
+    try {
+        products = await Product.find({
+            where: {
+                $and: [
+                    { categories: { $in: category_family_names } },
+                    ...filters_formatted,
+                ],
+            } as any,
+            select: [
+                'name', 'verified',
+                ...shower_names_formatted,
             ],
-        } as any,
-        select: [
-            'name', 'verified',
-            ...shower_names_formatted,
-        ],
-        order: {
-            // Numbers inside text attributes will be sorted lexically, not by their value
-            // This can (and should) be solved by changing these categories to type number
-            ...sorters_formatted,
-        },
-        take: limit,
-        skip: offset,
-    });
+            order: {
+                // Numbers inside text attributes will be sorted lexically, not by their value
+                // This can (and should) be solved by changing these categories to type number
+                ...sorters_formatted,
+            },
+            take: limit,
+            skip: offset,
+        });
+    } catch(e) {
+        if(e.message === 'Executor error during find command :: caused by :: cannot sort with keys that are parallel arrays') {
+            products = [];
+            failure = 'parallel_arrays';
+        } else {
+            throw e;
+        }
+    }
 
     // todo fix this with typeorm (idk)
     products.forEach((p: Product) => {
@@ -352,6 +363,7 @@ product_router.get('/list/:category', async (req, res) => {
     return res.send({
         products,
         shower_names, // maybe as seperate request?
+        failure,
     });
 });
 
