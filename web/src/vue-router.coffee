@@ -31,6 +31,13 @@ export create_router = (store) ->
 			-	path: '/p/:category'
 				# Backward compatibility with search engine indexing. Remove once not in any cache anymore
 				redirect: '/list/:category'
+			-	path: '/product/:product'
+				name: 'ProductDetails'
+				component: => `import('@/views/ProductDetails')`
+				children:
+					-	path: 'data/:attribute'
+						name: 'EditDatum'
+						component: => `import('@/views/product-details/EditDatumDialog')`
 			-	path: '*'
 				component: V404
 				meta:

@@ -3,6 +3,9 @@ div.edit-datum
 	h3.capitalize
 		em {{attribute&&attribute.label}}
 		|  of $product_label
+	.text-align-right
+		router-link :to="'/product/'+product_name"
+			| Go to $product_label detail page ➢
 	div v-if=!datum
 		| Loading...
 	div.current v-else=""
