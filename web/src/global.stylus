@@ -245,6 +245,9 @@ textarea {
 
 ul
 	list-style-type circle
+	margin 0
+dl
+	margin 0
 
 button // buttons, by default, should not have any specific styling so they can be used better semantically. for typical button-buttons, use .btn
 	// also see index ssr html
