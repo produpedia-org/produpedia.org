@@ -6,6 +6,7 @@ import Attribute from '../models/Attribute';
 import PrimaryProductDatum from '../models/PrimaryProductDatum';
 import Product, { PrimaryProductData } from '../models/Product';
 import { query } from './sparql';
+import { ProductDatumValue, ProductDatumResource } from '../models/ProductDatum';
 
 let lineno = 0;
 
@@ -86,8 +87,9 @@ let lineno = 0;
         // dbp:props are not queried anyway (filter predicate match dbo: below).
         // Also see get_products.coffee: Colline
         const sql_conditions = product_infos.map(info => `
-        { select "${info[0]}" as ?subject ?predicate ?object {
-            <http://dbpedia.org/resource/${info[0]}> ?predicate ?object
+        { select "${info[0]}" as ?subject ?predicate ?object ?object_label {
+            <http://dbpedia.org/resource/${info[0]}> ?predicate ?object .
+            optional { ?object rdfs:label ?object_label }
         } }`).join(' UNION ');
         // ^ regarding escaping: & " ' must not be escaped above or nothing will be returned.
         // Could be because it is already escaped somewhere else
@@ -122,7 +124,8 @@ let lineno = 0;
                     // so should probably ignored here (they would never be shown anyway)
                     // if (!categories.includes(attribute.category)) <- but this doesnt cut it,
                     // needs to check for parent categories as well: TODO but not urgent.
-                    let value;
+                    let value: ProductDatumValue;
+                    let value_resource: ProductDatumResource | null | undefined = undefined;
                     switch (attribute.type) {
                     case 'boolean':
                         value = Boolean(r.object); break;
@@ -141,9 +144,16 @@ let lineno = 0;
                             console.warn(`value ${r.object} => ${value} for attribute ${attribute.name} from resource ${resource} should be int but is float`);
                         break;
                     case 'resource':
-                        // if (!r.object.match(/^dbr:/))
-                        //     console.warn(`value ${r.object} for attribute ${attribute.name} from resource ${resource} should be a resource but isnt`);
-                        value = r.object; break;
+                        if (!r.object.match(/^dbr:/))
+                            console.warn(`value ${r.object} for attribute ${attribute.name} from resource ${resource} should be a resource but isnt`);
+                        if(r.object_label) {
+                            value = r.object_label;
+                            value_resource = r.object.replace(/^dbr:/, '');
+                        } else {
+                            value = r.object;
+                            value_resource = null;
+                        }
+                        break;
                     case 'string':
                     default:
                         value = r.object;
