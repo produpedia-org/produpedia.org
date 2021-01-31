@@ -82,12 +82,25 @@ export default
 			# Also, removed destroyed:unregister because it introduces unnecessary bugs
 			@$store.registerModule 'search', search_store_module, preserveState: true
 	### Search params parsing. For serialization, see search/update_query ###
-	fetch: ({ store, route, redirect }) ->
+	fetch: ({ store, route, redirect, router }) ->
 		category = route.params.category
 		if category[0] != category[0].toLowerCase()
-			return redirect { path: "/list/#{category[0].toLowerCase()}#{category.slice(1)}" }, 301
+			return redirect {
+				path: "/list/#{category[0].toLowerCase()}#{category.slice(1)}"
+				query: route.query
+			}, 301
+		
 		if not store.hasModule('search')
 			store.registerModule 'search', search_store_module
+		
+		if not route.query.attributes?.length or not route.query.limit?
+			return redirect
+				path: route.path
+				query: {
+					...route.query
+					attributes: store.state.search.columns
+					limit: store.state.search.limit	
+				}
 		
 		{ limit, filter = "", sort = "", attributes: show, offset } = route.query
 		if limit?
@@ -124,8 +137,7 @@ export default
 		# else
 		# 	store.commit 'search/set_shower_names', []
 		
-		if Object.values(route.query).filter(Boolean).length == 0
-			return redirect { path: "#{route.path}?attributes=#{store.state.search.columns}&limit=#{store.state.search.limit}" }
+		need_search = false
 		if store.state.search.category != category
 			await store.dispatch 'search/change_category', category
 		await store.dispatch 'search/search',
