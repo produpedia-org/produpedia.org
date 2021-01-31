@@ -1,6 +1,5 @@
 <template lang="slm">
 #result-view.flex-fill.column
-
 	/ A better semantic element might be `menu`, but it is supported nowhere
 	header.row.center
 		aside.left
@@ -44,7 +43,7 @@
 			.flex-fill
 				.center v-if="$errorHandler.statusCode===422"
 					a.box.padding-l.margin-xl :href="'/list/'+category" Go back to $title
-				result-table#result-table @datum_clicked=editing=$event :edit=edit
+				result-table#result-table :edit=edit
 				#load-more.center v-if=can_fetch_next_page
 					promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
 			/ #has-more-attributes.padding.margin-l v-if=has_more_attributes
@@ -53,9 +52,8 @@
 				br
 				|  that are currently hidden.
 	
-	/ maybe use linus borgs portal instead?
-	popup v-if=editing @close=editing=null
-		edit-datum-dialog :product=editing.product :attribute_name=editing.attribute_name
+	popup v-if=show_subroute_modal @close=close_subroute
+		router-view
 
 	div.center.margin-l v-if=edit
 		/ todo add toggle component
@@ -68,11 +66,10 @@
 import search_store_module from '@/store/search-store'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import ResultTable from '@/views/result-view/ResultTable'
-import EditDatumDialog from '@/views/result-view/EditDatumDialog'
 import AddProductDialog from '@/views/result-view/AddProductDialog'
 
 export default
-	components: { ResultTable, EditDatumDialog, AddProductDialog }
+	components: { ResultTable, AddProductDialog }
 	metaInfo: ->
 		title: @title
 	created: ->
@@ -141,10 +138,10 @@ export default
 		next()
 	data: ->
 		show_add_product_dialog: false
-		editing: null
 		edit: false
 		selectable_limits: [ 5, 10, 20, 50, 100 ]
 		fetching_next_page: false
+		show_subroute_modal: false
 	methods: {
 		on_table_scroll: (event) ->
 			if @fetching_next_page or not @can_fetch_next_page
@@ -160,6 +157,10 @@ export default
 					@fetching_next_page = false
 		...mapActions 'search',
 			-	'fetch_next_page'
+		close_subroute: ->
+			@$router.push
+				name: 'ResultView'
+				query: @$router.currentRoute.query
 	}
 	computed: {
 		limit:
@@ -196,6 +197,11 @@ export default
 	}
 	destroyed: ->
 		@$store.dispatch 'set_default_focus_target', null
+	watch:
+		$route:
+			immediate: true
+			handler: (new_route) ->
+				@show_subroute_modal = !!new_route.params.attribute
 </script>
 
 <style lang="stylus" scoped>

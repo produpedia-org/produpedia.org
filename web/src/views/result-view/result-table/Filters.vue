@@ -33,7 +33,7 @@ export default
 				case_insensitive: true
 	computed: {
 		attribute: ->
-			@$store.getters['search/attributes_by_name'][@$props.attribute_name]
+			@$store.getters['search/attributes_by_name'][@attribute_name]
 	}
 </script>
 

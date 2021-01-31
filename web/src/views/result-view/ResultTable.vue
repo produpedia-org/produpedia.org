@@ -91,8 +91,14 @@ export default
 		toggle_sort: (attribute_name) ->
 			@$store.dispatch 'search/toggle_sort', attribute_name
 		datum_clicked: (product, attribute_name) ->
-			if @is_scrolling_container then return
-			@$emit 'datum_clicked', { product, attribute_name }
+			if @is_scrolling_container
+				return
+			@$router.push
+				name: 'EditDatumDialog'
+				params:
+					product: product.name
+					attribute: attribute_name
+				query: @$router.currentRoute.query
 		move_shower_to: (index) -> (shower_name) =>
 			@$store.dispatch 'search/move_shower_to', { shower_name, index }
 		remove_shower: (shower_name) ->

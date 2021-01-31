@@ -36,4 +36,15 @@ attribute_router.get('/', async (req, res) => {
     return res.send(attributes);
 });
 
+attribute_router.get('/:name', async (req, res) => {
+    if(!req.params.name)
+        return res.status(UNPROCESSABLE_ENTITY).send('url param /attribute/NAME is missing');
+    const attribute = await Attribute.findOne({
+        name: req.params.name
+    });
+    if(!attribute)
+        return res.status(NOT_FOUND).send(`attribute "${req.params.name}" not found!`);
+    return res.send(attribute);
+});
+
 export default attribute_router;

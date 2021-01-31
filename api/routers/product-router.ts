@@ -13,7 +13,6 @@ import ProductDatumProposal from '../models/ProductDatumProposal';
 import { regexp_escape } from '../utils';
 import { get_category_anchestors, get_category_children, get_category_by_name_case_insensitive } from './category-router';
 
-// tslint:disable no-string-throw
 /**
  * Transforms @param raw into a proper AttributeType value (date string into
  * Date object, Number parse and so on), depending on @param attribute's
@@ -63,7 +62,7 @@ function parse_value_or_throw(raw_single: string, attribute: Attribute): Attribu
 
 const product_router = express.Router();
 
-product_router.post('/', async (req, res) => {
+product_router.post('/product', async (req, res) => {
     const { name, label, source, categories } = req.body;
     const categories_arr = categories.split(',');
     const product = new Product({
@@ -82,14 +81,14 @@ product_router.post('/', async (req, res) => {
     res.send(product);
 });
 
-product_router.delete('/:name', admin_secured, async (req, res) => {
+product_router.delete('/product/:name', admin_secured, async (req, res) => {
     res.send(await Product.delete({
         name: req.params.name,
     }));
 });
 
 /** Propose a ProductDatum */
-product_router.post('/:product_name/data/:attribute_name', async (req, res) => {
+product_router.post('/product/:product_name/data/:attribute_name', async (req, res) => {
     const { product_name, attribute_name } = req.params;
     const { value: input_value, source } = req.body;
     const attribute = await Attribute.findOne({ name: attribute_name });
@@ -159,7 +158,7 @@ type MongoFilter = {[key: string]: any};
 // todo types missing everywhere
 // todo probably should be using graphql
 // todo add checks for code 422 etc
-product_router.get('/:category', async (req, res) => {
+product_router.get('/list/:category', async (req, res) => {
     /*********** parse  *********/
     const category = await get_category_by_name_case_insensitive(req.params.category as string);
     if(!category)
@@ -332,6 +331,8 @@ product_router.get('/:category', async (req, res) => {
             ...shower_names_formatted,
         ],
         order: {
+            // Numbers inside text attributes will be sorted lexically, not by their value
+            // This can (and should) be solved by changing these categories to type number
             ...sorters_formatted,
         },
         take: limit,
@@ -352,6 +353,17 @@ product_router.get('/:category', async (req, res) => {
         products,
         shower_names, // maybe as seperate request?
     });
+});
+
+product_router.get('/product/:name', async (req, res) => {
+    if(!req.params.name)
+        return res.status(UNPROCESSABLE_ENTITY).send('url param /product/NAME is missing');
+    const product = await Product.findOne({
+        name: req.params.name
+    });
+    if(!product)
+        return res.status(NOT_FOUND).send(`Product "${req.params.name}" not found!`);
+    return res.send(product);
 });
 
 export default product_router;

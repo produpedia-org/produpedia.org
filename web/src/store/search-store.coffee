@@ -91,6 +91,11 @@ export default
 				all[attribute.name] = attribute
 				all
 			, {})
+		product_by_name: (state) ->
+			(state.products or []).reduce((all, product) =>
+				all[product.name] = product
+				all
+			, {})
 		# todo rename to sorter_by_attribute_name
 		sorters_by_attribute_name: (state) ->
 			state.sorters.reduce (all, sorter, sorter_index) =>
@@ -156,7 +161,10 @@ export default
 		add_sorter: (state, sorter) -> state.sorters.push sorter
 		set_sorters: (state, sorters) -> state.sorters = sorters
 		set_products: (state, products) -> state.products = products
-		add_product: (state, product) -> state.products.push product
+		add_product: (state, product) ->
+			if not state.products
+				state.products = []
+			state.products.push product
 		add_products: (state, products) -> state.products.push ...products
 		add_product_datum: (state, { product, attribute_name, datum }) ->
 			Vue.set product.data, attribute_name, datum
@@ -165,6 +173,11 @@ export default
 		remove_shower_name: (state, shower_name) -> Vue.delete state.shower_names, state.shower_names.indexOf(shower_name) # todo add prototy .remove method
 		add_shower_name_at: (state, { index, shower_name }) -> state.shower_names.splice index, 0, shower_name # todo ^
 		set_attributes: (state, attributes) -> state.attributes = attributes
+		add_attribute: (state, attribute) -> state.attributes.push attribute
+		add_attributes: (state, attributes) ->
+			if not state.attributes
+				state.attributes = []
+			state.attributes.push ...attributes
 		add_filter: (state, filter) -> state.filters.push filter
 		remove_filter: (state, filter) -> Vue.delete state.filters, state.filters.indexOf(filter)
 		replace_filter: (state, { filter, model }) ->
@@ -195,7 +208,7 @@ export default
 				responses = await Promise.allSettled
 					-	dispatch 'get_category_breadcrumbs'
 					-	Promise.all
-							-	dispatch 'get_attributes'
+							-	dispatch 'get_append_attributes', { category }
 				if responses[0].reason
 					throw responses[0].reason
 				if responses[1].reason
@@ -231,6 +244,10 @@ export default
 			if not response.data.products.length
 				commit 'end_reached'
 			commit 'set_fetching_data', false
+		get_product: ({ commit }, product_name) ->
+			response = await @$http.get "product/#{product_name}"
+			product = response.data
+			commit 'add_product', product
 		move_shower_to: ({ dispatch, commit, state }, { index, shower_name }) ->
 			current_pos = state.shower_names.findIndex (e) => e == shower_name
 			new_pos = index
@@ -270,8 +287,11 @@ export default
 		save_datum: ({ commit, state }, { product, attribute_name, form_data }) ->
 			response = await @$http.post "product/#{product.name}/data/#{attribute_name}", form_data
 			commit 'add_product_datum', { product, attribute_name, datum: response.data }
-		get_attributes: ({ commit, state }) ->
 			response = await @$http.get 'attribute', { params: { category: state.category } }
+		# todo refactor: change to options:add:true (rename to append), just like base crud store, but
+		# this store module should extend basecrudstore anyway, partially?multiple entities?
+		get_append_attributes: ({ commit, state }, params = {}) ->
+			response = await @$http.get 'attribute', { params }
 			attributes = response.data
 			# attributes.unshift
 			# 	category: 'thing'
@@ -285,7 +305,11 @@ export default
 			# 	name: 'label'
 			# 	label: 'Name'
 			# 	type: 'string'
-			commit 'set_attributes', attributes
+			commit 'add_attributes', attributes
+		get_attribute: ({ commit }, attribute_name) ->
+			response = await @$http.get "attribute/#{attribute_name}"
+			attribute = response.data
+			commit 'add_attribute', attribute
 		add_filter: ({ commit, dispatch, getters }, values) ->
 			commit 'add_filter', values
 			dispatch 'update_query'

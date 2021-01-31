@@ -1,10 +1,11 @@
 <template lang="slm">
-/ FIXME: make this component a dynamically loaded one
 div.edit-datum
-	h3
-		em $attribute.name 
-		| of $product.name
-	div.current v-if=datum
+	h3.capitalize
+		em {{attribute&&attribute.label}}
+		|  of $product_label
+	div v-if=!datum
+		| Loading...
+	div.current v-else=""
 		h4 Current value
 		dl
 			dt Value
@@ -64,14 +65,12 @@ div.edit-datum
 import { mapActions, mapState, mapGetters } from 'vuex'
 
 export default
-	name: 'EditDatumDialog'
-	props:
-		product:
-			type: Object
-			required: true
-		attribute_name:
-			type: String
-			required: true
+	created: ->
+		# todo works with ssr when direct site refresh?
+		if not @product
+			@$store.dispatch 'search/get_product', @product_name
+		if not @attribute
+			@$store.dispatch 'search/get_attribute', @attribute_name
 	methods: {
 		...mapActions 'search',
 			-	'add_product'
@@ -84,10 +83,18 @@ export default
 	computed: {
 		...mapGetters 'search',
 			-	'attributes_by_name'
+		product_name: ->
+			@$route.params.product
+		product: ->
+			@$store.getters['search/product_by_name'][@product_name]
+		attribute_name: ->
+			@$route.params.attribute
 		attribute: ->
 			@attributes_by_name[@attribute_name]
 		datum: ->
-			@$props.product.data[@$props.attribute_name]
+			@product?.data[@attribute_name]
+		product_label: ->
+			@product?.data.label?.value or @product_name
 	}
 </script>
 
