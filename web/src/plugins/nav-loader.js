@@ -10,7 +10,7 @@ export default {
 				// Sync with global vars from global.stylus
 				color: 'darkorange',
 				failedColor: 'darkred',
-				thickness: '2px',
+				thickness: '3px',
 			})
 		}
 	},
