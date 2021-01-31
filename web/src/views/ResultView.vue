@@ -140,8 +140,12 @@ export default
 		need_search = false
 		if store.state.search.category != category
 			await store.dispatch 'search/change_category', category
-		await store.dispatch 'search/search',
-			query: route.query
+			need_search = true
+		else if JSON.stringify(router.currentRoute.query) != JSON.stringify(route.query) # not Object.keys(router.currentRoute.query).every((key) => JSON.stringify(router.currentRoute.query[key]) == JSON.stringify(route.query[key]))
+			need_search = true
+		if need_search
+			await store.dispatch 'search/search',
+				query: route.query
 	mounted: ->
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
 		@$store.dispatch 'offer_focus'
