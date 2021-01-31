@@ -110,11 +110,8 @@ export default
 				...condition
 				long: condition.long.replace(/ /g, '&nbsp;')
 			}
-		filter_model = JSON.parse(JSON.stringify(@filter))
-		if @can_be_case_sensitive
-			filter_model.case_sensitive = ! filter_model.case_insensitive
 		conditions: conditions
-		filter_model: filter_model
+		filter_model: null
 		meta:
 			edit: false
 	methods: {
@@ -146,6 +143,10 @@ export default
 				@meta.edit = false
 				@on_close_edit()
 	}
+	created: ->
+		@filter_model = JSON.parse(JSON.stringify(@filter))
+		if @can_be_case_sensitive
+			@$set @filter_model, 'case_sensitive', ! @filter_model.case_insensitive
 	mounted: ->
 		if meta_by_filter.get(@filter)
 			@meta = meta_by_filter.get(@filter)
@@ -181,7 +182,7 @@ export default
 			handler: (new_model, old_model) ->
 				clearTimeout(value_debouncer)
 				value_debouncer = setTimeout (=>
-					if @model_valid
+					if old_model and @model_valid
 						new_model = { ...new_model }
 						if @filter_model_condition.needs_value
 							if @can_be_case_sensitive
