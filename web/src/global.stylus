@@ -222,12 +222,12 @@ blockquote {
 	padding-left: 1em;
 	border-left: 3px solid var(--color-main); }
 
-/* Pre and Code */
-pre {
-	background-color: #f1f1f1;
-	display: block;
-	padding: 1em;
-	overflow-x: auto; }
+pre
+	background-color #f1f1f1
+	display block
+	padding 0.5em
+	margin 0
+	overflow-x auto
 
 code {
 	font-size: 0.9em;
