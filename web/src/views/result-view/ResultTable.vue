@@ -339,7 +339,8 @@ tr.product
 				.loading-placeholder
 					display none
 			img
-				max-height 190px
+				max-height 187px
+				max-width 185px
 		.value
 			&.label
 				max-width unset
