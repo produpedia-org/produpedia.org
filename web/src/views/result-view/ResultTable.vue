@@ -6,7 +6,7 @@ table border=1
 			td.filters v-for="shower_name in shower_names"
 				filters :filters=filters_by_attribute_name[shower_name] :attribute_name=shower_name :edit=edit
 		tr.attributes
-			th.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop="dragging_column&&move_shower_to(index)"
+			th.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop="dragging_column&&move_shower_to(index)" :set="attribute=attributes_by_name[shower_name]"
 				.attribute.fill-h.column.center
 					.actions.fill-w.align-center.touch-only v-if=edit
 						button.moveto @click=move_shower_to(index-1)(shower_name) ←
@@ -16,11 +16,11 @@ table border=1
 						div.fill-h.row.center v-drag=shower_name @dragstart=dragging_column=true @dragend=dragging_column=false
 							div.center
 								span.grip.mouse-only ⠿
-							.row v-if=attributes_by_name[shower_name]
+							.row v-if=attribute
 								div.label @click=toggle_sort(shower_name)
-									| $attributes_by_name[shower_name].label
-								div.unit v-if=attributes_by_name[shower_name].unit
-									| $attributes_by_name[shower_name].unit
+									| $attribute.label
+								div.unit v-if=attribute.unit
+									| $attribute.unit
 							.danger v-else=""
 								| $shower_name (unknown attribute)
 						button.sort.disabled @click=toggle_sort(shower_name)
@@ -58,12 +58,25 @@ table border=1
 							img alt=Thumbnail :src="datum.value.replace('width=300','width=190')" loading=lazy onload="parentElement.classList.remove('loading')" onerror="parentElement.classList.remove('loading')"
 							div.loading-placeholder.center.disabled
 								| 🖻<br>loading<br>image
-						/ .disabled TODO
-						div.value.resource v-else-if="datum.resource&&!edit"
-							a :href="'https://en.wikipedia.org/wiki/'+datum.resource"
+						ul.value.array-value v-else-if=Array.isArray(datum.value) :class.label="shower_name==='label'"
+							li v-for="sub_value, sub_i in datum.value"
+								div.resource v-if=datum.resource&&!edit
+									router-link v-if="datum.resource[sub_i]&&datum.resource[sub_i].match(/^dbr:/)" :to="'/product/'+datum.resource[sub_i].replace(/^dbr:/,'')"
+										| $sub_value
+									a v-else="" :href=datum.resource
+										| $sub_value
+								div v-else=""
+									| $sub_value
+						div.value.resource v-else-if=datum.resource&&!edit
+							router-link v-if="datum.resource.match(/^dbr:/)" :to="'/product/'+datum.resource.replace(/^dbr:/,'')"
+								| $datum.value
+							a v-else="" :href=datum.resource
 								| $datum.value
 						div.value v-else="" :class.label="shower_name==='label'"
-							| $datum.value
+							span v-if="attributes_by_name[shower_name].type==='date'"
+								| {{ datum.value | format_date }}
+							span v-else=""
+								| $datum.value
 						button.edit v-if=edit
 							| ✎
 				div v-else=""
@@ -79,6 +92,7 @@ table border=1
 <script lang="coffee">
 import Filters from '@/views/result-view/result-table/Filters'
 import { mapActions, mapState, mapGetters } from 'vuex'
+import dayjs from 'dayjs'
 
 export default
 	components: { Filters }
@@ -124,6 +138,14 @@ export default
 	}
 	mounted: ->
 		@scroll_container = @$parent.$refs.result_table_container
+	filters:
+		format_date: (v) ->
+			if (new Date(v)).getTime() / (24*3600*1000) % 1 == 0
+				# It's exactly midnight
+				dayjs(v).format 'YYYY-MM-DD'
+			else
+				# The T is ugly, the Z is necessary
+				v.toString().replace(/[T]/g,' ')
 </script>
 
 <style lang="stylus" scoped>
@@ -299,7 +321,6 @@ tr.product
 			text-align left
 			padding-left 1em
 			display inline-block
-			margin 0
 		height 36px
 		// max-width unset
 		.thumbnail
