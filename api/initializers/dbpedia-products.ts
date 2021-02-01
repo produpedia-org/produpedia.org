@@ -8,6 +8,9 @@ import Product, { PrimaryProductData } from '../models/Product';
 import { query } from './sparql';
 import { ProductDatumValue, ProductDatumResource } from '../models/ProductDatum';
 
+const strip_langtag = (label?: string) =>
+    label?.replace(/@[a-z]+/, '');
+
 let lineno = 0;
 
 (async () => {
@@ -34,7 +37,7 @@ let lineno = 0;
     for await (const line of rl) {
         lineno++;
         // console.log(lineno)
-        // if (i > 100)
+        // if (lineno > 100)
         //     process.exit(0);
 
         // if (lineno < 4018874)
@@ -57,7 +60,7 @@ let lineno = 0;
         // performant. Total time is about 3.5 hours.
 
         if (lineno % 500 === 0)
-            console.log(Math.round(lineno / 4107547 * 1000) / 10 + '% ' + line);
+            console.log(Math.round(lineno / 4107547 * 1000) / 10 + '%', lineno, line);
 
         lines_batch.push(line);
         if (lines_batch.length < lines_batch_size)
@@ -93,7 +96,7 @@ let lineno = 0;
         } }`).join(' UNION ');
         // ^ regarding escaping: & " ' must not be escaped above or nothing will be returned.
         // Could be because it is already escaped somewhere else
-        const sql = `select ?subject ?predicate ?object { ${sql_conditions} }`;
+        const sql = `select ?subject ?predicate ?object ?object_label { ${sql_conditions} }`;
 
         const results = await query(sql, undefined, true);
 
@@ -102,7 +105,7 @@ let lineno = 0;
 
             const product_results = results.filter(r => r.subject === resource);
 
-            const label = product_results.find(r => r.predicate === 'rdfs:label')?.object.replace(/^(.+)@[a-z]+/, '$1');
+            const label = strip_langtag(product_results.find(r => r.predicate === 'rdfs:label')?.object);
             if (!label) {
                 // Happens sometimes, e.g. https://dbpedia.org/page/Diamond_Crush. No idea why but probably
                 // related to some other dataset not included in the dump. Skip
@@ -144,25 +147,49 @@ let lineno = 0;
                             console.warn(`value ${r.object} => ${value} for attribute ${attribute.name} from resource ${resource} should be int but is float`);
                         break;
                     case 'resource':
-                        if (!r.object.match(/^dbr:/))
-                            console.warn(`value ${r.object} for attribute ${attribute.name} from resource ${resource} should be a resource but isnt`);
+                        // if (!r.object.match(/^dbr:/))
+                        //     nah can also be a normal link and even if it is bogus, it's okay as long as the label is fine
+                        //     console.warn(`value ${r.object} for attribute ${attribute.name} from resource ${resource} should be a resource but isnt`);
                         if(r.object_label) {
-                            value = r.object_label;
-                            value_resource = r.object.replace(/^dbr:/, '');
+                            value = strip_langtag(r.object_label) as string;
+                            value_resource = r.object; // .replace(/^dbr:/, '');
                         } else {
-                            value = r.object;
+                            // Happens quite often. Dont disregard, but instead just
+                            // take the resource value (underscored) itself
+                            value = r.object.replace(/^dbr:/, '');
                             value_resource = null;
                         }
+                        if(value.match(/@/))
+                            console.warn("@", r);
                         break;
                     case 'string':
                     default:
-                        value = r.object;
+                        value = strip_langtag(r.object) as string;
                     }
-                    all[attribute_name] = new PrimaryProductDatum({
-                        value,
-                        source: 'dbpedia',
-                        user: 'system',
-                    });
+                    if(!all[attribute_name]) {
+                        all[attribute_name] = new PrimaryProductDatum({
+                            value,
+                            source: 'dbpedia',
+                            user: 'system',
+                        });
+                        if(value_resource !== undefined)
+                            all[attribute_name].resource = value_resource;
+                    } else {
+                        if(!Array.isArray(all[attribute_name].value)) {
+                            // @ts-ignore
+                            all[attribute_name].value = [ all[attribute_name].value ];
+                            if(all[attribute_name].resource !== undefined) {
+                                // @ts-ignore
+                                all[attribute_name].resource = [ all[attribute_name].resource ];
+                            }
+                        }
+                        if(value_resource !== undefined) {
+                            // @ts-ignore
+                            all[attribute_name].resource.push(value_resource);
+                        }
+                        // @ts-ignore
+                        all[attribute_name].value.push(value);
+                    }
                     return all;
                 }, {});
             data.label = new PrimaryProductDatum({
