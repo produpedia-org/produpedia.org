@@ -166,7 +166,7 @@ table
 	--separator 1px solid #e3e3e3
 	border-collapse collapse
 	user-select none // because v-dragscrollable
-	--col-min-width 95px
+	--col-min-width 110px
 	
 table, td, th
 	// table html attribute border=1 needs to be reverted again
