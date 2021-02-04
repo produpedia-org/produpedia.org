@@ -8,22 +8,6 @@ import { get_category_anchestors, get_category_by_name_case_insensitive } from '
 
 const attribute_router = express.Router();
 
-attribute_router.post('/', async (req, res) => {
-    const { category, name, description, unit, type , label } = req.body;
-    const attribute = new Attribute({
-        category, // TODO verfify
-        verified: false,
-        interest: 0,
-        name,
-        label,
-        description,
-        unit,
-        type,
-    });
-    await attribute.save();
-    res.send(attribute);
-});
-
 attribute_router.get('/', async (req, res) => {
     let attributes: Attribute[];
     if(req.query.category) {

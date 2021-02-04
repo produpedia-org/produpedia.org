@@ -286,14 +286,6 @@ export default
 			# 	prevent search from happening with the next update_query somehow,
 			# 	because the data is already there, just needs restructure. TODO (minor)
 			dispatch 'update_query'
-		add_product: ({ commit, state }, { form_data }) ->
-			form_data.append 'category', state.category
-			response = await @$http.post 'product', form_data
-			commit 'add_product', response.data
-		save_datum: ({ commit, state }, { product, attribute_name, form_data }) ->
-			response = await @$http.post "product/#{product.name}/data/#{attribute_name}", form_data
-			commit 'add_product_datum', { product, attribute_name, datum: response.data }
-			response = await @$http.get 'attribute', { params: { category: state.category } }
 		# todo refactor: change to options:add:true (rename to append), just like base crud store, but
 		# this store module should extend basecrudstore anyway, partially?multiple entities?
 		get_append_attributes: ({ commit, state }, params = {}) ->

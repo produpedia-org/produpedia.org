@@ -4,9 +4,6 @@
 	header.row.center
 		aside.left
 			.center
-				label.row.center
-					input type=checkbox v-model=edit
-					div Edit mode
 		h1 $title
 		aside.right
 			.center
@@ -19,8 +16,6 @@
 	
 	/ i Explanation of what this category is..?
 
-	/ This is obviously only a temporary solution. Later on, columns need to be editable,
-	/ and this section would have "add this column" buttons etc
 	.center
 		.box.padding.margin v-for="filter in invisible_filters"
 			.error The following filter is hidden:
@@ -48,7 +43,7 @@
 				a :href="'/list/'+category" Go back to $title
 		.row
 			.flex-fill
-				result-table#result-table :edit=edit
+				result-table#result-table
 				#load-more.center v-if=can_fetch_next_page
 					promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
 			/ #has-more-attributes.padding.margin-l v-if=has_more_attributes
@@ -59,12 +54,6 @@
 	
 	popup v-if=show_subroute_modal @close=close_subroute
 		router-view
-
-	div.center.margin-l v-if=edit
-		/ todo add toggle component
-		button.btn @click=show_add_product_dialog=true
-			| + Add
-		add-product-dialog v-if=show_add_product_dialog
 </template>
 
 <script lang="coffee">
@@ -159,7 +148,6 @@ export default
 		next()
 	data: ->
 		show_add_product_dialog: false
-		edit: false
 		selectable_limits: [ 5, 10, 20, 50, 100 ]
 		fetching_next_page: false
 		show_subroute_modal: false

@@ -48,20 +48,9 @@ div.edit-datum
 								| . 
 						section
 							h3 Edit this value
-							p Currently, you can <em>not</em> edit the values on Produpedia.org. This will change soon.
+							p Currently, you can <em>not</em> edit the values on Produpedia.org.
 						/ When deriving another dataset and releasing on the databus:
 						/ https://databus.dbpedia.org/dbpedia/mappings/mappingbased-objects/2020.02.01
-	h4 Add new value
-	read-more
-		template #summary=""
-			p Editing is currently NOT supported! Click for more info
-		p This is only for demonstration purposes; You can submit values here and they will be saved, but the database will be reset soon.
-		p Currently, you can <em>not</em> lastingly edit the values on Produpedia.org. But this will be changed, as the primary goal of this site is to be an open and collaborative effort.
-		p Right now, the only way is to participate in the development of the site or edit values in Wikipedia directly. They will then find their way into Produpedia.org eventually.
-	/ product-value-form :action=save_datum :attribute=attribute
-	/ 	label.column
-	/ 		| Source
-	/ 		input type=url name=source placeholder=Source required=""
 </template>
 
 <script lang="coffee">
@@ -69,7 +58,6 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 
 export default
 	created: ->
-		# todo works with ssr when direct site refresh?
 		if not @product
 			@$store.dispatch 'search/get_product', @product_name
 		if not @attribute
@@ -77,11 +65,6 @@ export default
 	methods: {
 		...mapActions 'search',
 			-	'add_product'
-		save_datum: ({ form_data }) ->
-			@$store.dispatch 'search/save_datum',
-				form_data: form_data
-				product: @product
-				attribute_name: @attribute_name
 	}
 	computed: {
 		...mapGetters 'search',

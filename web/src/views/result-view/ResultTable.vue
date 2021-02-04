@@ -4,11 +4,11 @@ table border=1
 	thead
 		tr
 			td.filters v-for="shower_name in shower_names"
-				filters :filters=filters_by_attribute_name[shower_name] :attribute_name=shower_name :edit=edit
+				filters :filters=filters_by_attribute_name[shower_name] :attribute_name=shower_name
 		tr.attributes
 			th.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop="dragging_column&&move_shower_to(index)" :set="attribute=attributes_by_name[shower_name]"
 				.attribute.fill-h.column.center
-					.actions.fill-w.align-center.touch-only v-if=edit
+					.actions.fill-w.align-center.touch-only
 						button.moveto @click=move_shower_to(index-1)(shower_name) ←
 						button.remove @click=remove_shower(shower_name) ╳
 						button.moveto @click=move_shower_to(index+2)(shower_name) →
@@ -44,14 +44,6 @@ table border=1
 		tr.product v-for="product in products" :key=product.name
 			td.datum v-for="shower_name, shower_index in shower_names" @click=datum_clicked(product,shower_name,$event) :set="datum=product.data[shower_name]"
 				div v-if=datum
-					/ 	TODO
-					/ 	div v-if=datum.verified
-					/ 		span.verified
-					/ 			| $datum.value
-					/ 		button.edit.disabled v-if=!readonly
-					/ 			/ ✔ ✓
-					/ 			| ✎
-					/ 	div v-else=""
 					div
 						div.thumbnail.loading.center v-if="shower_name==='thumbnail'"
 							/ TODO: Find a way to show img loading placeholders without JS: https://stackoverflow.com/q/14748750/3779853
@@ -60,14 +52,14 @@ table border=1
 								| 🖻<br>loading<br>image
 						ul.value.array-value v-else-if=Array.isArray(datum.value) :class.label="shower_name==='label'"
 							li v-for="sub_value, sub_i in datum.value"
-								div.resource v-if=datum.resource&&!edit
+								div.resource v-if=datum.resource
 									router-link v-if="datum.resource[sub_i]&&datum.resource[sub_i].match(/^dbr:/)" :to="'/product/'+datum.resource[sub_i].replace(/^dbr:/,'')"
 										| $sub_value
 									a v-else="" :href=datum.resource
 										| $sub_value
 								div v-else=""
 									| $sub_value
-						div.value.resource v-else-if=datum.resource&&!edit
+						div.value.resource v-else-if=datum.resource
 							router-link v-if="datum.resource.match(/^dbr:/)" :to="'/product/'+datum.resource.replace(/^dbr:/,'')"
 								| $datum.value
 							a v-else="" :href=datum.resource
@@ -77,16 +69,11 @@ table border=1
 								| {{ datum.value | format_date }}
 							span v-else=""
 								| $datum.value
-						button.edit v-if=edit
-							| ✎
 				div v-else=""
 					span.small
 						/ ? &#63;
 						/ | &nbsp; <- doesnt work?
 						|
-					button.edit.create v-if=edit
-						/ 🖉
-						| +
 </template>
 
 <script lang="coffee">
@@ -96,9 +83,6 @@ import dayjs from 'dayjs'
 
 export default
 	components: { Filters }
-	props:
-		edit:
-			default: false
 	data: =>
 		dragging_column: false
 		scroll_container: null
@@ -308,13 +292,6 @@ td.filters
 tr.product
 	td.datum
 		text-align center
-		button.edit
-			user-select none
-			position absolute
-			right 0
-			bottom 0
-			&.create
-				color #A0AB82
 		.verified
 			color #0B6721
 		ul
