@@ -73,7 +73,7 @@ export default
 		shower_names_modified: false
 		sorters: [
 		]
-		columns: 25
+		columns: 15
 		limit: 20
 		offset: 0
 		### server response; readonly ###
