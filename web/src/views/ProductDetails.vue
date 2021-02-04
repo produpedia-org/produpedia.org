@@ -4,11 +4,11 @@ article#product-details.justify-center
 		div
 			div Details of
 			h1 $product_label
-			nav#external.flex-base v-if=product
-				a v-if="product.source==='dbpedia'" target=_blank :href="'https://en.wikipedia.org/wiki/'+product_name" Wikipedia article
-				a v-if="product.source==='dbpedia'" target=_blank :href="'https://dbpedia.org/page/'+product_name" DBpedia page
+			nav#external.flex-base
+				a v-if="!product||product.source==='dbpedia'" target=_blank :href="'https://en.wikipedia.org/wiki/'+product_name" Wikipedia article
+				a v-if="!product||product.source==='dbpedia'" target=_blank :href="'https://dbpedia.org/page/'+product_name" DBpedia page
 		div v-if=!product
-			| Loading...
+			p $product_label is not part of Produpedia's database.<br>It is not linked to any known category. You can still see its details by visiting the above links.
 		div#infos.column v-else=""
 			h2 Categories
 			ul#categories.info
@@ -54,22 +54,27 @@ export default
 		if not store.hasModule('search')
 			store.registerModule 'search', search_store_module
 		product_name = route.params.product
+		try
+			await store.dispatch 'search/get_product', product_name
+		catch e
+			if e.statusCode == 404
+				return
+			throw e
 		product = store.getters['search/product_by_name'][product_name]
-		get_product = store.dispatch 'search/get_product', product_name
 		get_attributes = null
-		if not product or Object.keys(product.data).some((attribute_name) => not store.getters['search/attributes_by_name'][attribute_name])
+		if Object.keys(product.data).some((attribute_name) => not store.getters['search/attributes_by_name'][attribute_name])
 			get_attributes = store.dispatch 'search/get_append_attributes', product: product_name
 		get_categories = null
-		if not product?.categories?.length or product.categories.some((category_name) => not store.getters['category/category_by_name'][category_name])
+		if not product.categories?.length or product.categories.some((category_name) => not store.getters['category/category_by_name'][category_name])
 			get_categories = store.dispatch 'category/get_categories_raw',
 				# This has the potential to duplicate categories in the store, but this does not
 				# matter. When the whole tree is loaded, previous ones are disregarded anyway
 				# and once the tree is loaded, this doesnt trigger
 				options: add: true
 				params: product: product_name
-		if not product
+		if process.server
 			# While the requests (may) have already fired, wait for them only on server
-			await Promise.all [ get_product, get_attributes, get_categories ]
+			await Promise.all [ get_attributes, get_categories ]
 	data: ->
 		show_subroute_modal: false
 	methods:
