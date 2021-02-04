@@ -61,14 +61,7 @@ export default ->
 			 * check does not consider the below changes. In other words,
 			 * the lines below may make the page look different than
 			 * what the server-side rendered html looks like.
-			 * Right now, this only includes session data (setting jwt)
-			 * which is not part of ssr (client-only, for API
-			 * interaction)
 			###
-			token = storage_service.get 'token'
-			if token
-				@$store.dispatch 'session/login_with_token', token
-				@$store.dispatch 'session/refresh_token' # make sure the token is still valid by asking the server for a new one # this should probably be never-expiring and the email ones be shortlived instead TODO (or one-time?)
 	}
 
 export { store, router }

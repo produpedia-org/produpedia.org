@@ -22,7 +22,6 @@ export install_error_handler = ({ store, router }) =>
 				store.dispatch 'server_unreachable'
 				return
 			if 401 == status
-				store.dispatch 'session/logout'	
 				router.push('/login').catch(=>)
 				return
 			if 500 == status

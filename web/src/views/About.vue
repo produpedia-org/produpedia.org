@@ -14,7 +14,7 @@
 				a href=mailto:info@produpedia.org info@produpedia.org
 		footer.margin-l
 			small
-				| Last updated by <a href="https://waritschlager.de">Philip Waritschlager</a>: 
+				| Last updated: 
 				time datetime="2021-02-05" February 05th 2020
 </template>
 

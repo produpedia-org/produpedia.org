@@ -3,8 +3,6 @@
 	no-ssr
 		vue-progress-bar
 	confirm
-	popup v-if=authenticate_popup @close=hide_authenticate_popup
-		authenticate @authenticated=hide_authenticate_popup
 	modal v-if=loading_counter
 		.box.padding-l
 			| Loading... ($loading_counter)
@@ -22,18 +20,8 @@
 			.column.padding-l
 				.navs.fill.center
 					nav
-					nav.right.row.align-center.padding-l
+					nav.right.row.align-center
 						div.session-info.column
-							span v-if=is_logged_in
-								span.logged-in-prompt Logged in as 
-								span v-if=session.name $session.name
-								span v-else-if=session.email $session.email
-								span v-else-if=session.external_type $session.external_identifier [$session.external_type]
-								| . 
-							router-link v-if=is_logged_in exact="" to=/settings Settings 
-							button.btn v-if=is_logged_in @click=logout Logout
-							button.btn v-if=!is_logged_in @click=show_authenticate_popup
-								| Sign in
 							a href=/static/privacy.html : small Privacy & Imprint 
 				category-tree
 	main.flex-fill.column
@@ -52,7 +40,6 @@
 </template>
 
 <script lang="coffee">
-import Authenticate from '@/views/Authenticate'
 import CategoryTree from '@/views/CategoryTree'
 import Confirm from '@/views/Confirm'
 import CategoryBreadcrumbs from '@/views/CategoryBreadcrumbs'
@@ -63,7 +50,7 @@ import NoSsr from 'vue-no-ssr'
 import { mapState, mapGetters, mapActions } from 'vuex'
 
 export default
-	components: { NoSsr, Confirm, Authenticate, CategoryTree, CategoryBreadcrumbs }
+	components: { NoSsr, Confirm, CategoryTree, CategoryBreadcrumbs }
 	metaInfo:
 		titleTemplate: (title) =>
 			"#{if title then title+' – ' else ''}Produpedia.org"
@@ -86,20 +73,11 @@ export default
 		...mapState
 			-	'app_name'
 			-	'loading_counter'
-			-	'authenticate_popup'
 			-	'global_error_message'
-		...mapState 'session',
-			-	'session'
-		...mapGetters 'session',
-			-	'is_logged_in'
 	}
 	methods: {
 		...mapActions
-			-	'hide_authenticate_popup'
-			-	'show_authenticate_popup'
 			-	'reset_global_error_message'
-		...mapActions 'session',
-			-	'logout'
 	}
 	watch:
 		$route: ->

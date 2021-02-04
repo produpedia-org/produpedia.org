@@ -5,9 +5,7 @@ import express from 'express';
 import expressFormData from 'express-form-data';
 import { NO_CONTENT, UNPROCESSABLE_ENTITY } from 'http-status-codes';
 import 'reflect-metadata';
-import authentication_middleware from './authentication-middleware';
 import attribute_router from './routers/attribute-router';
-import authentication_router from './routers/authentication-router';
 import error_router from './routers/error-router';
 import category_router from './routers/category-router';
 import product_router from './routers/product-router';
@@ -43,12 +41,6 @@ app.use((req, res, next) => {
     next();
 });
 
-app.use(authentication_middleware(token_service));
-app.use('/authentication', authentication_router(
-    token_service, mail_service,
-    env('WEB_ROOT'), env('GOOGLE_CLIENT_ID'), env('FACEBOOK_APP_ID'), env('FACEBOOK_APP_SECRET'), env('WEBSITE_NAME'),
-));
-app.use('/user', user_router);
 app.use('/error', error_router(mail_service));
 app.use('/', product_router);
 app.use('/attribute', attribute_router);
