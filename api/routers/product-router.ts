@@ -51,8 +51,9 @@ function parse_value_or_throw(raw_single: string, attribute: Attribute): Attribu
         }
     } else if (attribute.type === 'date') {
         const date = dayjs(raw_single);
-        if (!date.isValid())
-            throw `Value '${raw_single}' is not a valid date!`;
+        if (!date.isValid()) {
+            // throw `Value '${raw_single}' is not a valid date!`;
+        }
         value = date.toDate();
     } else {
         throw 'Attribute is misconfigured: Type missing!';
