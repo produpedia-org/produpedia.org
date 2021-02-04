@@ -42,7 +42,7 @@ table border=1
 
 	tbody v-dragscrollable="{ scroll_target: scroll_container, on_dragscroll_start, on_dragscroll_end }"
 		tr.product v-for="product in products" :key=product.name
-			td.datum v-for="shower_name, shower_index in shower_names" @click=datum_clicked(product,shower_name) :set="datum=product.data[shower_name]"
+			td.datum v-for="shower_name, shower_index in shower_names" @click=datum_clicked(product,shower_name,$event) :set="datum=product.data[shower_name]"
 				div v-if=datum
 					/ 	TODO
 					/ 	div v-if=datum.verified
@@ -106,8 +106,8 @@ export default
 	methods: {
 		toggle_sort: (attribute_name) ->
 			@$store.dispatch 'search/toggle_sort', attribute_name
-		datum_clicked: (product, attribute_name) ->
-			if @is_scrolling_container
+		datum_clicked: (product, attribute_name, event) ->
+			if @is_scrolling_container or event.target.tagName == "A"
 				return
 			@$router.push
 				name: 'EditDatumDialog'
