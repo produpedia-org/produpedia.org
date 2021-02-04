@@ -94,16 +94,16 @@ const attribute_props_by_range = (range?: string): Partial<Attribute> => {
             return a;
         });
 
-    console.log("retrieving interest values");
-    let i = 0;
-    for(const attribute of attributes) {
-        const response = await query(`
-        select count(distinct ?product) as ?interest {
-            ?product dbo:${attribute.name} ?v
-        }`, undefined, true);
-        console.log(Math.round(i++/attributes.length*100)/100);
-        attribute.interest = Number(response[0].interest);
-    }
+    // console.log("retrieving interest values");
+    // let i = 0;
+    // for(const attribute of attributes) {
+    //     const response = await query(`
+    //     select count(distinct ?product) as ?interest {
+    //         ?product dbo:${attribute.name} ?v
+    //     }`, undefined, true);
+    //     console.log(Math.round(i++/attributes.length*100)/100);
+    //     attribute.interest = Number(response[0].interest);
+    // }
 
     attributes.push(new Attribute({
         category: 'thing',
