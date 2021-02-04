@@ -25,7 +25,7 @@ export default {
 				if(typeof data == 'object')
 					data.http_query_url = http_query_url;
 				else
-					data += ` for ${http_query_url}`
+					data += ` for request ${http_query_url}`
 				// Can use this for better stack trace:
 				// axios_error.config?.error_context?.stack
 				return error(data, resp.status)
