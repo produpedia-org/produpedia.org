@@ -16,11 +16,11 @@ const attribute_props_by_range = (range?: string): Partial<Attribute> => {
         return { type: 'number', float: false, min: 0 };
     case 'xsd:integer': case 'xsd:gYear':
         return { type: 'number', float: false };
-    case 'xsd:string': case 'rdf:langString': case 'dt:engineConfiguration': case 'http://www.w3.org/2004/02/skos/core#Concept': case 'wgs84:SpatialThing': case 'http://www.w3.org/2004/02/skos/core#OrderedCollection':
+    case 'xsd:string': case 'rdf:langString': case 'dt:engineConfiguration': case 'dt:valvetrain': case 'http://www.w3.org/2004/02/skos/core#Concept': case 'wgs84:SpatialThing': case 'http://www.w3.org/2004/02/skos/core#OrderedCollection':
         return { type: 'string' };
     case 'xsd:anyURI':
         return { type: 'resource' };
-    case 'xsd:date': case 'xsd:dateTime': case 'xsd:gYearMonth': case 'dt:valvetrain':
+    case 'xsd:date': case 'xsd:dateTime': case 'xsd:gYearMonth':
         return { type: 'date' };
     case 'xsd:boolean':
         return { type: 'boolean' };
