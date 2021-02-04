@@ -40,7 +40,7 @@ let lineno = 0;
         // if (lineno > 100)
         //     process.exit(0);
 
-        // if (lineno < 4018874)
+        // if (lineno < 1670471)
         //     continue;
 
         // sparql interaction happens in batches, because that speeds up the whole
@@ -113,10 +113,10 @@ let lineno = 0;
             }
 
             const data: PrimaryProductData = product_results
-                .filter(r => r.predicate.match(/^dbo:/))
+                .filter(r => r.predicate.match(/^dbo:/) || ['wgs84:lat', 'wgs84:long', 'foaf:gender', 'foaf:givenName', 'foaf:surname'].includes(r.predicate))
                 .filter(r => ! r.predicate.match(/\./)) // dbo:drugs.com. only very few present so simply ignoring these for now
                 .reduce((all: PrimaryProductData, r) => {
-                    const attribute_name = r.predicate.replace(/^dbo:/, '');
+                    const attribute_name = r.predicate.replace(/^\w+?:/, '');
                     const attribute = attribute_by_name[attribute_name];
                     if (!attribute)
                         throw new Error(`could not find attribute ${r.predicate} in attributes for resource ${resource}`);
@@ -150,21 +150,17 @@ let lineno = 0;
                         // if (!r.object.match(/^dbr:/))
                         //     nah can also be a normal link and even if it is bogus, it's okay as long as the label is fine
                         //     console.warn(`value ${r.object} for attribute ${attribute.name} from resource ${resource} should be a resource but isnt`);
+                    case 'string':
+                    default:
                         if(r.object_label) {
                             value = strip_langtag(r.object_label) as string;
                             value_resource = r.object; // .replace(/^dbr:/, '');
                         } else {
-                            // Happens quite often. Dont disregard, but instead just
-                            // take the resource value (underscored) itself
-                            value = r.object.replace(/^dbr:/, '');
+                            // Happens quite often even with type:resource. Dont disregard, but instead just
+                            // take the resource value (underscored) itself (or, in type:string, expected normal)
+                            value = strip_langtag(r.object.replace(/^dbr:/, '')) as string;
                             value_resource = null;
                         }
-                        if(value.match(/@/))
-                            console.warn("@", r);
-                        break;
-                    case 'string':
-                    default:
-                        value = strip_langtag(r.object) as string;
                     }
                     if(!all[attribute_name]) {
                         all[attribute_name] = new PrimaryProductDatum({

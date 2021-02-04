@@ -127,6 +127,48 @@ const attribute_props_by_range = (range?: string): Partial<Attribute> => {
         type: 'resource',
         verified: true,
     }));
+    /////////////
+    attributes.push(new Attribute({
+        category: 'place',
+        name: 'lat',
+        label: 'Latitude',
+        verified: true,
+        type: 'number',
+        float: true,
+        min: -90,
+        max: 90,
+    }));
+    attributes.push(new Attribute({
+        category: 'place',
+        name: 'long',
+        label: 'Longitude',
+        verified: true,
+        type: 'number',
+        float: true,
+        min: -180,
+        max: 180,
+    }));
+    attributes.push(new Attribute({
+        category: 'person',
+        name: 'gender',
+        label: 'Gender',
+        type: 'string',
+        verified: true,
+    }));
+    attributes.push(new Attribute({
+        category: 'person',
+        name: 'givenName',
+        label: 'Given name',
+        type: 'string',
+        verified: true,
+    }));
+    attributes.push(new Attribute({
+        category: 'person',
+        name: 'surname',
+        label: 'Surname',
+        type: 'string',
+        verified: true,
+    }));
 
     // TODO ...
     attributes
