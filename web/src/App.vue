@@ -7,16 +7,16 @@
 		.box.padding-l
 			| Loading... ($loading_counter)
 	header
-		read-more.hamburger noliststyle="" ref=header_details
+		read-more noliststyle="" ref=header_details
 			template #summary=""
 				.navs.fill.center
 					nav.left.row
 						.column.center
-							div.hamburger ☰
+							div.hamburger.do-not-print ☰
 					nav.middle.center
 						category-breadcrumbs
 					nav.right.row
-						router-link.about exact="" to=/ About
+						router-link.about.do-not-print exact="" to=/ About
 			.column.padding-l
 				.navs.fill.center
 					nav

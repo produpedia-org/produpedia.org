@@ -12,11 +12,11 @@ table border=1
 						button.moveto @click=move_shower_to(index-1)(shower_name) ←
 						button.remove @click=remove_shower(shower_name) ╳
 						button.moveto @click=move_shower_to(index+2)(shower_name) →
-					div.fill-h.row.center
-						div.fill-h.row.center v-drag=shower_name @dragstart=dragging_column=true @dragend=dragging_column=false
-							div.center
+					div.fill-h.row.center.flex-fix
+						div.fill-h.row.center.flex-fix v-drag=shower_name @dragstart=dragging_column=true @dragend=dragging_column=false
+							div.center.do-not-print
 								span.grip.mouse-only ⠿
-							.row v-if=attribute
+							.row.flex-fix v-if=attribute
 								div.label @click=toggle_sort(shower_name)
 									| $attribute.label
 								div.unit v-if=attribute.unit
@@ -32,7 +32,7 @@ table border=1
 									| ▼
 								span v-else=""
 									| ▲
-							span v-else=""
+							span.do-not-print v-else=""
 								| ♢
 						div.sort.small.highlighted v-if="sorters_amount > 1 && sorters_by_attribute_name[shower_name]&&sorters_by_attribute_name[shower_name].index >= 0"
 							| $sorters_by_attribute_name[shower_name].index+1
@@ -197,9 +197,10 @@ th
 	background linear-gradient(#eaecf0, 93%, rgba(248 249 250 0.8))
 	> *
 		padding 2px 0.5vw
-		// Very basic column resizing
-		// Looks shitty on FF, currently impossible to fix this css-only
-		resize horizontal
+		@media not print
+			// Very basic column resizing
+			// Looks shitty on FF, currently impossible to fix this css-only
+			resize horizontal
 		overflow hidden
 th:nth-child(1), th:nth-child(2)
 	z-index 3

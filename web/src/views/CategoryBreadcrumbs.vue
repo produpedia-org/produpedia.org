@@ -1,6 +1,6 @@
 <template lang="slm">
 div.path-to-category
-	ol.breadcrumbs.row.center
+	ol.breadcrumbs.row.center.flex-fix
 		li.segment v-for="category of category_breadcrumbs_ref"
 			router-link v-if=!category.wrapper :to="'/list/'+category.name" $category.label
 			div v-else="" $category.label

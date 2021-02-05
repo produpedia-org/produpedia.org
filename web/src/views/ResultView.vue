@@ -4,10 +4,10 @@
 	header.row.center
 		aside.left
 			.center
-		h1 $title
+		h1.text-align-center $title
 		aside.right
 			.center
-				label.row.center
+				label.row.center.do-not-print
 					div Rows
 					select.limit v-model=limit
 						option v-for="l of selectable_limits" :value=l $l
@@ -44,7 +44,7 @@
 		.row
 			.flex-fill
 				result-table#result-table
-				#load-more.center v-if=can_fetch_next_page
+				#load-more.center.do-not-print v-if=can_fetch_next_page
 					promise-button.btn :action=fetch_next_page :disabled=fetching_next_page Load more
 			/ #has-more-attributes.padding.margin-l v-if=has_more_attributes
 				| There are 
@@ -247,6 +247,8 @@ header
 			direction rtl
 #result-table-container
 	overflow auto
+	@media print
+		overflow hidden
 #result-table
 	margin 0 auto
 	max-width 100%

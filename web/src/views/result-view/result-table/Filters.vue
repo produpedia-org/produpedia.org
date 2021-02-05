@@ -3,7 +3,7 @@
 	.list.column.center
 		.filter.box v-for="filter, i in filters"
 			filterr :filter=filter :attribute=attribute
-	.center
+	.center.do-not-print
 		button.add-filter.disabled v-if=attribute @click=add_filter
 			| Filter... 
 </template>
