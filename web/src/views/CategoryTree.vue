@@ -1,5 +1,5 @@
 <template lang="slm">
-nav.tree.box
+nav.tree
 	/ router-link to=/list/dummy Nonexisting category (for testing purposes)
 	.preview v-if=!all_categories_loaded @click=start_get_categories
 		ul.category-tree.padding-l
@@ -69,7 +69,7 @@ export default
 		left 0
 		right 0
 		z-index 1000
-		background linear-gradient(to bottom, transparent, transparent, #eee)
+		background linear-gradient(to bottom, transparent 92%, #eee)
 		cursor pointer
 	.click-to-expand
 		position absolute
@@ -85,7 +85,7 @@ export default
 ul.category-tree
 	max-height clamp(30vh, 550px, 54vh)
 	user-select none // because v-dragscrollable
-	--line-height 1.4em
+	--line-height 1.6em
 	line-height var(--line-height)
 	background white
 	width fit-content
