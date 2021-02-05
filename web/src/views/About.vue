@@ -3,7 +3,6 @@
 	#about.padding-xl.box
 		header
 			h1 Produpedia
-			h2 Version $app_version
 		section
 			p
 				strong Please choose one of the categories above!

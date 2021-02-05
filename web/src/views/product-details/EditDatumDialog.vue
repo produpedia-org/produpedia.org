@@ -26,7 +26,8 @@ div.edit-datum
 			dt Source
 			dd 
 				pre.source
-					a :href=datum.source $datum.source
+					/ a :href=datum.source $datum.source
+					| $datum.source
 				read-more v-if="datum.source==='dbpedia'"
 					template #summary=""
 						| Information about DBpedia data
@@ -39,7 +40,6 @@ div.edit-datum
 									/ TODO which one? env var
 									| This value originates from a recent DBpedia dataset, it is 
 									a href=https://databus.dbpedia.org/dbpedia available on databus.dbpedia.org.
-							p If the source link is dead, this means that the resource originates from <em>after</em> 10/2016 and you cannot access it on the web easily, it is only available on the Databus (see link above) or here.
 							p
 								| DBpedia is derived from Wikipedia and is thus distributed under the same licensing terms as Wikipedia, namely the 
 								a href="http://en.wikipedia.org/wiki/Wikipedia:Text_of_Creative_Commons_Attribution-ShareAlike_3.0_Unported_License" Creative Commons Attribution-ShareAlike 3.0 license 
@@ -48,7 +48,7 @@ div.edit-datum
 								| . 
 						section
 							h3 Edit this value
-							p Currently, you can <em>not</em> edit the values on Produpedia.org.
+							p Currently, you can <em>not</em> edit the values on Produpedia.org. You may do so by editing them on Wikidata or Wikipedia.
 						/ When deriving another dataset and releasing on the databus:
 						/ https://databus.dbpedia.org/dbpedia/mappings/mappingbased-objects/2020.02.01
 </template>
