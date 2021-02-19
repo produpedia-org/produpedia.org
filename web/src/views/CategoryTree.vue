@@ -85,54 +85,68 @@ export default
 ul.category-tree
 	max-height clamp(30vh, 550px, 54vh)
 	user-select none // because v-dragscrollable
-	--line-height 1.6em
-	line-height var(--line-height)
-	background white
+	line-height 1.65em
+	// background white
 	width fit-content
 	margin 0
 	>>>
-		li, ul, .label
-			background inherit
+		li, ul, details, .details, summary
+			background white
 		li
 			list-style-type none
-		.label
+		// Closed
+		details > summary
+			.label > *
+				text-decoration underline
+		// Open
+		details[open] > summary
+			.label > *
+				text-decoration unset
+			&::-webkit-details-marker, &::marker
+				color var(--color-disabled)
+		// Both
+		details > summary, details[open] > summary
 			position sticky
-			--min-row-height var(--line-height)
-			display block
-		> li > .label
+			--min-row-height 1.6em
+			&:hover
+				&::-webkit-details-marker, &::marker
+					color var(--color-clickable)
+		.label
+			display inline
+		> li > details > summary
 			top calc(var(--min-row-height) * 0)
 			z-index 999
-		> li > ul > li > .label
+		> li > details > .details > ul > li > details > summary
 			top calc(var(--min-row-height) * 1)
 			z-index 998
-		> li > ul > li > ul > li > .label
+		> li > details > .details > ul > li > details > .details > ul > li > details > summary
 			top calc(var(--min-row-height) * 2)
 			z-index 997
-		> li > ul > li > ul > li > ul > li > .label
+		> li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > summary
 			top calc(var(--min-row-height) * 3)
 			z-index 996
-		> li > ul > li > ul > li > ul > li > ul > li > .label
+		> li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > summary
 			top calc(var(--min-row-height) * 4)
 			z-index 995
-		> li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+		> li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > summary
 			top calc(var(--min-row-height) * 5)
 			z-index 994
-		> li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+		> li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > summary
 			top calc(var(--min-row-height) * 6)
 			z-index 993
-		> li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+		> li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > summary
 			top calc(var(--min-row-height) * 7)
 			z-index 992
-		> li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+		> li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > summary
 			top calc(var(--min-row-height) * 8)
 			z-index 991
-		> li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+		> li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > summary
 			top calc(var(--min-row-height) * 9)
 			z-index 990
-		> li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+		> li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > summary
 			top calc(var(--min-row-height) * 10)
 			z-index 989
-		> li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > ul > li > .label
+		> li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > details > .details > ul > li > .label
 			top calc(var(--min-row-height) * 11)
 			z-index 988
 </style>
