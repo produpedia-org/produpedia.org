@@ -17,7 +17,7 @@ article#product-details.justify-center
 						| {{ category_by_name[category_name]&&category_by_name[category_name].label || category_name }}
 					small
 						|  (
-						router-link :to="{path:'/list/'+category_name,query:{filter:'label:eq:'+product_label}}"
+						router-link :to="{path:'/list/'+category_name,query:{filter:'label|eq|'+product_label}}"
 							| show in category
 						| )
 			h2 Aliases
