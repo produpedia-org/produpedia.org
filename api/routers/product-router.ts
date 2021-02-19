@@ -234,37 +234,43 @@ product_router.get('/list/:category', async (req, res) => {
     }
 
     /************ compute *************/
-    const shower_names_formatted = shower_names.map(name => `data.${name}`) as (keyof Product)[];
+    const shower_names_formatted = shower_names.reduce((all: { [key: string]: 1 }, name) => {
+        all[`data.${name}`] = 1;
+        return all;
+    }, {});
 
     /********** Search ***********/
     let products: Product[];
     let failure = null;
-    // TODO: Maybe add a cache table (SQL) that is faster than querying the
-    // nested structure
+    const manager = getMongoManager();
+    // const cursor = manager.createEntityCursor(Product, {
+    const cursor = manager.createCursor(Product, {
+        $and: [
+            { categories: { $in: category_family_names } },
+            ...filters_formatted,
+        ],
+    }).project({
+        // todo _id -1? and test if projection works
+        name: 1,
+        verified: 1,
+        ...shower_names_formatted,
+    }).sort({
+        // Numbers inside text attributes will be sorted lexically, not by their value
+        // This can (and should) be solved by changing these categories to type number
+        ...sorters_formatted,
+    }).limit(limit)
+    .skip(offset)
+    .maxTimeMS(1000);
     try {
-        products = await Product.find({
-            where: {
-                $and: [
-                    { categories: { $in: category_family_names } },
-                    ...filters_formatted,
-                ],
-            } as any,
-            select: [
-                'name', 'verified',
-                ...shower_names_formatted,
-            ],
-            order: {
-                // Numbers inside text attributes will be sorted lexically, not by their value
-                // This can (and should) be solved by changing these categories to type number
-                ...sorters_formatted,
-            },
-            take: limit,
-            skip: offset,
-        });
+        products = await cursor.toArray();
     } catch(e) {
         if(e.message === 'Executor error during find command :: caused by :: cannot sort with keys that are parallel arrays') {
             products = [];
+            // TODO this should be some http error code instead of "failure" field?? esp. for crawlers
             failure = 'parallel_arrays';
+        } else if(e.codeName === 'MaxTimeMSExpired') {
+            // TODO do api-only errors get automatically reported properly via email? when it was triggered from curl e.g.
+            return res.status(BAD_REQUEST).send('Your query is too complex; it took too long to execute and was aborted. Maybe the server is under heavy load? Timeouts like these get automatically anonymously reported to the site admins. If it is a bug, you can check back after some time. Feel free to contact us.');
         } else {
             throw e;
         }
