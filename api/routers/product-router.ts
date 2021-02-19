@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
 import express from 'express';
-import { NOT_FOUND, UNPROCESSABLE_ENTITY } from 'http-status-codes';
+import { BAD_REQUEST, NOT_FOUND, UNPROCESSABLE_ENTITY } from 'http-status-codes';
 import { ObjectID } from 'mongodb';
-import { FindOptionsOrder } from 'typeorm';
+import { FindOptionsOrder, getMongoManager } from 'typeorm';
 import admin_secured from '../admin-secured';
 import Attribute, { AttributeType } from '../models/Attribute';
 import Category from '../models/Category';
@@ -83,9 +83,9 @@ product_router.get('/list/:category', async (req, res) => {
     const category = await get_category_by_name_case_insensitive(req.params.category as string);
     if(!category)
         return res.status(UNPROCESSABLE_ENTITY).send('Param category missing or not found');
-    let limit: number|undefined = Number(req.query.limit);
+    let limit: number = Number(req.query.limit);
     if (limit < 0)
-        limit = undefined;
+        limit = -1; // TODO probably doesnt work
     if (Number.isNaN(limit))
         limit = 25;
     const offset = Number(req.query.offset || 0);
@@ -96,15 +96,15 @@ product_router.get('/list/:category', async (req, res) => {
         if(!Number.isNaN(Number(showers_param))) {
             columns_count = Number(showers_param);
         } else {
-            shower_names = showers_param.split(',').filter(Boolean);
+            shower_names = showers_param.split(';').filter(Boolean);
         }
     }
     const sorters_param: string = req.query.sort as string || '';
     // @ts-ignore
     const sorters: Sorter[] = sorters_param
-        .split(',').filter(Boolean)
+        .split(';').filter(Boolean)
         .map((s: string): Sorter|null => {
-            const split = s.split(':');
+            const split = s.split('|');
             const direction = Number(split[1]);
             if(direction!==1 && direction !==-1)
                 return null;
@@ -124,9 +124,9 @@ product_router.get('/list/:category', async (req, res) => {
     const filter_param: string = req.query.filter as string || '';
     const filters: Filter[] = (await Promise.all(
         filter_param
-            .split(',').filter(Boolean)
+            .split(';').filter(Boolean)
             .map(async (s: string): Promise<Filter | null> => {
-                const [attribute_name, condition, value, case_str] = s.split(':');
+                const [attribute_name, condition, value, case_str] = s.split('|');
                 const case_sensitive = case_str !== 'i';
                 // TODO: is this cached or same request for same attribute multiple times?
                 const attribute = await Attribute.findOne({

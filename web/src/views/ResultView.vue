@@ -100,7 +100,7 @@ export default
 		if limit?
 			store.commit 'search/set_limit', limit * 1
 		query_filters = (filter
-			.split(',').filter(Boolean).map((s)=>s.split(':'))
+			.split(';').filter(Boolean).map((s)=>s.split('|'))
 			.map (s) => {
 				attribute_name: s[0]
 				condition: s[1]
@@ -110,7 +110,7 @@ export default
 		if JSON.stringify(query_filters) != JSON.stringify(store.state.search.filters)
 			store.commit 'search/set_filters', query_filters
 		store.commit 'search/set_sorters', (sort
-			.split(',').filter(Boolean).map((s)=>s.split(':'))
+			.split(';').filter(Boolean).map((s)=>s.split('|'))
 			.map (s) => {
 				attribute_name: s[0]
 				direction: s[1] * 1
@@ -118,7 +118,7 @@ export default
 		if show?
 			if Number.isNaN(Number(show))
 				store.commit 'search/set_shower_names', (show
-					.split(',').filter(Boolean))
+					.split(';').filter(Boolean))
 				store.commit 'search/set_shower_names_modified', true
 			else
 				store.commit 'search/set_columns', Number(show)
@@ -140,6 +140,9 @@ export default
 		if need_search
 			await store.dispatch 'search/search',
 				query: route.query
+		
+		# Only for testing purposes
+		# await store.dispatch 'category/get_categories_raw'
 	mounted: ->
 		@$store.dispatch 'set_default_focus_target', @$refs.result_table_container
 		@$store.dispatch 'offer_focus'

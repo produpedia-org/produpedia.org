@@ -10,7 +10,7 @@ export default
 			required: true
 	methods:
 		validate: (event) ->
-			if String.fromCharCode(event.keyCode).match(/[:,]/)
+			if String.fromCharCode(event.keyCode).match(/[\|;]/)
 				event.preventDefault()
 	computed:
 		form_field: ->

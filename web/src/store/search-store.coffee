@@ -136,21 +136,21 @@ export default
 			{ columns, limit, offset } = state
 			if state.shower_names_modified
 				showers_param = state.shower_names
-					.join ','
+					.join ';'
 			else
 				showers_param = columns + ""
 			sorters_param = state.sorters
-				.map (sorter) => "#{sorter.attribute_name}:#{sorter.direction}"
-				.join ','
+				.map (sorter) => "#{sorter.attribute_name}|#{sorter.direction}"
+				.join ';'
 			filters_param = state.filters
 				.map (filter) =>
-					param = "#{filter.attribute_name}:#{filter.condition}"
+					param = "#{filter.attribute_name}|#{filter.condition}"
 					if filter.value
-						param += ":#{filter.value}"
+						param += "|#{filter.value}"
 					if filter.case_insensitive
-						param += ":i"
+						param += "|i"
 					param
-				.join ','
+				.join ';'
 			attributes: showers_param
 			filter: filters_param or undefined
 			sort: sorters_param  or undefined
