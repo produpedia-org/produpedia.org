@@ -53,6 +53,11 @@ div.edit-datum
 							p Currently, you can <em>not</em> edit the values on Produpedia.org. You may do so by editing them on Wikidata or Wikipedia.
 						/ When deriving another dataset and releasing on the databus:
 						/ https://databus.dbpedia.org/dbpedia/mappings/mappingbased-objects/2020.02.01
+			
+			div v-if=image_url
+				dt Image
+				dd
+					img :src=image_url :alt=image_alt :title=image_alt loading=lazy
 </template>
 
 <script lang="coffee">
@@ -83,6 +88,10 @@ export default
 			@product?.data[@attribute_name]
 		product_label: ->
 			@product?.data.label?.value or @product_name
+		image_url: ->
+			@attribute_name == 'thumbnail' && @datum?.value.replace('width=300','')
+		image_alt: ->
+			@image_url && @image_url.replace(/^.+\/(.+)\..+/,'$1').replace(/[_-]+/g,' ')
 	}
 </script>
 
@@ -91,4 +100,6 @@ export default
 	pre
 		margin 0
 		display inline-block
+img
+	max-width 100%
 </style>
