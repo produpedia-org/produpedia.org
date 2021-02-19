@@ -80,8 +80,8 @@ export default
 			-	'reset_global_error_message'
 	}
 	watch:
-		$route: ->
-			@$refs.header_details.$el.removeAttribute 'open'
+		$route: (route) ->
+			@$refs.header_details.$el.open = route.name == 'About'
 </script>
 
 <style lang="stylus" scoped>
