@@ -101,7 +101,7 @@ export default
 					width fit-content
 				&.middle
 					flex 1 1 0 // = 1
-					font-size 12px
+					font-size 14px
 					font-family monospace
 					text-align center
 				&.right
