@@ -11,6 +11,11 @@ class Category extends BaseEntity {
     @Length(1, 255)
     public name!: string;
     @Column()
+    @IsArray()
+    @IsOptional()
+    @Length(1, 255, { each: true })
+    public alternative_names?: string[];
+    @Column()
     @Length(1, 100)
     public label!: string;
     @Column()
