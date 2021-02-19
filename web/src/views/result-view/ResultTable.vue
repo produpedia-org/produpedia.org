@@ -65,7 +65,7 @@ table border=1
 							a v-else="" :href=datum.resource
 								| $datum.value
 						div.value v-else="" :class.label="shower_name==='label'"
-							span v-if="attributes_by_name[shower_name].type==='date'"
+							span v-if="attributes_by_name[shower_name]&&attributes_by_name[shower_name].type==='date'"
 								| {{ datum.value | format_date }}
 							span v-else=""
 								| $datum.value
