@@ -23,11 +23,4 @@ export default
 </script>
 
 <style lang="stylus" scoped>
-.label >
-	*
-		display inline-block
-		white-space nowrap
-	a.router-link-active
-		font-weight bold
-		color var(--color-highlighted)
 </style>

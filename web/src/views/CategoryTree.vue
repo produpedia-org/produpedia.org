@@ -4,24 +4,38 @@ nav.tree
 	.preview v-if=!all_categories_loaded @click=start_get_categories
 		ul.category-tree.padding-l
 			li
-				div Thing
-				ul
-					li
-						div.label: a href=. Activity
-						ul
-							li
-								div.label: a href=. Game
+				read-more :value=true
+					template #summary=""
+						.label: div Thing
+					ul
+						li
+							read-more :value=true
+								template #summary=""
+									.label: a href=. Activity
 								ul
 									li
-										div.label: a href=. Board game
-										div.label: a href=. Card game
-										div.label: a href=. Video game
-							li
-								div.label: a href=. Sport
-								ul
+										read-more :value=true
+											template #summary=""
+												.label: a href=. Game
+											ul
+												li
+													read-more :value=true noliststyle=""
+														template #summary=""
+															.label: a href=. Board game
+													read-more :value=true noliststyle=""
+														template #summary=""
+															.label: a href=. Card game
+													read-more :value=true noliststyle=""
+														template #summary=""
+															.label: a href=. Video game
 									li
-										div.label: a href=. Athletics
-										div.label: a href=. Team sports
+										read-more :value=true
+											template #summary=""
+												.label: a href=. Sport
+											ul
+												li
+													.label: a href=. Athletics
+													.label: a href=. Team sports
 		.cloak
 		.click-to-expand
 			promise-button.prompt :action=expand ref=get_categories_btn
@@ -113,6 +127,13 @@ ul.category-tree
 					color var(--color-clickable)
 		.label
 			display inline
+			> *
+				display inline-block
+				white-space nowrap
+			> a.router-link-active
+					font-weight bold
+					color var(--color-highlighted)
+
 		> li > details > summary
 			top calc(var(--min-row-height) * 0)
 			z-index 999
