@@ -6,18 +6,20 @@ div.edit-datum
 	.text-align-right
 		router-link :to="'/product/'+product_name"
 			| Go to $product_label detail page ➢
-	div v-if=!datum
+	div v-if="!product||!product.data"
 		| Loading...
 	div.current v-else=""
 		h4 Current value
-		dl
+		p v-if=!datum
+			| No value found.
+		dl v-else=""
 			dt Value
 			dd
 				pre.value $datum.value
 
-			dt Verified status (currently meaningless)
-			dd
-				pre.verified $datum.verified
+			/ dt Verified status (currently meaningless)
+			/ dd
+			/ 	pre.verified $datum.verified
 
 			dt Added by user
 			dd
