@@ -11,7 +11,7 @@ interface CategoryTreeNode extends Category {
     additional_parents?: string[];
 }
 
-const base_categories: CategoryTreeNode[] = JSON.parse(readFileSync('/b/ls/data/categories.json', 'utf-8'));
+const base_categories: CategoryTreeNode[] = JSON.parse(readFileSync('categories.json', 'utf-8'));
 
 (async () => {
     await createConnection();
