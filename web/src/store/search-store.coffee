@@ -73,7 +73,7 @@ export default
 		shower_names_modified: false
 		sorters: [
 		]
-		columns: 15
+		columns: 20
 		limit: 20
 		offset: 0
 		### server response; readonly ###
@@ -131,7 +131,7 @@ export default
 		# To prevent unnecessary requests when the last appending request
 		# already returned an empty set
 		can_fetch_next_page: (state) ->
-			not state.reached_the_end and !!state.products.length
+			not state.reached_the_end and !!state.products?.length
 		query: (state) ->
 			{ columns, limit, offset } = state
 			if state.shower_names_modified
@@ -254,6 +254,10 @@ export default
 			response = await @$http.get "product/#{product_name}"
 			product = response.data
 			commit 'add_product', product
+		set_shower_names: ({ dispatch, commit }, shower_names) ->
+			commit 'set_shower_names', shower_names
+			commit 'set_shower_names_modified', !! shower_names.length
+			dispatch 'update_query'
 		move_shower_to: ({ dispatch, commit, state }, { index, shower_name }) ->
 			current_pos = state.shower_names.findIndex (e) => e == shower_name
 			new_pos = index
@@ -322,6 +326,9 @@ export default
 			dispatch 'update_query'
 		set_limit: ({ commit, dispatch }, limit) ->
 			commit 'set_limit', limit
+			dispatch 'update_query'
+		set_columns: ({ commit, dispatch }, columns) ->
+			commit 'set_columns', columns
 			dispatch 'update_query'
 		fetch_next_page: ({ commit, dispatch, state }) ->
 			dispatch 'search', { append: true }

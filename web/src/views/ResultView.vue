@@ -7,13 +7,39 @@
 		h1.text-align-center $title
 		aside.right
 			.center
-				label.row.center.do-not-print
-					div Rows
-					select.limit v-model=limit
+				label.limit.row.center.do-not-print
+					.fakelink Rows
+					select v-model=limit
 						option v-for="l of selectable_limits" :value=l $l
 						option :value=-1 v-if=max_rows>100 disabled=""
 							| $max_rows
-	
+				.columns.row.center.do-not-print
+					.fakelink Columns:
+					read-more noliststyle="" v-model=editing_columns
+						template #summary=""
+							.btn.configure.center type=button
+								div
+									| {{ shower_names_modified ? shower_names_copy.length : columns }}
+									span.disabled
+										|  (edit)
+						popup @close=editing_columns=false
+							.column.center
+								form-field label="Column count" :disabled=shower_names_modified type=number v-model=columns min=2
+								button.btn.margin v-if=shower_names_modified @click="shower_names_copy=[]"
+									| Reset
+								em or
+								form-field label="Configure columns manually"
+									multi-select.center :options=shower_names_options v-model=shower_names_copy
+										template #rendered="{ selected_options, remove, move_up, move_down }"
+											.selected-options.column
+												.selected-option.row.center.box v-for="selected_option, index in selected_options"
+													button.move-up @click=move_up(index) 🡡
+													button.move-down @click=move_down(index) 🡣
+													div.flex-fill
+														| {{ selected_option.name || '(empty) '+selected_option.value }}
+													button.remove @click=remove(index) ╳
+								p You can either drag, drop and delete columns in the main table directly or select them here.<br>By default, the attributes are sorted by frequency.
+
 	/ i Explanation of what this category is..?
 
 	.center
@@ -61,6 +87,8 @@ import search_store_module from '@/store/search-store'
 import { mapActions, mapState, mapGetters } from 'vuex'
 import ResultTable from '@/views/result-view/ResultTable'
 import AddProductDialog from '@/views/result-view/AddProductDialog'
+
+columns_editing_debouncer = null
 
 export default
 	components: { ResultTable, AddProductDialog }
@@ -154,6 +182,7 @@ export default
 		selectable_limits: [ 5, 10, 20, 50, 100 ]
 		fetching_next_page: false
 		show_subroute_modal: false
+		editing_columns: false
 	methods: {
 		on_table_scroll: (event) ->
 			if @fetching_next_page or not @can_fetch_next_page
@@ -178,17 +207,37 @@ export default
 		limit:
 			get: -> @$store.state.search?.limit or 1
 			set: (v) -> @$store.dispatch 'search/set_limit', v
+		columns:
+			get: -> @$store.state.search?.columns or 25
+			set: (v) ->
+				clearTimeout columns_editing_debouncer
+				columns_editing_debouncer = setTimeout (=>
+					if Number.isInteger(v*1) and v > 0
+						@$store.dispatch 'search/set_columns', v
+				), 500
+		shower_names_copy:
+			get: ->
+				[...@$store.state.search?.shower_names]
+			set: (new_shower_names) ->
+				clearTimeout columns_editing_debouncer
+				columns_editing_debouncer = setTimeout (=>
+					@$store.dispatch 'search/set_shower_names', new_shower_names
+				), 500
+		shower_names_options: ->
+			@$store.state.search.attributes?.map (a) =>
+				value: a.name
+				name: a.label
 		category: ->
 			@$store.state.search?.category
 		max_rows: ->
-			@$store.getters['search/category_ref']?.products_count
+			@category_ref?.products_count
 		attributes: ->
 			@$store.state.search?.attributes
 		has_more_attributes: ->
 			@$store.getters['search/has_more_attributes']
 		category_plural: ->
 			if not @category then return ''
-			category_label = @$store.getters['search/category_ref']?.label
+			category_label = @category_ref?.label
 			if not category_label
 				category_label = @category
 			if category_label.match /s$/
@@ -204,9 +253,11 @@ export default
 			-	'invisible_filters'
 			-	'invisible_sorters'
 			-	'attributes_by_name'
+			-	'category_ref'
 		...mapState 'search',
 			-	'fetching_data'
 			-	'search_failure'
+			-	'shower_names_modified'
 	}
 	destroyed: ->
 		@$store.dispatch 'set_default_focus_target', null
@@ -225,7 +276,7 @@ export default
 header
 	justify-content space-between
 	word-break keep-all
-	color var(--color-clickable)
+	flex-wrap wrap
 	border-bottom 1px solid #a2a9b1
 	margin-bottom 8px
 	gap 6px
@@ -236,18 +287,26 @@ header
 		label > *
 			overflow hidden
 			text-overflow ellipsis
-	aside.right
-		// text-align right
-		select, input
-			margin-left 6px
 	aside.left
 		select, input
 			margin-right 6px
-	select.limit
-		padding 2px 0
+	aside.right
+		min-width 155px
+	.limit select
 		text-align-last right
 		> option
 			direction rtl
+	.limit select, .columns .btn.configure
+		width 60px
+		padding 0 10px
+		height 20px
+		margin 0 10px 0 3px
+	.columns .btn.configure
+		white-space nowrap
+		font-size smaller
+	.columns .multi-select
+		>>> .selected-option
+			gap 10px
 #result-table-container
 	overflow auto
 	@media print
