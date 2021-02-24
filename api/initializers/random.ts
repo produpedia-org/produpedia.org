@@ -8,7 +8,7 @@ import { ObjectID } from 'mongodb';
 
 error('Generating attributes');
 const attributes = [...Array(30).keys()].map(i => new Attribute({
-    subject: 'Smartphone',
+    category: 'Smartphone',
     name: `attribute ${i}`,
     description: 'some description...',
     unit: 'kg',
@@ -40,17 +40,17 @@ const generate_random_primary_product_data = () => attribute_ids
         await createConnection();
 
         error('Deleting all attributes');
-        await Attribute.delete({ subject: 'Smartphone' }); // TODO: doesnt work ??
+        await Attribute.delete({ category: 'Smartphone' }); // TODO: doesnt work ??
 
         error('Adding dummy attributes');
         await Attribute.save(attributes);
 
         error('Deleting all products');
-        await Product.find({ subject: 'Smartphone' });
+        await Product.find({ categories: 'Smartphone' });
 
         error('Generating dummy products');
         const products = [...Array(100).keys()].map(i => new Product({
-            subject: 'Smartphone',
+            categories: [ 'Smartphone' ],
             name: `product ${i}`,
             data: generate_random_primary_product_data(),
             _id: new ObjectID(`${i}`.padStart(24, '0')),
