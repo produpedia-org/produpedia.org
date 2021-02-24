@@ -21,7 +21,7 @@ const subject_to_name = (subject: string) => {
             ?hypernym rdfs:label ?label .
         }
         order by desc(?count)
-        limit 3000`);
+        limit 8000`);
     const finds = results
         .map(r => ({
             name: subject_to_name(r.hypernym),
