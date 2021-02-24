@@ -7,6 +7,7 @@ export default {
 		// 1. Tell the user
 		const html = fs.readFileSync(path.join(__dirname, '500.html'), 'utf-8')
 		response.body = html.replace('{{ error }}', err.stack)
+		response.status = 500;
 		// 2. Tell API/error
 		await ssr_build_error_report(err);
 	}
