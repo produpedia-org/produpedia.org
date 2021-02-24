@@ -260,7 +260,7 @@ product_router.get('/list/:category', async (req, res) => {
         ...sorters_formatted,
     }).limit(limit)
     .skip(offset)
-    .maxTimeMS(1000);
+    .maxTimeMS(5000);
     try {
         products = await cursor.toArray();
     } catch(e) {
