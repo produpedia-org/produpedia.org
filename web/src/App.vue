@@ -48,6 +48,7 @@ import CategoryBreadcrumbs from '@/views/CategoryBreadcrumbs'
 # https://github.com/egoist/vue-client-only/blob/master/src/index.js
 import NoSsr from 'vue-no-ssr'
 import { mapState, mapGetters, mapActions } from 'vuex'
+import { ignorable_error_stati } from './error-handler'
 
 export default
 	components: { NoSsr, Confirm, CategoryTree, CategoryBreadcrumbs }
@@ -63,12 +64,13 @@ export default
 	created: ->
 		if @$isServer
 			if @$errorHandler.error
-				# Needs extra handling because the error-plugin only catches
-				# *unexpected ssr renderer errors* outside fetch(). Here, we
-				# consider errors that still allow a full page to be rendered
-				# (500(mostly) status but no 500.html), probably from inside fetch()
-				{ ssr_build_error_report } = await import('@/server/error-plugin')
-				await ssr_build_error_report @$errorHandler.error
+				if not ignorable_error_stati.includes @$errorHandler.statusCode
+					# Needs extra handling because the error-plugin only catches
+					# *unexpected ssr renderer errors* outside fetch(). Here, we
+					# consider errors that still allow a full page to be rendered
+					# (500(mostly) status but no 500.html), probably from inside fetch()
+					{ ssr_build_error_report } = await import('@/server/error-plugin')
+					await ssr_build_error_report @$errorHandler.error
 	computed: {
 		...mapState
 			-	'app_name'

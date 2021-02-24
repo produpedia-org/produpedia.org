@@ -1,5 +1,7 @@
 import Vue from 'vue'
 
+export ignorable_error_stati = [ 401, 404 ]
+
 ###
  # Client only: This will make console.error, Vue error handler and other
  # uncaught error handlers automatically send out an error report to the server,
@@ -28,8 +30,7 @@ export install_error_handler = ({ store, router }) =>
 				store.dispatch 'set_global_error_message',
 					'Internal Server Error\n:-(\nSorry! Please try reloading the page!\n\nStatus 500\nAdministrator should have received a notification. We will try to fix this quickly.'
 				return
-			ignore_stati = [ 404 ]
-			if ignore_stati.includes status
+			if ignorable_error_stati.includes status
 				return
 			error_stringified = [...args]
 				.filter Boolean
