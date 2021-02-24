@@ -7,7 +7,7 @@
 		.box.padding-l
 			| Loading... ($loading_counter)
 	header
-		read-more noliststyle="" ref=header_details
+		read-more noliststyle="" v-model=header_open
 			template #summary=""
 				.navs.fill.center
 					nav.left.row
@@ -17,13 +17,13 @@
 						category-breadcrumbs
 					nav.right.row
 						router-link.about.do-not-print exact="" to=/ About
-			.column.padding-l
+			.column
 				.navs.fill.center
-					nav
+					nav: small.disabled ↑ Click to collapse ↑
 					nav.right.row.align-center
 						div.session-info.column
 							a href=/static/privacy.html : small Privacy & Imprint 
-				category-tree
+				category-tree.margin-l.box
 	main.flex-fill.column
 		div.error v-if=$errorHandler.error
 			pre v-if="$errorHandler.statusCode===500"
@@ -74,6 +74,11 @@ export default
 			-	'app_name'
 			-	'loading_counter'
 			-	'global_error_message'
+		header_open:
+			get: ->
+				@$store.state.header_open
+			set: (o) ->
+				@$store.commit 'set_header_open', o
 	}
 	methods: {
 		...mapActions
@@ -81,7 +86,8 @@ export default
 	}
 	watch:
 		$route: (route) ->
-			@$refs.header_details.$el.open = route.name == 'About'
+			if route.name != 'About'
+				@$store.commit 'set_header_open', false
 </script>
 
 <style lang="stylus" scoped>
@@ -141,7 +147,8 @@ export default
 				font-weight bold
 				color var(--color-error)
 a.router-link-active
-	font-weight bold
+	// font-weight bold
+	display none
 </style>
 
 <style lang="stylus" src="./global.stylus"></style>

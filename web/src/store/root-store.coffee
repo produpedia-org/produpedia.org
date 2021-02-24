@@ -18,6 +18,7 @@ export create_store = =>
 			global_error_message: ''
 			default_focus_target: null
 			confirm_prompt: ''
+			header_open: false
 		mutations:
 			toggle_authenticate_popup: (state, show) ->
 				state.authenticate_popup = show
@@ -33,6 +34,8 @@ export create_store = =>
 				state.confirm_prompt = prompt
 			set_default_focus_target: (state, el) ->
 				state.default_focus_target = el
+			set_header_open: (state, open) ->
+				state.header_open = open
 		actions:
 			show_authenticate_popup: ({ commit }) ->
 				commit 'toggle_authenticate_popup', true
