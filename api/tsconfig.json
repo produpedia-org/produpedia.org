@@ -3,7 +3,8 @@
       "node_modules",
       "dist",
       ".vscode",
-      "docs"
+      "docs",
+      "initializers/old"
   ],
   "compilerOptions": {
     /* Basic Options */
