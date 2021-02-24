@@ -66,7 +66,7 @@ export default
 				# Needs extra handling because the error-plugin only catches
 				# *unexpected ssr renderer errors* outside fetch(). Here, we
 				# consider errors that still allow a full page to be rendered
-				# (500 status but no 500.html), probably from inside fetch()
+				# (500(mostly) status but no 500.html), probably from inside fetch()
 				{ ssr_build_error_report } = await import('@/server/error-plugin')
 				await ssr_build_error_report @$errorHandler.error
 	computed: {
