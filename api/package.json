@@ -5,12 +5,9 @@
   "license": "MIT",
   "scripts": {
     "lint": "tslint",
-    "ts-node-debug": "node --inspect node_modules/.bin/ts-node --files --",
     "dev": "ts-node-dev --inspect=4321 --respawn --transpile-only index.ts",
     "build": "tsc",
     "start": "environment=production node index.js",
-    "initialize-dev": "yarn ts-node-debug initializers/dev.ts",
-    "initialize-random": "yarn ts-node-debug initializers/random.ts",
     "upgrade-all": "ncu -u && yarn install && yarn upgrade",
     "migrate": "ts-node ./node_modules/typeorm/cli.js migration:run"
   },
