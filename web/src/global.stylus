@@ -5,7 +5,7 @@
 	--color-background: #fbfbfb;
 	--color-secondary-background: #f1f1f1;
 	--color-clickable: #0645ad;
-	--color-foreground: #444;
+	--color-foreground: #202122;
 	--color-hover: #c4c4c4;
 	--color-disabled: #a6a6a6;
 	--color-highlighted: darkorange;
