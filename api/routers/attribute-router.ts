@@ -32,6 +32,10 @@ attribute_router.get('/', async (req, res) => {
     } else {
         return res.status(UNPROCESSABLE_ENTITY).send('You need to specify as query parameter either category or product');
     }
+    attributes.forEach(a => {
+        // @ts-ignore
+        delete a._id;
+    })
     return res.send(attributes);
 });
 

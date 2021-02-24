@@ -66,6 +66,11 @@ category_router.get('/', async (req, res) => {
     } else {
         categories = await Category.find();
     }
+    categories.forEach(c => {
+        delete c.showers;
+        // @ts-ignore
+        delete c._id;
+    });
     return res.send(categories);
 });
 
