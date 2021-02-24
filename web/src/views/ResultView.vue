@@ -193,7 +193,7 @@ export default
 				category_label = @category
 			if category_label.match /s$/
 				category_label
-			else if category_label.match /y$/
+			else if category_label.match /[^aeiou]y$/
 				category_label.slice(0, -1) + 'ies'
 			else
 				category_label + 's'
