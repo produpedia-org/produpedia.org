@@ -29,7 +29,7 @@ let lineno = 0;
     console.info('Saving new products and getting and saving their data');
 
     const rl = readLine.createInterface({
-        input: fs.createReadStream('/b/ls/dbpedia_import/products2.txt'),
+        input: fs.createReadStream('products.txt'),
     });
     // See explanation below
     const lines_batch_size = 10;
