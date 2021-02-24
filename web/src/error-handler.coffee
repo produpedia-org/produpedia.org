@@ -17,7 +17,7 @@ export install_error_handler = ({ store, router }) =>
 			# unintentional spam, duplicate and recursive error reportings
 			return
 		try
-			status = args[0]?.status
+			status = args[0]?.status or args[0]?.statusCode
 			if 0 == status
 				store.dispatch 'server_unreachable'
 				return
