@@ -8,6 +8,10 @@ export type AttributeType = string | number | boolean | Date;
 export type AttributeTypeType = 'resource' | 'string' | 'number' | 'boolean' | 'date';
 export const attributeTypeTypes: AttributeTypeType[] = ['resource', 'string', 'number', 'boolean', 'date'];
 
+/* TODO: index:
+db.attribute.createIndex({ 'label': 'text' }, { default_language: 'english' })
+*/
+
 @Entity()
 class Attribute extends BaseEntity {
     @ObjectIdColumn()

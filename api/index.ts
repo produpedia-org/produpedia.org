@@ -9,7 +9,7 @@ import attribute_router from './routers/attribute-router';
 import error_router from './routers/error-router';
 import category_router from './routers/category-router';
 import product_router from './routers/product-router';
-import user_router from './routers/user-router';
+import search_router from './routers/search-router';
 import MailService from './services/MailService';
 import TokenService from './services/TokenService';
 import { env, error, log, xml_escape, is_production } from './utils';
@@ -45,6 +45,7 @@ app.use('/error', error_router(mail_service));
 app.use('/', product_router);
 app.use('/attribute', attribute_router);
 app.use('/category', category_router);
+app.use('/search', search_router);
 app.use('/', express.static(__dirname + '/public'));
 
 app.set('query parser', 'simple');

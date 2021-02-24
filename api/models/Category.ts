@@ -2,6 +2,10 @@ import { IsBoolean, Length, IsOptional, IsObject, IsUrl, IsArray, IsNumber } fro
 import { BaseEntity, Column, Entity, ObjectIdColumn } from 'typeorm';
 import { ObjectID } from 'mongodb';
 
+/* TODO: index:
+db.category.createIndex({ 'label': 'text', 'aliases': 'text' }, { default_language: 'english', language_override: 'nonexisting_field_9894279872' })
+*/
+
 @Entity()
 class Category extends BaseEntity {
     @ObjectIdColumn()

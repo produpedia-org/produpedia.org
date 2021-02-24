@@ -11,6 +11,7 @@ export interface PrimaryProductData {
 db.product.createIndex({ categories: 1 })
 db.product.createIndex({ name: 1 })
 db.product.createIndex({ 'data.label.value': 1 })
+db.product.createIndex({ aliases: 'text', 'data.label.value': 'text' }, { default_language: 'english', language_override: 'nonexisting_field_9894279872' })
 */
 
 @Entity()
