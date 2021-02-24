@@ -2,7 +2,7 @@
 li
 	read-more :value=true :noliststyle=!category.children_ref.length
 		template #summary=""
-			.label :id="'tree-'+category.name"
+			.label :id="'tree-'+category.name" :class.empty="category.products_count===0"
 				.wrapper.capitalize v-if=category.wrapper
 					| $category.label
 				router-link.capitalize v-else="" :to="'/list/'+category.name"
@@ -23,4 +23,7 @@ export default
 </script>
 
 <style lang="stylus" scoped>
+.label.empty
+	&, > a
+		color var(--color-disabled)
 </style>
