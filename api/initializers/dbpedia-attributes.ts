@@ -172,7 +172,7 @@ const attribute_props_by_range = (range?: string): Partial<Attribute> => {
 
     // TODO ...
     attributes
-        .filter(a => ["thumbnail","depiction","label","wikiPageRedirects"].includes(a))
+        .filter(a => ["thumbnail","depiction","label","wikiPageRedirects"].includes(a.name))
         .forEach(a => a.interest = 0)
 
     // console.log(attributes);
