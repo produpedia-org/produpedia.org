@@ -187,6 +187,7 @@ tbody td
 	padding 0.5vmin
 	word-wrap break-word
 	position relative
+	cursor move
 th
 	top 0
 	height 2em
