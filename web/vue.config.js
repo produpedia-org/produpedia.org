@@ -11,7 +11,7 @@ const is_production = process.env.NODE_ENV === 'production';
 module.exports = {
 	productionSourceMap: true,
 	// css: {
-		// TODO: multiple ssr vue instantiation bug, see uvue#59
+		// TODO: multiple ssr vue instantiation bug, see uvue#59. only dev though (?) reactivate?
 	// 	sourceMap: true,
 	// },
 
