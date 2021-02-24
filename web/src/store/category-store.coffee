@@ -17,7 +17,7 @@ export default base_crud_store { resource_name: 'category', unique: 'name' },
 						d.children_ref.push c
 			categories
 		all_categories_loaded: (state, getters) ->
-			state.categories_raw.length > 716 # todo :-/
+			state.categories_raw.length > 1000
 		category_by_name: (state, getters) ->
 			getters.categories.reduce((all, category) =>
 				all[category.name] = category
