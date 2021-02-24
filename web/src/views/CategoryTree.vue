@@ -100,12 +100,11 @@ ul.category-tree
 	max-height clamp(30vh, 550px, 54vh)
 	user-select none // because v-dragscrollable
 	line-height 1.65em
-	// background white
 	width fit-content
 	margin 0
 	>>>
 		li, ul, details, .details, summary
-			background white
+			background rgba(255,255,255,0.93)
 		li
 			list-style-type none
 		// Closed
