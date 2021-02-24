@@ -38,4 +38,9 @@ export create_router = (store) ->
 								if process.server
 									ssr.statusCode = 404
 			# corresponding store modules can also be lazyloaded. see ssr vuejs docs
+
+	router.beforeEach (to, from, next) =>
+		router.app.$errorHandler.error = null
+		next()
+
 	router
