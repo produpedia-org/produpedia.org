@@ -88,8 +88,8 @@ details > summary {
 	opacity: 0
 .disabled // todo rename inactive or similar & use disabled attribute instead where appropriate
 	color: var(--color-disabled)
-.highlighted
-	color: var(--color-highlighted)
+.highlighted, .highlighted *
+	color: var(--color-highlighted) !important
 .error, .danger
 	color: darkred // css4 @apply fade-in
 .small // todo html small instead
