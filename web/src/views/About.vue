@@ -29,7 +29,7 @@
 		global-search
 	div: em or
 	section.padding-l.box
-		| Try out some of these categories:
+		h3 Try out some of these categories:
 		ul
 			li
 				router-link to=/list/cheese
