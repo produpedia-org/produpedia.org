@@ -6,7 +6,7 @@ table border=1
 			td.filters v-for="shower_name in shower_names"
 				filters :filters=filters_by_attribute_name[shower_name] :attribute_name=shower_name
 		tr.attributes
-			th.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop="dragging_column&&move_shower_to(index)" :set="attribute=attributes_by_name[shower_name]"
+			th.move v-for="shower_name, index in shower_names" :key="shower_name+'_'+index" v-drop="dragging_column&&move_shower_to(index)" :data-set="attribute=attributes_by_name[shower_name]"
 				.attribute.fill-h.column.center
 					.actions.fill-w.align-center.touch-only
 						button.moveto @click=move_shower_to(index-1)(shower_name) ←
@@ -42,7 +42,7 @@ table border=1
 
 	tbody v-dragscrollable="{ scroll_target: scroll_container, on_dragscroll_start, on_dragscroll_end }"
 		tr.product v-for="product in products" :key=product.name
-			td.datum v-for="shower_name, shower_index in shower_names" @click=datum_clicked(product,shower_name,$event) :set="datum=product.data[shower_name]"
+			td.datum v-for="shower_name, shower_index in shower_names" @click=datum_clicked(product,shower_name,$event) :data-set="datum=product.data[shower_name]"
 				div v-if=datum
 					div
 						div.thumbnail.loading.center v-if="shower_name==='thumbnail'"
