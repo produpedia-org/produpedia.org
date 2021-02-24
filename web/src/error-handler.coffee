@@ -28,9 +28,9 @@ export install_error_handler = ({ store, router }) =>
 				store.dispatch 'set_global_error_message',
 					'Internal Server Error\n:-(\nSorry! Please try reloading the page!\n\nStatus 500\nAdministrator should have received a notification. We will try to fix this quickly.'
 				return
-			# ignore_stati = [ 403 ]
-			# if ignore_stati.includes status
-			# 	return
+			ignore_stati = [ 404 ]
+			if ignore_stati.includes status
+				return
 			error_stringified = [...args]
 				.filter Boolean
 				.map (s) => """
