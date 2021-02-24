@@ -1,17 +1,11 @@
 import dayjs from 'dayjs';
 import express from 'express';
 import { BAD_REQUEST, NOT_FOUND, UNPROCESSABLE_ENTITY } from 'http-status-codes';
-import { ObjectID } from 'mongodb';
 import { FindOptionsOrder, getMongoManager } from 'typeorm';
-import admin_secured from '../admin-secured';
 import Attribute, { AttributeType } from '../models/Attribute';
-import Category from '../models/Category';
-import PrimaryProductDatum from '../models/PrimaryProductDatum';
 import Product from '../models/Product';
-import { ProductDatumValue } from '../models/ProductDatum';
-import ProductDatumProposal from '../models/ProductDatumProposal';
 import { regexp_escape } from '../utils';
-import { get_category_anchestors, get_category_children, get_category_by_name_case_insensitive } from './category-router';
+import { get_category_anchestors, get_category_by_name_case_insensitive, get_category_children } from './category-router';
 
 /**
  * Transforms @param raw into a proper AttributeType value (date string into
@@ -216,8 +210,8 @@ product_router.get('/list/:category', async (req, res) => {
         // in this very category
         shower_names = (category.showers||[])
             .filter(attribute_name => category_anchestor_attribute_names.includes(attribute_name))
-            .slice(0, columns_count)
-        const missing_columns_count = columns_count - shower_names.length;
+            .slice(0, columns_count - 2)
+        const missing_columns_count = columns_count - 2 - shower_names.length;
         if(missing_columns_count > 0) {
             // Category showers werent enough, need to fill up with other columns of this category/parents,
             // which however have no values, sorted 1. by category: The target category's attributes first,
