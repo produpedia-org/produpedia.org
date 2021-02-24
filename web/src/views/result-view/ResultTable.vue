@@ -55,7 +55,7 @@ table border=1
 								div.resource v-if=datum.resource
 									router-link v-if="datum.resource[sub_i]&&datum.resource[sub_i].match(/^dbr:/)" :to="'/product/'+datum.resource[sub_i].replace(/^dbr:/,'')"
 										| $sub_value
-									a v-else="" :href=datum.resource
+									div v-else=""
 										| $sub_value
 								div v-else=""
 									| $sub_value
