@@ -18,8 +18,14 @@ attribute_router.get('/', async (req, res) => {
             category: { $in: [
                 category.name,
                 ...(await get_category_anchestors(category)).map(c => c.name),
+            ]},
+            // TODO: maybe revert this again because it disallows adding values to attributes where there were no values in before
+            name: { $in: [
+                'thumbnail', 'label',
+                ...(category.showers || [])
             ]}
         });
+        attributes = attributes.sort((a,b) => (category.showers?.indexOf(a.name)||0) - (category.showers?.indexOf(b.name)||0))
     } else if(req.query.product) {
         const product = await Product.findOne({ name: req.query.product as string });
         if(!product)
