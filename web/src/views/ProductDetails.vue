@@ -51,7 +51,7 @@ export default
 		# s.a. result-view
 		if not @$store.hasModule('search')
 			@$store.registerModule 'search', search_store_module, preserveState: true
-	fetch: ({ store, route, redirect }) ->
+	fetch: ({ store, route, redirect, error }) ->
 		if not store.hasModule('search')
 			store.registerModule 'search', search_store_module
 		product_name = route.params.product
@@ -59,6 +59,7 @@ export default
 			await store.dispatch 'search/get_product', product_name
 		catch e
 			if e.statusCode == 404
+				error 'Entity not found', 404
 				return
 			throw e
 		product = store.getters['search/product_by_name'][product_name]
