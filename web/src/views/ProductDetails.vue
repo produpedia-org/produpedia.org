@@ -28,7 +28,8 @@ article#product-details.justify-center
 			/  source
 			h2 Data
 			dl#data.info
-				div v-for="datum, attribute_name in product.data"
+				/ todo the depiction hiding is a hack
+				div v-for="datum, attribute_name in product.data" v-if="attribute_name!=='depiction'"
 					dt.capitalize
 						| {{ attributes_by_name[attribute_name]&&attributes_by_name[attribute_name].label || attribute_name }}
 					dd
