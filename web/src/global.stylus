@@ -141,7 +141,9 @@ details > summary {
 		// box-shadow: 2px 1px 1px 0px #ddd
 		// box-shadow 1px 1px 4px 2px #eee
 		// box-shadow 1px 1px 1px 2px #e2e2e2
-		box-shadow 1px 1px 3px 0px #ababab
+		// box-shadow 1px 1px 3px 0px #ababab
+		box-shadow 1px 1px 1px 0px #b5b5b5
+		border 1px solid #e6dddd
 	.box
 		background: rgba(255,255,255,0.93)
 
