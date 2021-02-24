@@ -6,14 +6,14 @@ article#product-details.justify-center
 			h1 $product_label
 			nav#external.flex-base
 				a v-if="!product||product.source==='dbpedia'" target=_blank :href="'https://en.wikipedia.org/wiki/'+product_name" Wikipedia article
-				a v-if="!product||product.source==='dbpedia'" target=_blank :href="'https://dbpedia.org/page/'+product_name" DBpedia page
+				a v-if="!product||product.source==='dbpedia'" target=_blank :href="'https://dbpedia.org/resource/'+product_name" DBpedia page
 		div v-if=!product
 			p $product_label is not part of Produpedia's database.<br>It is not linked to any known category. You can still see its details by visiting the above links.
 		div#infos.column v-else=""
 			h2 Categories
 			ul#categories.info
 				li.capitalize v-for="category_name in product.categories"
-					router-link :to="'/list/'+category_name"
+					router-link.mainlink :to="'/list/'+category_name"
 						| {{ category_by_name[category_name]&&category_by_name[category_name].label || category_name }}
 					small
 						|  (
@@ -122,4 +122,6 @@ nav#external
 #data
 	dt
 		font-weight bold
+#categories li .mainlink
+	font-weight bold
 </style>
