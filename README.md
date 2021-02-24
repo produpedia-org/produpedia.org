@@ -1,8 +1,8 @@
 https://produpedia.org
 
-Current state: Demonstration prototype, in development
+Current state: Demonstration prototype, work in progress
 
-Active development will resume later this year, either June or September 2020. This is a long term project and I expect it to  include loads of data from DBpedia and other data sources in the future. The ultimate goal is to provide a competing alternative to non-free product search engines. Produpedia is free and open data, without ads, promotion, redirects or preferences. It will always be collaborative, transparent, independent and user-centered.
+Produpedia is a free and open data browser, free of ads, promotion, redirects or preferences. It will always be collaborative, transparent, independent and user-centered, currently rendering data mostly taken from DBpedia.
 
 Your contributions are welcome! You can check out the issues if you're interested.
 
