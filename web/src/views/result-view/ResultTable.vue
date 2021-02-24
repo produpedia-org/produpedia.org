@@ -21,8 +21,8 @@ table border=1
 									| $attribute.label
 								div.unit v-if=attribute.unit
 									| $attribute.unit
-							.danger v-else=""
-								| $shower_name (unknown attribute)
+							div v-else=""
+								| $shower_name (empty)
 						button.sort.disabled @click=toggle_sort(shower_name)
 							/ ▲▼♦♢
 							/ TODO: use css background images from https://stackoverflow.com/a/22156412/3779853
