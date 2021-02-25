@@ -255,6 +255,8 @@ td.filters
 	&.dragenter
 		background var(--color-clickable)
 .attribute
+	// TODO: Doesnt work on FF, rendering the resize handles even more ugly
+	min-height 100%
 	.row
 		position relative
 	.label
