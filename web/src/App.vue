@@ -40,7 +40,7 @@
 </template>
 
 <script lang="coffee">
-import CategoryTree from '@/views/CategoryTree'
+import CategoryTree from '@/components/CategoryTree'
 import Confirm from '@/views/Confirm'
 import CategoryBreadcrumbs from '@/views/CategoryBreadcrumbs'
 # TODO: requiring a seperate package for this is annoying, solve it manually somehow.
