@@ -84,7 +84,7 @@
 	footer.margin-l
 		small
 			| Last updated: 
-			time datetime="2021-02-23" February 24th 2020
+			time datetime="2021-02-24" February 24th 2021
 			| , version $app_version
 </template>
 
