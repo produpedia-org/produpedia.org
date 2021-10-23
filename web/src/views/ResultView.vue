@@ -297,7 +297,7 @@ header
 		> option
 			direction rtl
 	.limit select, .columns .btn.configure
-		width 60px
+		width 65px
 		padding 0 10px
 		height 20px
 		margin 0 10px 0 3px
