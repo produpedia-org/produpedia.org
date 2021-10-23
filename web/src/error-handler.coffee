@@ -1,6 +1,6 @@
 import Vue from 'vue'
 
-export ignorable_error_stati = [ 401, 404 ]
+export ignorable_error_stati = [ 401, 404, 429 ]
 
 ###
  # Client only: This will make console.error, Vue error handler and other
