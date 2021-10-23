@@ -14,7 +14,7 @@ export create_router = (store) ->
 				component: => `import('@/views/About')` # todo this is soon supported natively by cs
 			-	path: '/tree'
 				name: 'TreeView'
-				component: => `import('@/view/CategoryTreeView')`
+				component: => `import('@/views/CategoryTreeView')`
 			-	path: '/list/:category'
 				name: 'ResultView'
 				component: => `import('@/views/ResultView')`
