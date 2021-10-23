@@ -4,7 +4,9 @@
       "dist",
       ".vscode",
       "docs",
-      "initializers/old"
+      "initializers/old",
+      // FIXME
+      "initializers"
   ],
   "compilerOptions": {
     /* Basic Options */
