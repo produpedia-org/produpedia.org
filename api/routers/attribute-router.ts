@@ -1,8 +1,6 @@
-import { ObjectID } from 'bson';
 import express from 'express';
-import { UNPROCESSABLE_ENTITY, NOT_FOUND } from 'http-status-codes';
+import { NOT_FOUND, UNPROCESSABLE_ENTITY } from 'http-status-codes';
 import Attribute from '../models/Attribute';
-import Category from '../models/Category';
 import Product from '../models/Product';
 import { get_category_anchestors, get_category_by_name_case_insensitive } from './category-router';
 
