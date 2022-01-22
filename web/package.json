@@ -26,7 +26,7 @@
     "cookie-parser": "^1.4.3",
     "core-js": "^3.6.5",
     "dayjs": "^1.8.31",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^3.1.1",
     "register-service-worker": "^1.7.1",
     "serve-static": "^1.13.2",
     "vue": "^2.6.11",
